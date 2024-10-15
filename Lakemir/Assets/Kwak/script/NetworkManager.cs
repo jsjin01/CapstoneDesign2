@@ -45,6 +45,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void JoinOrCreateRoom() => PhotonNetwork.JoinOrCreateRoom(roomInput.text, new RoomOptions { MaxPlayers = 2 }, null);
 
+    public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
 
     public void LeaveRoom() => PhotonNetwork.LeaveRoom();
 
@@ -56,7 +57,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message) => print("방참가실패");
 
-    
+    public override void OnJoinRandomFailed(short returnCode, string message) => print("방랜덤참가실패");
+
 
 
     [ContextMenu("정보")]
@@ -78,7 +80,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             print("방 개수 : " + PhotonNetwork.CountOfRooms);
             print("모든 방에 있는 인원 수 : " + PhotonNetwork.CountOfPlayersInRooms);
             print("로비에 있는지? : " + PhotonNetwork.InLobby);
-            print("연결됐는지 확인용 콘솔 : " + PhotonNetwork.IsConnected);
+            print("연결됐는지? : " + PhotonNetwork.IsConnected);
         }
     }
 }
