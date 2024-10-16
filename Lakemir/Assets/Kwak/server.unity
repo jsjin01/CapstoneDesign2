@@ -1431,18 +1431,18 @@ MonoBehaviour:
   ListText: {fileID: 3696164706327474552}
   RoomInfoText: {fileID: 5294462622303497028}
   ChatText:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1155525343}
+  - {fileID: 1325602537051172439}
+  - {fileID: 1256023864}
+  - {fileID: 1819529840}
+  - {fileID: 460255296}
+  - {fileID: 1624102954}
+  - {fileID: 2047574120}
+  - {fileID: 1488317416}
+  - {fileID: 612099189}
+  - {fileID: 1065663254}
+  - {fileID: 2071669996}
+  - {fileID: 29335973}
   ChatInput: {fileID: 1649686967142447845}
   StatusText: {fileID: 7304555678391319873}
   PV: {fileID: 8095135578391931311}
