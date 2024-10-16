@@ -1431,8 +1431,8 @@ MonoBehaviour:
   ListText: {fileID: 3696164706327474552}
   RoomInfoText: {fileID: 5294462622303497028}
   ChatText:
-  - {fileID: 1155525343}
   - {fileID: 1325602537051172439}
+  - {fileID: 1155525343}
   - {fileID: 1256023864}
   - {fileID: 1819529840}
   - {fileID: 460255296}
