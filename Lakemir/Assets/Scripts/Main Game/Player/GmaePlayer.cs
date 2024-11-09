@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class GamePlayer : Singleton<GamePlayer>
@@ -15,15 +17,35 @@ public class GamePlayer : Singleton<GamePlayer>
     public int fatalHitDamage;        //치명타 데미지
 
     //점프 관련 변수
-    int jumpCount = 0;      //현재 점프한 횟수
-    int maxjump = 2;        //최대 점프 횟수
-    bool canJump = true;    //조이스틱으로 점프할 때 => 연속해서 눌리지 안도록 설정
+    int jumpCount = 0;       //현재 점프한 횟수
+    int maxjump = 2;         //최대 점프 횟수
+    bool canUpKey = true;    //조이스틱으로 점프할 때 => 연속해서 눌리지 안도록 설정
 
+    //낙하 공격 관련 변수
+    bool isFallingAttacking = false;  //낙하 공격 중인지 아닌지
+
+    //대쉬키 
+
+
+
+    //PassableGround 관련 변수
+    RaycastHit2D playerRay;  //레이
+    bool canEnable = true;   //통과 후 불가능 하게 할 때 사용
+    Collider2D ground = null;//블럭 판별
+
+    //Ladder 관련 변수
+    bool canLadder = false;  //사다리 타고 있는지 여부
 
     [Header("연결 변수")]
-    public Joystick joystick;           // Joystick을 추가할 변수
-    [SerializeField] Rigidbody2D rb;      //rigidbody을 받아올 변수
+    public Joystick joystick;              //Joystick을 추가할 변수
+    [SerializeField] Rigidbody2D rb;       //rigidbody을 받아올 변수
+    [SerializeField] Collider2D col;       //Collider을 받아올 변수
+
+    [Header("이펙트 관련 변수")]
+    [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
+
     
+
     void Update()
     {
 #if UNITY_EDITOR
@@ -37,6 +59,10 @@ public class GamePlayer : Singleton<GamePlayer>
         {
             Jump();
         }
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            FallingAttack();
+        }
 
         //원점으로 돌아오게 하기(개발자 옵션)
         if(Input.GetKeyDown(KeyCode.R))
@@ -44,24 +70,26 @@ public class GamePlayer : Singleton<GamePlayer>
             transform.position = new Vector3(0, 0, 0);
         }
 #endif
-
-
         //조이 스틱을 이용했을 때
 
         //좌우
         Vector3 moveDirection = new Vector3(joystick.Horizontal, 0, 0).normalized;
         transform.position += moveDirection * speed * Time.deltaTime;
+
         //상하
-        if(joystick.Vertical > 0.5f && canJump) 
+        if(joystick.Vertical > 0.5f && canUpKey) 
         {
             Jump();
-            canJump = false;
+            canUpKey = false;
         }
         else if(joystick.Vertical <= 0.5f)
         {
-            canJump = true;  
+            canUpKey = true;  
         }
 
+
+
+        PassableGroundPass();//통과 가능한지 불가능한지 판별
     }
 
     void Jump()// 점프 
@@ -69,14 +97,19 @@ public class GamePlayer : Singleton<GamePlayer>
         if(jumpCount < maxjump)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
-            rb.AddForce(Vector2.up* 250);
+            rb.AddForce(Vector2.up* 400);
             jumpCount++;
         }
     }
 
     void FallingAttack() // 낙하 공격
     {
-
+        if(jumpCount >= 1 && !isFallingAttacking)
+        {
+            isFallingAttacking = true;
+            rb.gravityScale = 4f;
+            upDownTrail.SetActive(true);
+        }
     }
     
     void Attack() //공격
@@ -85,11 +118,6 @@ public class GamePlayer : Singleton<GamePlayer>
     }
 
     void InteractionKey() // 상호작용키
-    {
-
-    }
-
-    void BottomJump() // 하단 점프 
     {
 
     }
@@ -104,14 +132,86 @@ public class GamePlayer : Singleton<GamePlayer>
 
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision) //닿자마자
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))
         {
-            jumpCount = 0;
+            jumpCount = 0;  //점프 횟수 초기화
+            if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
+            {
+                rb.gravityScale = 1;
+                isFallingAttacking = false;
+                upDownTrail.SetActive(false);
+                //이펙트 추가해서 공격 되도록 설계
+            }
         }
     }
 
+    private void OnCollisionStay2D(Collision2D collision) //계속 닿고 있을 때 
+    {
+        if(collision.gameObject.CompareTag("PassableGround") && ((joystick.Vertical < -0.5f) || Input.GetKey(KeyCode.S))) // 하단 점프
+        {
+            ground = collision.gameObject.GetComponent<Collider2D>();
+            Physics2D.IgnoreCollision(col, ground, true);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)              //trigger 하고 있을 때
+    {
+        if(collision.gameObject.CompareTag("Ladder")) // 사다리
+        {
+            if(canLadder) //사다리와 상호작용 중
+            {
+                rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
+                rb.gravityScale = 0;                                //중력 무시
+                jumpCount = 2;
+            }
+
+            if((joystick.Vertical > 0.5f) || Input.GetKey(KeyCode.W))
+            {
+                canLadder = true;
+                transform.position += new Vector3(0, 0.5f , 0);
+            }
+            else if((joystick.Vertical < -0.5f) || Input.GetKey(KeyCode.S))
+            {
+                canLadder = true;
+                transform.position -= new Vector3(0, 0.5f, 0);
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ladder")) // 사다리
+        {
+            rb.gravityScale = 1;
+            rb.velocity = new Vector3(rb.velocity.x, 0, 0);
+            jumpCount = 0;
+            canLadder = false;
+        }
+    }
+
+    void PassableGroundPass() //통과할 수 있는 땅을 통과
+    {
+        LayerMask mask = ~LayerMask.GetMask("Ignore Raycast");                                                  //특정 레이어 무시
+        playerRay = Physics2D.Raycast(transform.position - new Vector3(0, 0.2f, 0), Vector2.down, 2.6f, mask);
+
+        if(playerRay.collider != null && playerRay.collider.CompareTag("PassableGround"))                       //통과가능 하도록 설계
+        {
+            canEnable = true;
+            ground = playerRay.collider;
+            Physics2D.IgnoreCollision(col, ground, true);
+        }
+        else                                                                                                   //통과 후 다시 불가능하게 만들기
+        {
+            if (canEnable && ground != null)                
+            {
+                Physics2D.IgnoreCollision(col, ground, false);
+                canEnable = false;
+                ground = null;
+            }
+        }
+    }
 }
 
 
