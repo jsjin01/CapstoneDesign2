@@ -10,6 +10,7 @@ TagManager:
   - Weapon
   - Npc
   - CapabilityFragment
+  - Monster
   layers:
   - Default
   - TransparentFX

@@ -29,9 +29,11 @@ public class GamePlayer : Singleton<GamePlayer>
     public int currentHp;             //현재 HP
     public int maxShield;             //Max보호막
     public int currentShield;         //현재 보호막
+    public int attackPower;           //공격력
     public float speed;               //이동속도
     public int fatalHitProbability;   //치명타 확률
     public int fatalHitDamage;        //치명타 데미지
+    public int damage;                //최종 데미지
 
     //공격키
     bool isAttacking = false;   //공격하고 있는지 여부
@@ -292,10 +294,9 @@ public class GamePlayer : Singleton<GamePlayer>
             }
         }
 
-        if(collision.gameObject.CompareTag("Monster") && isAttacking)
-        {
-            Debug.Log("몬스터에게 공격");
-        }
+        //if(collision.gameObject.CompareTag("Monster") && isAttacking)
+        //{
+        //}
     }
 
     private void OnCollisionStay2D(Collision2D collision) //계속 닿고 있을 때 
