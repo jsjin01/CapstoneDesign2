@@ -7,6 +7,9 @@ TagManager:
   - Ground
   - Ladder
   - PassableGround
+  - Weapon
+  - Npc
+  - CapabilityFragment
   layers:
   - Default
   - TransparentFX
