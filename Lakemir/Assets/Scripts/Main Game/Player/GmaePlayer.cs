@@ -10,6 +10,18 @@ public enum DIRECTION
     RIGHT,
     LEFT
 }
+public enum INTERECTION
+{
+    WEAPON,
+    NPC,
+    CAPABILITYFRAGMENT
+}
+
+public enum ATTACKKEY
+{
+    RIGHT,
+    LEFT
+}
 public class GamePlayer : Singleton<GamePlayer>
 {
     [Header("플레이어 능력치")]
@@ -17,9 +29,14 @@ public class GamePlayer : Singleton<GamePlayer>
     public int currentHp;             //현재 HP
     public int maxShield;             //Max보호막
     public int currentShield;         //현재 보호막
+    public int attackPower;           //공격력
     public float speed;               //이동속도
     public int fatalHitProbability;   //치명타 확률
     public int fatalHitDamage;        //치명타 데미지
+    public int damage;                //최종 데미지
+
+    //공격키
+    bool isAttacking = false;   //공격하고 있는지 여부
 
     //점프 관련 변수
     int jumpCount = 0;       //현재 점프한 횟수
@@ -32,7 +49,6 @@ public class GamePlayer : Singleton<GamePlayer>
     //대쉬키
     bool isDashing = false;                //대쉬 중인지 아닌지
     DIRECTION direction = DIRECTION.RIGHT; //바라보고 있는 방향
-
 
     //치유물약
     int currentHealingPotion = 0; //지금까지 사용한 힐링포션 횟수
@@ -48,6 +64,8 @@ public class GamePlayer : Singleton<GamePlayer>
 
     //상호작용 키
     bool isInteracable = false; //상호작용 가능 여부
+    INTERECTION interectObj;    //상호작용을 하는 물체
+
 
     [Header("연결 변수")]
     public Joystick joystick;              //Joystick을 추가할 변수
@@ -64,12 +82,12 @@ public class GamePlayer : Singleton<GamePlayer>
     {
 #if UNITY_EDITOR
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
-        if(Input.GetAxis("Horizontal") > 0)
+        if(Input.GetAxis("Horizontal") > 0  && !isDashing)
         {
             direction = DIRECTION.RIGHT;
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        else if(Input.GetAxis("Horizontal") < 0)
+        else if(Input.GetAxis("Horizontal") < 0 && !isDashing)
         {
             direction = DIRECTION.LEFT;
             transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -90,6 +108,16 @@ public class GamePlayer : Singleton<GamePlayer>
             FallingAttack();
         }
 
+        //공격키
+        if(Input.GetKeyDown(KeyCode.RightControl) && !isAttacking)
+        {
+            Attack(ATTACKKEY.RIGHT);
+        }
+        else if(Input.GetKeyDown(KeyCode.RightAlt) && !isAttacking)
+        {
+            Attack(ATTACKKEY.LEFT);
+        }
+
         //Dash 사용
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -102,6 +130,12 @@ public class GamePlayer : Singleton<GamePlayer>
             HealingPotion();
         }
 
+        //상호작용키
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            InteractionKey();
+        }
+
         //원점으로 돌아오게 하기(개발자 옵션)
         if(Input.GetKeyDown(KeyCode.R))
         {
@@ -111,12 +145,12 @@ public class GamePlayer : Singleton<GamePlayer>
         //조이 스틱을 이용했을 때
 
         //좌우
-        if(joystick.Horizontal > 0)
+        if(joystick.Horizontal > 0 && !isDashing)
         {
             direction = DIRECTION.RIGHT;
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        else if(joystick.Horizontal < 0)
+        else if(joystick.Horizontal < 0 && !isDashing)
         {
             direction = DIRECTION.LEFT;
             transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -165,16 +199,37 @@ public class GamePlayer : Singleton<GamePlayer>
         }
     }
 
-    public void Attack() //공격
+    public void Attack(ATTACKKEY atkKey) //공격
     {
-
+        if(atkKey ==ATTACKKEY.RIGHT)
+        {
+            Debug.Log("1번 무기 공격");
+        }
+        else if (atkKey == ATTACKKEY.LEFT)
+        {
+            Debug.Log("2번 무기 공격");
+        }
     }
 
     public void InteractionKey() // 상호작용키
     {
         if(isInteracable)
         {
-
+            if(interectObj == INTERECTION.WEAPON)
+            {
+                //UI 메니져로 무기창 띄우기 
+                Debug.Log("무기창과의 상호작용");
+            }
+            else if(interectObj == INTERECTION.NPC)
+            {
+                //NPC 창 띄우기 
+                Debug.Log("NPC과의 상호작용");
+            }
+            else if(interectObj == INTERECTION.CAPABILITYFRAGMENT)
+            {
+                //NPC 창 띄우기 
+                Debug.Log("능력치 파편과의 상호작용");
+            }
         }
     }
 
@@ -203,6 +258,28 @@ public class GamePlayer : Singleton<GamePlayer>
         }
     }
 
+    public void TakeDamage(int dmg)// 데미지 입는 부분
+    {
+        if(currentShield > 0)
+        {
+            currentShield -= dmg;
+            if(currentShield < 0)
+            {
+                currentHp -= currentShield;
+                currentShield = 0;
+            }
+        }
+        else
+        {
+            currentHp -= dmg;
+        }
+
+        if(currentHp <= 0)
+        {
+            Debug.Log("플레이어 사망");
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision) //닿자마자
     {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))
@@ -216,6 +293,10 @@ public class GamePlayer : Singleton<GamePlayer>
                 //이펙트 추가해서 공격 되도록 설계
             }
         }
+
+        //if(collision.gameObject.CompareTag("Monster") && isAttacking)
+        //{
+        //}
     }
 
     private void OnCollisionStay2D(Collision2D collision) //계속 닿고 있을 때 
@@ -250,9 +331,21 @@ public class GamePlayer : Singleton<GamePlayer>
             }
         }
 
-        if(collision.gameObject.CompareTag("Weapon") || collision.gameObject.CompareTag("Npc") || collision.gameObject.CompareTag("CapabilityFragment"))
+        if(collision.gameObject.CompareTag("Weapon") || collision.gameObject.CompareTag("Npc") || collision.gameObject.CompareTag("CapabilityFragment"))// 상호작용 가능 여부 
         {
-
+           isInteracable = true;
+            if(collision.gameObject.CompareTag("Weapon"))
+            {
+                interectObj = INTERECTION.WEAPON;
+            }
+            else if(collision.gameObject.CompareTag("Npc"))
+            {
+                interectObj=INTERECTION.NPC;
+            }
+            else if(collision.gameObject.CompareTag("CapabilityFragment"))
+            {
+                interectObj=INTERECTION.CAPABILITYFRAGMENT;
+            }
         }
     }
 
@@ -270,7 +363,7 @@ public class GamePlayer : Singleton<GamePlayer>
     void PassableGroundPass() //통과할 수 있는 땅을 통과
     {
         LayerMask mask = ~LayerMask.GetMask("Ignore Raycast");                                                  //특정 레이어 무시
-        playerRay = Physics2D.Raycast(transform.position - new Vector3(0, 0.2f, 0), Vector2.down, 2.6f, mask);
+        playerRay = Physics2D.Raycast(transform.position - new Vector3(0, 2.8f, 0), Vector2.up, 2.6f, mask);
 
         if(playerRay.collider != null && playerRay.collider.CompareTag("PassableGround"))                       //통과가능 하도록 설계
         {
@@ -295,16 +388,16 @@ public class GamePlayer : Singleton<GamePlayer>
         dashTrail.SetActive(true);
         if(dir == DIRECTION.RIGHT)
         {
-            rb.AddForce(Vector2.right * 500);
+            rb.AddForce(Vector2.right * 1000);
         }
         else
         {
-            rb.AddForce(Vector2.left * 500);
+            rb.AddForce(Vector2.left * 1000);
         }
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         rb.velocity = new Vector3(0, 0, 0);
         dashTrail.SetActive(false);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         isDashing = false;
     }
 }
