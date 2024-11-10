@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
+public enum DIRECTION
+{
+    RIGHT,
+    LEFT
+}
 public class GamePlayer : Singleton<GamePlayer>
 {
     [Header("플레이어 능력치")]
@@ -24,9 +29,14 @@ public class GamePlayer : Singleton<GamePlayer>
     //낙하 공격 관련 변수
     bool isFallingAttacking = false;  //낙하 공격 중인지 아닌지
 
-    //대쉬키 
+    //대쉬키
+    bool isDashing = false;                //대쉬 중인지 아닌지
+    DIRECTION direction = DIRECTION.RIGHT; //바라보고 있는 방향
 
 
+    //치유물약
+    int currentHealingPotion = 0; //지금까지 사용한 힐링포션 횟수
+    int maxHealingPotion = 1; //힐링 포션 최대 사용 횟수
 
     //PassableGround 관련 변수
     RaycastHit2D playerRay;  //레이
@@ -36,6 +46,9 @@ public class GamePlayer : Singleton<GamePlayer>
     //Ladder 관련 변수
     bool canLadder = false;  //사다리 타고 있는지 여부
 
+    //상호작용 키
+    bool isInteracable = false; //상호작용 가능 여부
+
     [Header("연결 변수")]
     public Joystick joystick;              //Joystick을 추가할 변수
     [SerializeField] Rigidbody2D rb;       //rigidbody을 받아올 변수
@@ -43,6 +56,7 @@ public class GamePlayer : Singleton<GamePlayer>
 
     [Header("이펙트 관련 변수")]
     [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
+    [SerializeField] GameObject dashTrail;   //Dash 트레일
 
     
 
@@ -50,6 +64,16 @@ public class GamePlayer : Singleton<GamePlayer>
     {
 #if UNITY_EDITOR
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
+        if(Input.GetAxis("Horizontal") > 0)
+        {
+            direction = DIRECTION.RIGHT;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if(Input.GetAxis("Horizontal") < 0)
+        {
+            direction = DIRECTION.LEFT;
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
         float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
         transform.position += new Vector3(moveX, 0, 0);
@@ -59,9 +83,23 @@ public class GamePlayer : Singleton<GamePlayer>
         {
             Jump();
         }
+
+        //낙하 공격
         if(Input.GetKeyDown(KeyCode.S))
         {
             FallingAttack();
+        }
+
+        //Dash 사용
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            DashKey();
+        }
+
+        //회복약 사용
+        if(Input.GetKeyDown(KeyCode.H))
+        {
+            HealingPotion();
         }
 
         //원점으로 돌아오게 하기(개발자 옵션)
@@ -73,6 +111,16 @@ public class GamePlayer : Singleton<GamePlayer>
         //조이 스틱을 이용했을 때
 
         //좌우
+        if(joystick.Horizontal > 0)
+        {
+            direction = DIRECTION.RIGHT;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if(joystick.Horizontal < 0)
+        {
+            direction = DIRECTION.LEFT;
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
         Vector3 moveDirection = new Vector3(joystick.Horizontal, 0, 0).normalized;
         transform.position += moveDirection * speed * Time.deltaTime;
 
@@ -85,6 +133,11 @@ public class GamePlayer : Singleton<GamePlayer>
         else if(joystick.Vertical <= 0.5f)
         {
             canUpKey = true;  
+        }
+
+        if(joystick.Vertical < -0.5f)
+        {
+            FallingAttack();
         }
 
 
@@ -104,32 +157,50 @@ public class GamePlayer : Singleton<GamePlayer>
 
     void FallingAttack() // 낙하 공격
     {
-        if(jumpCount >= 1 && !isFallingAttacking)
+        if(jumpCount >= 1 && !isFallingAttacking && !canLadder)
         {
             isFallingAttacking = true;
             rb.gravityScale = 4f;
             upDownTrail.SetActive(true);
         }
     }
-    
-    void Attack() //공격
+
+    public void Attack() //공격
     {
 
     }
 
-    void InteractionKey() // 상호작용키
+    public void InteractionKey() // 상호작용키
     {
+        if(isInteracable)
+        {
 
+        }
     }
 
-    void DashKey()// 대쉬키
+    public void DashKey()// 대쉬키
     {
-
+        if(!isDashing)
+        {
+            StartCoroutine(Dash(direction));
+        }
     }
 
-    void HealingPotion() //치유물약
+    public void HealingPotion() //치유물약
     {
+        if(currentHealingPotion < maxHealingPotion)
+        {
+            currentHp += maxHp / 2;
+            if(currentHp > maxHp)
+            {
+                currentHp = maxHp;
+            }
 
+            currentHealingPotion++;
+
+            Debug.Log("회복약을 사용했습니다. ");
+
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) //닿자마자
@@ -178,9 +249,14 @@ public class GamePlayer : Singleton<GamePlayer>
                 transform.position -= new Vector3(0, 0.5f, 0);
             }
         }
+
+        if(collision.gameObject.CompareTag("Weapon") || collision.gameObject.CompareTag("Npc") || collision.gameObject.CompareTag("CapabilityFragment"))
+        {
+
+        }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)      //tirgger 밖으로 나갔을 때
     {
         if(collision.gameObject.CompareTag("Ladder")) // 사다리
         {
@@ -211,6 +287,25 @@ public class GamePlayer : Singleton<GamePlayer>
                 ground = null;
             }
         }
+    }
+
+    IEnumerator Dash(DIRECTION dir)
+    {
+        isDashing = true;
+        dashTrail.SetActive(true);
+        if(dir == DIRECTION.RIGHT)
+        {
+            rb.AddForce(Vector2.right * 500);
+        }
+        else
+        {
+            rb.AddForce(Vector2.left * 500);
+        }
+        yield return new WaitForSeconds(1);
+        rb.velocity = new Vector3(0, 0, 0);
+        dashTrail.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        isDashing = false;
     }
 }
 
