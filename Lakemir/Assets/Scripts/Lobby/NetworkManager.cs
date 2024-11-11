@@ -27,6 +27,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Text RoomInfoText;
     public Text[] ChatText;
     public InputField ChatInput;
+    public Button[] CellBtnPlayer; // 새로 추가한 버튼 배열
+    public Text PlayerInfo;    
 
     [Header("ETC")]
     public Text StatusText;
@@ -147,12 +149,35 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     void RoomRenewal()
+{
+    // 현재 방의 플레이어 목록 가져오기
+    Player[] playerList = PhotonNetwork.PlayerList;
+    int currentPlayerCount = playerList.Length; // 현재 인원 수
+    int maxPlayerCount = PhotonNetwork.CurrentRoom.MaxPlayers; // 최대 인원 수
+
+    for (int i = 0; i < CellBtnPlayer.Length; i++)
     {
-        ListText.text = "";
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            ListText.text += PhotonNetwork.PlayerList[i].NickName + ((i + 1 == PhotonNetwork.PlayerList.Length) ? "" : ", ");
-        RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + PhotonNetwork.CurrentRoom.PlayerCount + "명 / " + PhotonNetwork.CurrentRoom.MaxPlayers + "최대";
+        if (i < playerList.Length)
+        {
+            CellBtnPlayer[i].interactable = true;
+            CellBtnPlayer[i].transform.GetChild(0).GetComponent<Text>().text = playerList[i].NickName;
+            CellBtnPlayer[i].transform.GetChild(1).GetComponent<Text>().text = "ID: " + playerList[i].UserId;
+        }
+        else
+        {
+            CellBtnPlayer[i].interactable = false;
+            CellBtnPlayer[i].transform.GetChild(0).GetComponent<Text>().text = "";
+            CellBtnPlayer[i].transform.GetChild(1).GetComponent<Text>().text = "";
+        }
     }
+    RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + currentPlayerCount + "명 / " + maxPlayerCount + "최대";
+    PlayerInfo.text = currentPlayerCount + "/" + maxPlayerCount; // PlayerInfo에 현재 인원 / 최대 인원 표시
+
+    // 방 정보 업데이트
+    RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + currentPlayerCount + "명 / " + maxPlayerCount + "최대";
+}
+
+
     #endregion
 
 
