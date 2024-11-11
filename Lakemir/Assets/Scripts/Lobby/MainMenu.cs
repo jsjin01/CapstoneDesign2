@@ -18,6 +18,9 @@ public class MainMenu : MonoBehaviour
     [Header("SinglePlayPanel")]
     public GameObject SinglePlayPannel;
 
+    [Header("LobbyOptionPanel")]
+    public GameObject LobbyOptionPannel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +50,20 @@ public class MainMenu : MonoBehaviour
     public void OnClickOption()
     {
         Debug.Log("옵션 버튼 클릭됨");
+        LobbyOptionPannel.SetActive(true);
+    }
+
+    public void OnClickOptionQuit()
+    {
+        Debug.Log("옵션 나가기 버튼 클릭됨");
+        LobbyOptionPannel.SetActive(false);
+    }
+
+    public void OnClickQuitToLobby()
+    {
+        Debug.Log("로비로 가기버튼 클릭됨");
+        SinglePlayPannel.SetActive(false);
+        StartScreanPanel.SetActive(true);
     }
 
     public void OnClickQuit()
