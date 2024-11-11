@@ -21,6 +21,18 @@ public class MainMenu : MonoBehaviour
     [Header("LobbyOptionPanel")]
     public GameObject LobbyOptionPannel;
 
+    [Header("MultiPlayPanel")]
+    public GameObject MultiPlayInputPanel;
+
+     [Header("NameInputPanel")]
+    public GameObject NameInputPanel;
+
+      [Header("MakeRoomPanel")]
+    public GameObject MakeRoomPanel;
+
+    public GameObject MultiSelectPanel;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +76,48 @@ public class MainMenu : MonoBehaviour
         Debug.Log("로비로 가기버튼 클릭됨");
         SinglePlayPannel.SetActive(false);
         StartScreanPanel.SetActive(true);
+    }
+
+    public void OnClickMultiPlay()
+    {
+        Debug.Log("멀티플레이 버튼 클릭됨");
+        NameInputPanel.SetActive(true);
+    }
+
+    public void OnClickNameInput()
+    {
+        Debug.Log("확인 버튼 클릭됨");
+        NameInputPanel.SetActive(false);
+        SelectPlayPanel.SetActive(false);
+        MultiPlayInputPanel.SetActive(true);
+    }
+
+    public void OnClickMakeRoom()
+    {
+        Debug.Log("방만들기 버튼 클릭됨");
+        MakeRoomPanel.SetActive(true);
+        
+    }
+
+    public void OnClickMakeRoomConfirm()
+    {
+        Debug.Log("방만들기 확인 버튼 클릭됨");
+        MakeRoomPanel.SetActive(false);
+        
+    }
+
+    public void OnClickMultiStart()
+    {
+        Debug.Log("멀티 시작하기 버튼 클릭됨");
+        MultiSelectPanel.SetActive(true);
+        
+    }
+
+    public void OnClickMultiSelectQuit()
+    {
+        Debug.Log("멀티 나가기 버튼 클릭됨");
+        MultiSelectPanel.SetActive(false);
+        
     }
 
     public void OnClickQuit()

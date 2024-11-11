@@ -10,6 +10,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     [Header("DisconnectPanel")]
     public InputField NickNameInput;
+    public GameObject StartPanel;
 
     [Header("LobbyPanel")]
     public GameObject LobbyPanel;
@@ -109,6 +110,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         LobbyPanel.SetActive(false);
         RoomPanel.SetActive(false);
+        StartPanel.SetActive(true);
     }
     #endregion
 

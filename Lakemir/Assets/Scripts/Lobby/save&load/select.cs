@@ -61,6 +61,7 @@ public class Select : MonoBehaviour
             DataManager.instance.nowPlayer.name = newPlayerName.text; // 입력한 이름을 복사해옴
             DataManager.instance.SaveData(); // 현재 정보를 저장함.
         }
+        Debug.Log("게임시작");
         SceneManager.LoadScene(1); // 게임씬으로 이동
     }
 }
