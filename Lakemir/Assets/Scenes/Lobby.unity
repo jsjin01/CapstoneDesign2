@@ -2171,7 +2171,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1002726832}
         m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
         m_MethodName: MyListClick
         m_Mode: 3
@@ -5743,7 +5743,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1002726832}
         m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
         m_MethodName: MyListClick
         m_Mode: 3
@@ -6742,7 +6742,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1002726832}
         m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
         m_MethodName: MyListClick
         m_Mode: 3
@@ -10538,7 +10538,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1002726832}
         m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
         m_MethodName: MyListClick
         m_Mode: 3
