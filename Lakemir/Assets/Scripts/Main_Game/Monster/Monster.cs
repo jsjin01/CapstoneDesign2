@@ -1,51 +1,51 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class Monster : MonoBehaviour //Ãß»ó Å¬·¡½º ¼±¾ğ
+public abstract class Monster : MonoBehaviour //ì¶”ìƒ í´ë˜ìŠ¤ ì„ ì–¸
 {
-    public int maxHp;                 //Max HpÀÏ¶§
-    public int currentHp;             //ÇöÀç HP
-    public int attackPower;           //°ø°İ·Â 
-    public int defensivePower;        //¹æ¾î·Â
-    public float speed;               //ÀÌµ¿¼Óµµ
+    public int maxHp;                 //Max Hpì¼ë•Œ
+    public int currentHp;             //í˜„ì¬ HP
+    public int attackPower;           //ê³µê²©ë ¥ 
+    public int defensivePower;        //ë°©ì–´ë ¥
+    public float speed;               //ì´ë™ì†ë„
 
 
-    [SerializeField] protected Transform target;      //°¡Àå °¡±î¿î ÇÃ·¹ÀÌ¾î 
-    [SerializeField] protected float detectionRange = 5f;       //ÀÎ½Ä ¹üÀ§
+    [SerializeField] protected Transform target;      //ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ 
+    [SerializeField] protected float detectionRange = 5f;       //ì¸ì‹ ë²”ìœ„
 
-    virtual protected void Attack()//°ø°İ
+    virtual protected void Attack()//ê³µê²©
     {
 
     }
     
-    virtual protected void Movement()//¿òÁ÷ÀÓ
+    virtual protected void Movement()//ì›€ì§ì„
     {
 
     }
 
-    public void TakeDamage(int dmg)//µ¥¹ÌÁö ¹Ş´Â ºÎºĞ
+    public void TakeDamage(int dmg)//ë°ë¯¸ì§€ ë°›ëŠ” ë¶€ë¶„
     {
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
         if (currentHp < 0)
         {
-            Debug.Log("¸ó½ºÅÍ Á×À½");
+            Debug.Log("ëª¬ìŠ¤í„° ì£½ìŒ");
         }
     }
 
-    protected void FindClosestPlayer() //°¡Àå °¡±î¿î ÇÃ·¹ÀÌ¾î Ã£´Â ÇÔ¼ö 
+    protected void FindClosestPlayer() //ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ ì°¾ëŠ” í•¨ìˆ˜ 
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); // Player ÅÂ±×°¡ ºÙÀº ¸ğµç ¿ÀºêÁ§Æ® Ã£±â
-        float closestDistance = Mathf.Infinity; // ÃÊ±â °ªÀ¸·Î ¸Å¿ì Å« °ª ¼³Á¤
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); // Player íƒœê·¸ê°€ ë¶™ì€ ëª¨ë“  ì˜¤ë¸Œì íŠ¸ ì°¾ê¸°
+        float closestDistance = Mathf.Infinity; // ì´ˆê¸° ê°’ìœ¼ë¡œ ë§¤ìš° í° ê°’ ì„¤ì •
         Transform closestPlayer = null;
 
-        // ¸ğµç Player ¿ÀºêÁ§Æ®¿¡ ´ëÇØ °Å¸® °è»ê
+        // ëª¨ë“  Player ì˜¤ë¸Œì íŠ¸ì— ëŒ€í•´ ê±°ë¦¬ ê³„ì‚°
         foreach(GameObject player in players)
         {
             float distance = Vector2.Distance(transform.position, player.transform.position);
 
-            // ÇöÀç °Å¸®º¸´Ù °¡±î¿î °Å¸®¸¦ °¡Áø ¿ÀºêÁ§Æ®°¡ ÀÖÀ¸¸é °»½Å
+            // í˜„ì¬ ê±°ë¦¬ë³´ë‹¤ ê°€ê¹Œìš´ ê±°ë¦¬ë¥¼ ê°€ì§„ ì˜¤ë¸Œì íŠ¸ê°€ ìˆìœ¼ë©´ ê°±ì‹ 
             if(distance < closestDistance)
             {
                 closestDistance = distance;
@@ -56,13 +56,13 @@ public abstract class Monster : MonoBehaviour //Ãß»ó Å¬·¡½º ¼±¾ğ
         target = closestPlayer;
     }
 
-    protected void ApproachTarget()//´Ù°¡°¡´Â ÇÔ¼ö 
+    protected void ApproachTarget()//ë‹¤ê°€ê°€ëŠ” í•¨ìˆ˜ 
     {
         float distanceToTarget = Vector2.Distance(transform.position, target.position);
 
         if(distanceToTarget < detectionRange)
         {
-            // Å¸°ÙÀÇ À§Ä¡·Î ÀÌµ¿ (ÁöÁ¤µÈ ¼Óµµ·Î)
+            // íƒ€ê²Ÿì˜ ìœ„ì¹˜ë¡œ ì´ë™ (ì§€ì •ëœ ì†ë„ë¡œ)
             transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), new Vector2(target.position.x, transform.position.y), speed * Time.deltaTime);
         }
     }
