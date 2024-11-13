@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
 
-public class Select : MonoBehaviour
+public class SingleSelect : MonoBehaviour
 {
     public GameObject creat;	// 플레이어 닉네임 입력UI
     public Text[] slotText;		// 슬롯버튼 아래에 존재하는 Text들
@@ -62,6 +62,6 @@ public class Select : MonoBehaviour
             DataManager.instance.SaveData(); // 현재 정보를 저장함.
         }
         Debug.Log("게임시작");
-        SceneManager.LoadScene(1); // 게임씬으로 이동
+        SceneManager.LoadScene(2); // 게임씬으로 이동
     }
 }

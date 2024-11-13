@@ -1370,7 +1370,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1126459826}
-        m_TargetAssemblyTypeName: Select, Assembly-CSharp
+        m_TargetAssemblyTypeName: MultiSelect, Assembly-CSharp
         m_MethodName: Slot
         m_Mode: 3
         m_Arguments:
@@ -6541,6 +6541,7 @@ MonoBehaviour:
   PlayerInfo: {fileID: 1303072882}
   StatusText: {fileID: 927266938}
   PV: {fileID: 1002726833}
+  startButton: {fileID: 16585612}
 --- !u!114 &1002726833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6876,7 +6877,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1126459826}
-        m_TargetAssemblyTypeName: Select, Assembly-CSharp
+        m_TargetAssemblyTypeName: MultiSelect, Assembly-CSharp
         m_MethodName: Slot
         m_Mode: 3
         m_Arguments:
@@ -7932,7 +7933,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1126459822}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb043429b3d634f759fd64c7fc8da6a9, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ea08d1a9b7fa44789525950fd0c708e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   creat: {fileID: 1646055735}
@@ -14604,7 +14605,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1126459826}
-        m_TargetAssemblyTypeName: Select, Assembly-CSharp
+        m_TargetAssemblyTypeName: MultiSelect, Assembly-CSharp
         m_MethodName: Slot
         m_Mode: 3
         m_Arguments:

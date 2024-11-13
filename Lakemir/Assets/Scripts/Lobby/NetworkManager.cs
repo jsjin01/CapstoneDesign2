@@ -34,6 +34,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Text StatusText;
     public PhotonView PV;
 
+    [Header("Game Start Button")]
+    public Button startButton; // 시작 버튼
+
+    void Start()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true; // 씬 자동 동기화 설정
+        startButton.gameObject.SetActive(false); // 기본적으로 버튼을 비활성화
+    }
+
+   
+    void OnStartGame()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("GameScene"); // 모든 플레이어를 "GameScene"으로 이동
+        }
+    }
+
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, maxPage, multiple;
 
@@ -126,6 +144,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        // 방에 입장한 후 마스터 클라이언트인지 확인
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startButton.gameObject.SetActive(true); // 마스터 클라이언트만 시작 버튼을 활성화
+            //startButton.onClick.AddListener(OnStartGame);
+        }
+
         RoomPanel.SetActive(true);
         RoomRenewal();
         ChatInput.text = "";

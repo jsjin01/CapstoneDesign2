@@ -1716,7 +1716,7 @@ MonoBehaviour:
   fatalHitProbability: 0
   fatalHitDamage: 0
   damage: 0
-  joystick: {fileID: 0}
+  joystick: {fileID: 7197094442781544630, guid: 0a4c3522aef094072aabf1243ed3465f, type: 3}
   rb: {fileID: 4844329930212066215}
   col: {fileID: 1383488664972776487}
   upDownTrail: {fileID: 2932415043082891110}
