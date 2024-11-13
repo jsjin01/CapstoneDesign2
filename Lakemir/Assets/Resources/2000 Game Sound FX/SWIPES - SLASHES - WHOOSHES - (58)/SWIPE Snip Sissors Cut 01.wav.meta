@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: 526ea0d0c3a184c4cb80c70e6b4f78f5
+labels:
+- Audio
+- Sissors
+- Snip
+- Sound
+- Swipe
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 6
+  defaultSettings:
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 1
+  preloadAudioData: 1
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

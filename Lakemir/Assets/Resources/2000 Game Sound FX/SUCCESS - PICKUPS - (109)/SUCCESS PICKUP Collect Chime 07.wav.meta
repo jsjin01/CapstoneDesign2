@@ -1,0 +1,30 @@
+fileFormatVersion: 2
+guid: 9a9ed6240079eb04ea424ff7766d91a9
+labels:
+- Audio
+- Chime
+- Collect
+- Pickup
+- Sound
+- Success
+- Win
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 6
+  defaultSettings:
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 1
+  preloadAudioData: 1
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

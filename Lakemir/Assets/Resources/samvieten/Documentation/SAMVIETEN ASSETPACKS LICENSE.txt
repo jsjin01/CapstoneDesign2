@@ -1,0 +1,45 @@
+﻿SAMVIETEN ASSETPACKS LICENSE v. 1.3
+
+
+**You are allowed to do the following**
+- if the assets were purchased by yourself 
+- and you are the eligible owner of the purchase.
+
+
+**You are allowed to**
+Use the assets in non-commercial and commercial project as stated:
+– Distribute the assets inside an artwork by yourself
+– Distribute the assets inside a game by yourself
+– Distribute the assets inside creative work as long as the “you are not allowed to” part is not violated
+
+
+**You are not allowed to**
+– Resell the assets in any way: Edited, color-changed e.g.
+– To claim that the assets were made by yourself
+– Package the assets so that a third party could easily extract them from your project
+- Use the asset inside any AI Tool
+
+
+**You have to**
+– Make sure the assets are protected inside your work (wrapping / exporting the game)
+– Distribution is given to the creator of the assets
+
+
+**AI usage**
+- the integration, upload & usage within any AI Tool is forbidden
+- Upload to any platform that uses AI to process image data is forbidden
+- Uploading original Art and graphics to any AI platform is considered as art theft
+
+
+For further questions you can reply directly via itch.io to the assets page.
+
+
+Last updated 02.09.2024
+
+
+
+Distribution / Creator of assets
+
+
+sam vieten
+https://samvieten.itch.io/
