@@ -6,30 +6,37 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Photon.Pun;
 
-namespace Multiplayer
-{
-public enum DIRECTION
+
+public enum MULTI_DIRECTION
 {
     RIGHT,
     LEFT
 }
-public enum INTERECTION
+public enum MULTI_INTERECTION
 {
     WEAPON,
     NPC,
     CAPABILITYFRAGMENT
 }
 
-public enum ATTACKKEY
+public enum MULTI_ATTACKKEY
 {
     RIGHT,
     LEFT
 }
-public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
+public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 {
+     private PhotonView photonView;
+
+    void Start()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
+
     // IPunObservable 인터페이스 구현
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        
         if (stream.IsWriting)
         {
             // 네트워크를 통해 보내고자 하는 데이터 전송
@@ -70,7 +77,7 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     //대쉬키
     bool isDashing = false;                //대쉬 중인지 아닌지
-    DIRECTION direction = DIRECTION.RIGHT; //바라보고 있는 방향
+    MULTI_DIRECTION direction = MULTI_DIRECTION.RIGHT; //바라보고 있는 방향
 
     //치유물약
     int currentHealingPotion = 0; //지금까지 사용한 힐링포션 횟수
@@ -86,7 +93,7 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     //상호작용 키
     bool isInteracable = false; //상호작용 가능 여부
-    INTERECTION interectObj;    //상호작용을 하는 물체
+    MULTI_INTERECTION interectObj;    //상호작용을 하는 물체
 
 
     [Header("연결 변수")]
@@ -102,19 +109,22 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     void Update()
     {
-    #if UNITY_EDITOR
+        if (photonView.IsMine)
+        {
+             #if UNITY_EDITOR
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
         if(Input.GetAxis("Horizontal") > 0 && !isDashing)
         {
-            direction = DIRECTION.RIGHT;
+            direction = MULTI_DIRECTION.RIGHT;
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else if(Input.GetAxis("Horizontal") < 0 && !isDashing)
         {
-            direction = DIRECTION.LEFT;
+            direction = MULTI_DIRECTION.LEFT;
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
         float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+        
 
         transform.position += new Vector3(moveX, 0, 0);
 
@@ -133,11 +143,11 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
         //공격키
         if(Input.GetKeyDown(KeyCode.RightControl) && !isAttacking)
         {
-            Attack(ATTACKKEY.RIGHT);
+            Attack(MULTI_ATTACKKEY.RIGHT);
         }
         else if(Input.GetKeyDown(KeyCode.RightAlt) && !isAttacking)
         {
-            Attack(ATTACKKEY.LEFT);
+            Attack(MULTI_ATTACKKEY.LEFT);
         }
 
         //Dash 사용
@@ -169,12 +179,12 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
         //좌우
         if(joystick.Horizontal > 0 && !isDashing)
         {
-            direction = DIRECTION.RIGHT;
+            direction = MULTI_DIRECTION.RIGHT;
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else if(joystick.Horizontal < 0 && !isDashing)
         {
-            direction = DIRECTION.LEFT;
+            direction = MULTI_DIRECTION.LEFT;
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
         Vector3 moveDirection = new Vector3(joystick.Horizontal, 0, 0).normalized;
@@ -199,6 +209,10 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
 
 
         PassableGroundPass();//통과 가능한지 불가능한지 판별
+    
+
+        }
+        
     }
 
     void Jump()// 점프 
@@ -221,13 +235,13 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
     }
 
-    public void Attack(ATTACKKEY atkKey) //공격
+    public void Attack(MULTI_ATTACKKEY atkKey) //공격
     {
-        if(atkKey == ATTACKKEY.RIGHT)
+        if(atkKey == MULTI_ATTACKKEY.RIGHT)
         {
             Debug.Log("1번 무기 공격");
         }
-        else if(atkKey == ATTACKKEY.LEFT)
+        else if(atkKey == MULTI_ATTACKKEY.LEFT)
         {
             Debug.Log("2번 무기 공격");
         }
@@ -237,17 +251,17 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(isInteracable)
         {
-            if(interectObj == INTERECTION.WEAPON)
+            if(interectObj == MULTI_INTERECTION.WEAPON)
             {
                 //UI 메니져로 무기창 띄우기 
                 Debug.Log("무기창과의 상호작용");
             }
-            else if(interectObj == INTERECTION.NPC)
+            else if(interectObj == MULTI_INTERECTION.NPC)
             {
                 //NPC 창 띄우기 
                 Debug.Log("NPC과의 상호작용");
             }
-            else if(interectObj == INTERECTION.CAPABILITYFRAGMENT)
+            else if(interectObj == MULTI_INTERECTION.CAPABILITYFRAGMENT)
             {
                 //NPC 창 띄우기 
                 Debug.Log("능력치 파편과의 상호작용");
@@ -358,15 +372,15 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
             isInteracable = true;
             if(collision.gameObject.CompareTag("Weapon"))
             {
-                interectObj = INTERECTION.WEAPON;
+                interectObj = MULTI_INTERECTION.WEAPON;
             }
             else if(collision.gameObject.CompareTag("Npc"))
             {
-                interectObj = INTERECTION.NPC;
+                interectObj = MULTI_INTERECTION.NPC;
             }
             else if(collision.gameObject.CompareTag("CapabilityFragment"))
             {
-                interectObj = INTERECTION.CAPABILITYFRAGMENT;
+                interectObj = MULTI_INTERECTION.CAPABILITYFRAGMENT;
             }
         }
     }
@@ -404,11 +418,11 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
     }
 
-    IEnumerator Dash(DIRECTION dir)
+    IEnumerator Dash(MULTI_DIRECTION dir)
     {
         isDashing = true;
         dashTrail.SetActive(true);
-        if(dir == DIRECTION.RIGHT)
+        if(dir == MULTI_DIRECTION.RIGHT)
         {
             rb.AddForce(Vector2.right * 1000);
         }
@@ -423,7 +437,7 @@ public class MultiGamePlayer : Singleton<GamePlayer> ,IPunObservable
         isDashing = false;
     }
 }
-}
+
 
 
 
