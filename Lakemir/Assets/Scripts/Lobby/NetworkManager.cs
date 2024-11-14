@@ -36,7 +36,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [Header("Game Start Button")]
     public Button startButton; // 시작 버튼
+    public Button readyButton; // 새로운 준비 버튼
+    private bool isReady = false; // 준비 상태 확인 변수
+    private Dictionary<Player, bool> playerReadyStatus = new Dictionary<Player, bool>(); // 플레이어 준비 상태 관리
 
+    
+    
     void Start()
     {
         PhotonNetwork.AutomaticallySyncScene = true; // 씬 자동 동기화 설정
@@ -147,8 +152,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // 방에 입장한 후 마스터 클라이언트인지 확인
         if (PhotonNetwork.IsMasterClient)
         {
-            startButton.gameObject.SetActive(true); // 마스터 클라이언트만 시작 버튼을 활성화
+            startButton.gameObject.SetActive(true); 
+            readyButton.gameObject.SetActive(false);// 마스터 클라이언트만 시작 버튼을 활성화
+            PV.RPC("UpdateReadyStatus", RpcTarget.All, PhotonNetwork.LocalPlayer, true); // 마스터 클라이언트는 항상 준비 상태
             //startButton.onClick.AddListener(OnStartGame);
+        }
+        else
+        {
+            readyButton.gameObject.SetActive(true); // 다른 플레이어는 준비 버튼을 활성화
+            readyButton.onClick.AddListener(OnReady); // 준비 버튼 클릭 이벤트 추가
         }
 
         RoomPanel.SetActive(true);
@@ -174,7 +186,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     void RoomRenewal()
-{
+    {   
     // 현재 방의 플레이어 목록 가져오기
     Player[] playerList = PhotonNetwork.PlayerList;
     int currentPlayerCount = playerList.Length; // 현재 인원 수
@@ -201,7 +213,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // 방 정보 업데이트
     RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + currentPlayerCount + "명 / " + maxPlayerCount + "최대";
 }
-
+void OnReady()
+{
+    isReady = !isReady; // 준비 상태 토글
+    readyButton.GetComponentInChildren<Text>().text = isReady ? "준비 취소" : "준비"; // 버튼 텍스트 변경
+    PV.RPC("UpdateReadyStatus", RpcTarget.All, PhotonNetwork.LocalPlayer, isReady);
+}
 
     #endregion
 
@@ -214,6 +231,42 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC] // RPC는 플레이어가 속해있는 방 모든 인원에게 전달한다
+    
+    void UpdateReadyStatus(Player player, bool readyStatus)
+    {
+        if (playerReadyStatus.ContainsKey(player))
+        playerReadyStatus[player] = readyStatus;
+    else
+        playerReadyStatus.Add(player, readyStatus);
+
+    // 준비 상태에 따라 CellBtnPlayer의 테두리 색상을 변경
+    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+    {
+        if (PhotonNetwork.PlayerList[i] == player)
+        {
+            Color readyColor = new Color(0, 1, 0, 1); // 녹색 테두리 (준비 완료)
+            Color notReadyColor = new Color(1, 1, 1, 1); // 흰색 테두리 (준비 취소)
+            CellBtnPlayer[i].GetComponent<Image>().color = readyStatus ? readyColor : notReadyColor;
+            break;
+        }
+    }
+    // 여기에서 각 플레이어의 준비 상태를 확인하거나 준비한 인원을 체크할 수 있습니다.
+    // 예: 모든 플레이어가 준비되었는지 확인하고 게임을 시작
+    // 모든 플레이어가 준비 상태인지 확인
+    if (PhotonNetwork.IsMasterClient)
+    {
+        bool allReady = true;
+        foreach (var status in playerReadyStatus.Values)
+        {
+            if (!status)
+            {
+                allReady = false;
+                break;
+            }
+        }
+        startButton.interactable = allReady; // 모든 플레이어가 준비 상태일 때만 시작 버튼 활성화
+    }
+    }
     void ChatRPC(string msg)
     {
         bool isInput = false;
