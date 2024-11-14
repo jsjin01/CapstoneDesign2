@@ -177,6 +177,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         RoomRenewal();
         ChatRPC("<color=yellow>" + newPlayer.NickName + "님이 참가하셨습니다</color>");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startButton.interactable = false;
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -235,9 +239,9 @@ void OnReady()
     void UpdateReadyStatus(Player player, bool readyStatus)
     {
         if (playerReadyStatus.ContainsKey(player))
-        playerReadyStatus[player] = readyStatus;
-    else
-        playerReadyStatus.Add(player, readyStatus);
+            playerReadyStatus[player] = readyStatus;
+        else
+            playerReadyStatus.Add(player, readyStatus);
 
     // 준비 상태에 따라 CellBtnPlayer의 테두리 색상을 변경
     for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
