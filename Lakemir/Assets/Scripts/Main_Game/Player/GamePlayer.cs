@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Photon.Pun;
+using UnityEngine.InputSystem;
 
 
 public enum DIRECTION
@@ -92,6 +93,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     public Joystick joystick;              //Joystick을 추가할 변수
     [SerializeField] Rigidbody2D rb;       //rigidbody을 받아올 변수
     [SerializeField] Collider2D col;       //Collider을 받아올 변수
+    [SerializeField] Animator anit;        //애니메이터를 받아올 변수
 
     [Header("이펙트 관련 변수")]
     [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
@@ -103,20 +105,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
 #if UNITY_EDITOR
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
-        if(Input.GetAxis("Horizontal") > 0 && !isDashing)
-        {
-            direction = DIRECTION.RIGHT;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if(Input.GetAxis("Horizontal") < 0 && !isDashing)
-        {
-            direction = DIRECTION.LEFT;
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-
-        transform.position += new Vector3(moveX, 0, 0);
-
+        Moving(Input.GetAxis("Horizontal"));
         //점프 
         if(Input.GetKeyDown(KeyCode.Space))
         {
@@ -166,18 +155,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         //조이 스틱을 이용했을 때
 
         //좌우
-        if(joystick.Horizontal > 0 && !isDashing)
-        {
-            direction = DIRECTION.RIGHT;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if(joystick.Horizontal < 0 && !isDashing)
-        {
-            direction = DIRECTION.LEFT;
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        Vector3 moveDirection = new Vector3(joystick.Horizontal, 0, 0).normalized;
-        transform.position += moveDirection * speed * Time.deltaTime;
+        Moving(joystick.Horizontal);
 
         //상하
         if(joystick.Vertical > 0.5f && canUpKey)
@@ -195,15 +173,38 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             FallingAttack();
         }
 
-
-
         PassableGroundPass();//통과 가능한지 불가능한지 판별
+
+        if(joystick.Horizontal == 0 && Input.GetAxis("Horizontal") == 0)
+        {
+            anit.SetBool("ismoving", false);
+        }
+    }
+    void Moving(float x)//움직임 관련 함수
+    {
+        anit.SetBool("ismoving", true);
+        //방향
+        if(x > 0 && !isDashing)
+        {
+            direction = DIRECTION.RIGHT;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if(x < 0 && !isDashing)
+        {
+            direction = DIRECTION.LEFT;
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+
+        //이동거리
+        Vector3 moveDirection = new Vector3(x, 0, 0).normalized;
+        transform.position += moveDirection * speed * Time.deltaTime;
     }
 
     void Jump()// 점프 
     {
         if(jumpCount < maxjump)
         {
+            anit.SetTrigger("isJumping");
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
             rb.AddForce(Vector2.up * 400);
             jumpCount++;
@@ -305,9 +306,16 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))
         {
+            if(jumpCount != 0 && !isFallingAttacking)
+            {
+                anit.SetTrigger("jumpFall");
+            }
+
             jumpCount = 0;  //점프 횟수 초기화
             if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
             {
+                anit.Play("GroundSlam", -1, 0.3f);
+                //anit.SetTrigger("fallingAttack");
                 rb.gravityScale = 1;
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
@@ -405,6 +413,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     IEnumerator Dash(DIRECTION dir)
     {
+        anit.SetTrigger("isDashing");
         isDashing = true;
         dashTrail.SetActive(true);
         if(dir == DIRECTION.RIGHT)
@@ -415,7 +424,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             rb.AddForce(Vector2.left * 1000);
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.4f);
         rb.velocity = new Vector3(0, 0, 0);
         dashTrail.SetActive(false);
         yield return new WaitForSeconds(0.2f);
