@@ -100,6 +100,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     public Joystick joystick;              //Joystick을 추가할 변수
     [SerializeField] Rigidbody2D rb;       //rigidbody을 받아올 변수
     [SerializeField] Collider2D col;       //Collider을 받아올 변수
+    [SerializeField] Animator anit;        //애니메이터를 받아올 변수
 
     [Header("이펙트 관련 변수")]
     [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
@@ -209,16 +210,42 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
 
         PassableGroundPass();//통과 가능한지 불가능한지 판별
+
+        if(joystick.Horizontal == 0 && Input.GetAxis("Horizontal") == 0)
+        {
+            anit.SetBool("ismoving", false);
+        }
     
 
         }
         
     }
+    void Moving(float x)//움직임 관련 함수
+    {
+        anit.SetBool("ismoving", true);
+        //방향
+        if(x > 0 && !isDashing)
+        {
+            direction = MULTI_DIRECTION.RIGHT;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if(x < 0 && !isDashing)
+        {
+            direction = MULTI_DIRECTION.LEFT;
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+
+        //이동거리
+        Vector3 moveDirection = new Vector3(x, 0, 0).normalized;
+        transform.position += moveDirection * speed * Time.deltaTime;
+    }
+
 
     void Jump()// 점프 
     {
         if(jumpCount < maxjump)
         {
+            anit.SetTrigger("isJumping");
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
             rb.AddForce(Vector2.up * 400);
             jumpCount++;
@@ -320,9 +347,16 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))
         {
+            if(jumpCount != 0 && !isFallingAttacking)
+            {
+                anit.SetTrigger("jumpFall");
+            }
+
             jumpCount = 0;  //점프 횟수 초기화
             if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
             {
+                anit.Play("GroundSlam", -1, 0.3f);
+                //anit.SetTrigger("fallingAttack");
                 rb.gravityScale = 1;
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
@@ -420,6 +454,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
     IEnumerator Dash(MULTI_DIRECTION dir)
     {
+        anit.SetTrigger("isDashing");
         isDashing = true;
         dashTrail.SetActive(true);
         if(dir == MULTI_DIRECTION.RIGHT)
