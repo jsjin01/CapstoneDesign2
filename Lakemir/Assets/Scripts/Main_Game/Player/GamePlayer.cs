@@ -83,6 +83,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     //Ladder 관련 변수
     bool canLadder = false;  //사다리 타고 있는지 여부
+    bool handLadder =false;  //사다리를 잡았는지 여부
 
     //상호작용 키
     bool isInteracable = false; //상호작용 가능 여부
@@ -323,9 +324,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             }
         }
 
-        //if(collision.gameObject.CompareTag("Monster") && isAttacking)
-        //{
-        //}
     }
 
     private void OnCollisionStay2D(Collision2D collision) //계속 닿고 있을 때 
@@ -341,22 +339,41 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ladder")) // 사다리
         {
-            if(canLadder) //사다리와 상호작용 중
+            if(canLadder && !handLadder) //사다리와 상호작용 중
             {
                 rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
                 rb.gravityScale = 0;                                //중력 무시
                 jumpCount = 2;
+                handLadder = true;
             }
 
-            if((joystick.Vertical > 0.5f) || Input.GetKey(KeyCode.W))
+            if((joystick.Vertical > 0.5f) || Input.GetAxis("Vertical") > 0)
             {
                 canLadder = true;
-                transform.position += new Vector3(0, 0.5f, 0);
+                transform.position += new Vector3(0, 0.1f, 0);
+                if(!anit.GetBool("LadderUp"))
+                {
+                    anit.SetTrigger("LadderRiding");
+                    anit.SetBool("LadderUp", true);
+                    if(anit.GetBool("LadderDown"))
+                    {
+                        anit.SetBool("LadderDown", false);
+                    }
+                }
             }
-            else if((joystick.Vertical < -0.5f) || Input.GetKey(KeyCode.S))
+            else if((joystick.Vertical < -0.5f) || Input.GetAxis("Vertical") < 0)
             {
                 canLadder = true;
-                transform.position -= new Vector3(0, 0.5f, 0);
+                transform.position -= new Vector3(0, 0.1f, 0);
+                if(!anit.GetBool("LadderDown"))
+                {
+                    anit.SetTrigger("LadderRiding");
+                    anit.SetBool("LadderDown", true);
+                    if(anit.GetBool("LadderUp"))
+                    {
+                        anit.SetBool("LadderUp", false);
+                    }
+                }
             }
         }
 
@@ -386,6 +403,9 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);
             jumpCount = 0;
             canLadder = false;
+            handLadder = false; ;
+            anit.SetBool("LadderUp", false);
+            anit.SetBool("LadderDown", false);
         }
     }
 

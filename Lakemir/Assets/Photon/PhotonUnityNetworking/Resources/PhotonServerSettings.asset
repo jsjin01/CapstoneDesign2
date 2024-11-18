@@ -41,6 +41,12 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - UpdateReadyStatus
+  - SyncAnimation
+  - SyncAnimationTrigger
+  - SyncAttackState
+  - SyncDashState
+  - SyncDirection
+  - SyncJumpState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
