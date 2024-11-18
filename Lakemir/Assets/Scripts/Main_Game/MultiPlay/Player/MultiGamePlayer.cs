@@ -38,19 +38,32 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     {
         
         if (stream.IsWriting)
-        {
-            // 네트워크를 통해 보내고자 하는 데이터 전송
-            stream.SendNext(currentHp);
-            stream.SendNext(currentShield);
-            stream.SendNext(transform.position);
-        }
-        else
-        {
-            // 다른 플레이어가 보낸 데이터 수신 및 업데이트
-            currentHp = (int)stream.ReceiveNext();
-            currentShield = (int)stream.ReceiveNext();
-            transform.position = (Vector3)stream.ReceiveNext();
-        }
+    {
+        // 네트워크로 전송
+        stream.SendNext(currentHp);
+        stream.SendNext(currentShield);
+        stream.SendNext(transform.position);
+        stream.SendNext(isAttacking);
+        stream.SendNext(jumpCount);
+        stream.SendNext(isFallingAttacking);
+        stream.SendNext(isDashing);
+        stream.SendNext(direction);
+        stream.SendNext(anit.GetBool("ismoving")); // 애니메이션 상태 전송
+    }
+    else
+    {
+        // 네트워크에서 수신
+        currentHp = (int)stream.ReceiveNext();
+        currentShield = (int)stream.ReceiveNext();
+        transform.position = (Vector3)stream.ReceiveNext();
+        isAttacking = (bool)stream.ReceiveNext();
+        jumpCount = (int)stream.ReceiveNext();
+        isFallingAttacking = (bool)stream.ReceiveNext();
+        isDashing = (bool)stream.ReceiveNext();
+        direction = (MULTI_DIRECTION)stream.ReceiveNext();
+        bool isMoving = (bool)stream.ReceiveNext();
+        anit.SetBool("ismoving", isMoving); // 수신 후 동기화
+    }
     }
 
     [Header("플레이어 능력치")]
@@ -112,22 +125,9 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     {
         if (photonView.IsMine)
         {
-             #if UNITY_EDITOR
+        #if UNITY_EDITOR
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
-        if(Input.GetAxis("Horizontal") > 0 && !isDashing)
-        {
-            direction = MULTI_DIRECTION.RIGHT;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if(Input.GetAxis("Horizontal") < 0 && !isDashing)
-        {
-            direction = MULTI_DIRECTION.LEFT;
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        
-
-        transform.position += new Vector3(moveX, 0, 0);
+        Moving(Input.GetAxis("Horizontal"));
 
         //점프 
         if(Input.GetKeyDown(KeyCode.Space))
@@ -220,25 +220,39 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         }
         
     }
+    bool previousIsMoving = false;
     void Moving(float x)//움직임 관련 함수
     {
-        anit.SetBool("ismoving", true);
+        bool isMoving = Mathf.Abs(x) > 0;
+
+        // 상태가 변경될 때만 애니메이션 동기화
+        if (isMoving != previousIsMoving)
+        {
+            anit.SetBool("ismoving", isMoving);
+            photonView.RPC("SyncAnimation", RpcTarget.Others, "ismoving", isMoving);
+            previousIsMoving = isMoving;
+        }
         //방향
         if(x > 0 && !isDashing)
         {
             direction = MULTI_DIRECTION.RIGHT;
             transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            photonView.RPC("SyncDirection", RpcTarget.Others, direction);//방향 동기화
         }
         else if(x < 0 && !isDashing)
         {
             direction = MULTI_DIRECTION.LEFT;
             transform.rotation = Quaternion.Euler(0, 180, 0);
+
+            photonView.RPC("SyncDirection", RpcTarget.Others, direction);
         }
 
         //이동거리
         Vector3 moveDirection = new Vector3(x, 0, 0).normalized;
         transform.position += moveDirection * speed * Time.deltaTime;
     }
+    
 
 
     void Jump()// 점프 
@@ -249,8 +263,12 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
             rb.AddForce(Vector2.up * 400);
             jumpCount++;
+
+            photonView.RPC("SyncJumpState", RpcTarget.Others, jumpCount);//점프 상태 동기화
         }
     }
+
+   
 
     void FallingAttack() // 낙하 공격
     {
@@ -272,7 +290,12 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         {
             Debug.Log("2번 무기 공격");
         }
+        // 공격 상태 동기화
+        photonView.RPC("SyncAttackState", RpcTarget.Others, atkKey);
+        StartCoroutine(ResetAttackState());
     }
+
+    
 
     public void InteractionKey() // 상호작용키
     {
@@ -301,6 +324,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         if(!isDashing)
         {
             StartCoroutine(Dash(direction));
+            photonView.RPC("SyncDashState", RpcTarget.Others, direction);//대쉬 동기화
         }
     }
 
@@ -471,7 +495,65 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         yield return new WaitForSeconds(0.2f);
         isDashing = false;
     }
+    IEnumerator ResetAttackState()
+    {
+        yield return new WaitForSeconds(0.5f); // 공격 딜레이
+        isAttacking = false;
+    }
+    #region Photon RPC Methods
+
+    [PunRPC]
+    void SyncJumpState(int networkJumpCount)
+    {
+        jumpCount = networkJumpCount;
+        anit.SetTrigger("isJumping");
+    }
+
+    [PunRPC]
+    void SyncAttackState(MULTI_ATTACKKEY atkKey)
+    {
+        isAttacking = true;
+        if (atkKey == MULTI_ATTACKKEY.RIGHT)
+        {
+            Debug.Log("1번 무기 공격 동기화");
+        }
+        else if (atkKey == MULTI_ATTACKKEY.LEFT)
+        {
+            Debug.Log("2번 무기 공격 동기화");
+        }
+        StartCoroutine(ResetAttackState());
+    }
+
+    [PunRPC]
+    void SyncDirection(MULTI_DIRECTION networkDirection)
+    {
+        direction = networkDirection;
+        transform.rotation = direction == MULTI_DIRECTION.RIGHT ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+    }
+    
+
+    [PunRPC]
+    void SyncDashState(MULTI_DIRECTION dir)
+    {
+        StartCoroutine(Dash(dir));
+    }
+
+    [PunRPC]
+    void SyncAnimation(string paramName, bool state)
+    {
+        anit.SetBool(paramName, state);
+    }
+
+    [PunRPC]
+    void SyncAnimationTrigger(string paramName)
+    {
+        anit.SetTrigger(paramName);
+    }
+
+    #endregion
+
 }
+
 
 
 
