@@ -3,83 +3,102 @@ using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
-    public Button skillButton1;
-    public Button skillButton2;
-    public Button skillButton3;
+    public Button[] skillSlots; // 스킬 슬롯 버튼들
+    public GameObject skillInfoPanel; // 스킬 정보 패널
+    public Text skillNameText; // 스킬 이름 텍스트
+    public Text skillClassText; // 스킬 클래스 텍스트
+    public Text skillDescriptionText; // 스킬 설명 텍스트
+    public Image skillIconImage; // 스킬 아이콘 이미지
 
-    public float cooldownTime1 = 5f; // 스킬 1의 쿨타임 (초)
-    public float cooldownTime2 = 7f; // 스킬 2의 쿨타임 (초)
-    public float cooldownTime3 = 10f; // 스킬 3의 쿨타임 (초)
+    private Skill selectedSkill; // 선택된 스킬
 
-    private float cooldownTimer1 = 0f;
-    private float cooldownTimer2 = 0f;
-    private float cooldownTimer3 = 0f;
+    private float[] cooldownTimers; // 각 스킬의 쿨타임 타이머
+
+    void Start()
+    {
+        HideSkillInfo(); // 처음에는 스킬 정보 패널 숨김
+
+        cooldownTimers = new float[skillSlots.Length]; // 각 슬롯마다 쿨타임 타이머 초기화
+
+        for (int i = 0; i < skillSlots.Length; i++)
+        {
+            int index = i;
+            skillSlots[i].onClick.AddListener(() => OnSkillSlotClicked(index));
+        }
+    }
 
     void Update()
     {
-        // 각 스킬의 쿨타임을 관리
-        if (cooldownTimer1 > 0)
+        for (int i = 0; i < skillSlots.Length; i++)
         {
-            cooldownTimer1 -= Time.deltaTime;
-            skillButton1.interactable = false; // 쿨타임 동안 버튼 비활성화
-            skillButton1.GetComponentInChildren<Text>().text = Mathf.Ceil(cooldownTimer1).ToString(); // 남은 시간 표시
-        }
-        else
-        {
-            skillButton1.interactable = true;
-            skillButton1.GetComponentInChildren<Text>().text = "1"; // 원래 텍스트로 복구
-        }
-
-        if (cooldownTimer2 > 0)
-        {
-            cooldownTimer2 -= Time.deltaTime;
-            skillButton2.interactable = false;
-            skillButton2.GetComponentInChildren<Text>().text = Mathf.Ceil(cooldownTimer2).ToString();
-        }
-        else
-        {
-            skillButton2.interactable = true;
-            skillButton2.GetComponentInChildren<Text>().text = "2";
-        }
-
-        if (cooldownTimer3 > 0)
-        {
-            cooldownTimer3 -= Time.deltaTime;
-            skillButton3.interactable = false;
-            skillButton3.GetComponentInChildren<Text>().text = Mathf.Ceil(cooldownTimer3).ToString();
-        }
-        else
-        {
-            skillButton3.interactable = true;
-            skillButton3.GetComponentInChildren<Text>().text = "3";
+            if (cooldownTimers[i] > 0)
+            {
+                cooldownTimers[i] -= Time.deltaTime;
+                skillSlots[i].interactable = false;
+                skillSlots[i].GetComponentInChildren<Text>().text = Mathf.Ceil(cooldownTimers[i]).ToString();
+            }
+            else
+            {
+                skillSlots[i].interactable = true;
+                skillSlots[i].GetComponentInChildren<Text>().text = (i + 1).ToString();
+            }
         }
     }
 
-    // 각 버튼에 연결할 메서드
-    public void UseSkill1()
+    // 특정 슬롯이 클릭되었을 때 호출되는 함수
+    void OnSkillSlotClicked(int index)
     {
-        if (cooldownTimer1 <= 0)
-        {
-            Debug.Log("스킬 1 사용!");
-            cooldownTimer1 = cooldownTime1; // 쿨타임 시작
-        }
+        selectedSkill = GetSkillByIndex(index); // 인덱스를 통해 해당하는 스킬 가져오기
+        ShowSkillInfo(selectedSkill);
+        UseSkill(index);
     }
 
-    public void UseSkill2()
+    // 인덱스를 통해 해당하는 스킬 반환 (여기서는 임시로 가정)
+    Skill GetSkillByIndex(int index)
     {
-        if (cooldownTimer2 <= 0)
+        return new Skill()
         {
-            Debug.Log("스킬 2 사용!");
-            cooldownTimer2 = cooldownTime2;
-        }
+            skillName = "예시 스킬 " + (index + 1),
+            skillClass = "빛",
+            description = "이것은 빛의 힘을 사용하는 강력한 공격입니다.",
+            icon = null, // 실제 아이콘 설정 필요
+            cooldownTime = 5f + index * 2f // 예시로 쿨타임 설정
+        };
     }
 
-    public void UseSkill3()
+    // 선택된 스킬 정보를 보여주는 함수
+    void ShowSkillInfo(Skill skill)
     {
-        if (cooldownTimer3 <= 0)
+        skillInfoPanel.SetActive(true);
+        skillNameText.text = skill.skillName;
+        skillClassText.text = $"클래스: {skill.skillClass}";
+        skillDescriptionText.text = skill.description;
+        if (skill.icon != null)
+            skillIconImage.sprite = skill.icon;
+    }
+
+    void HideSkillInfo()
+    {
+        skillInfoPanel.SetActive(false);
+    }
+
+    // X 버튼을 눌러서 창 닫기
+    public void OnCloseButtonClicked()
+    {
+        HideSkillInfo();
+    }
+
+    // 스킬 사용 및 쿨타임 시작
+    void UseSkill(int index)
+    {
+        if (cooldownTimers[index] <= 0)
         {
-            Debug.Log("스킬 3 사용!");
-            cooldownTimer3 = cooldownTime3;
+            Debug.Log($"스킬 {index + 1} 사용!");
+            cooldownTimers[index] = GetSkillByIndex(index).cooldownTime; // 쿨타임 시작
+        }
+        else
+        {
+            Debug.Log("스킬이 아직 준비되지 않았습니다.");
         }
     }
 }
