@@ -26,7 +26,13 @@ public enum MULTI_ATTACKKEY
 }
 public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 {
-     private PhotonView photonView;
+    private PhotonView photonView;
+    private Vector3 targetPosition; // 목표 위치
+    private float positionLerpSpeed = 10f; // 위치 보간 속도
+    private float animLerp; // 애니메이션 보간 변수
+    private float animLerpSpeed = 5f; // 애니메이션 보간 속도
+
+
 
     void Start()
     {
@@ -55,13 +61,18 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         // 네트워크에서 수신
         currentHp = (int)stream.ReceiveNext();
         currentShield = (int)stream.ReceiveNext();
-        transform.position = (Vector3)stream.ReceiveNext();
+        targetPosition = (Vector3)stream.ReceiveNext();
         isAttacking = (bool)stream.ReceiveNext();
         jumpCount = (int)stream.ReceiveNext();
         isFallingAttacking = (bool)stream.ReceiveNext();
         isDashing = (bool)stream.ReceiveNext();
         direction = (MULTI_DIRECTION)stream.ReceiveNext();
         bool isMoving = (bool)stream.ReceiveNext();
+
+        transform.rotation = direction == MULTI_DIRECTION.RIGHT 
+            ? Quaternion.Euler(0, 0, 0) 
+            : Quaternion.Euler(0, 180, 0);
+        
         anit.SetBool("ismoving", isMoving); // 수신 후 동기화
     }
     }
@@ -211,41 +222,40 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
         PassableGroundPass();//통과 가능한지 불가능한지 판별
 
-        if(joystick.Horizontal == 0 && Input.GetAxis("Horizontal") == 0)
-        {
-            anit.SetBool("ismoving", false);
-        }
+        bool isMoving = joystick.Horizontal != 0 || Input.GetAxis("Horizontal") != 0; // 이동 여부 확인
+        anit.SetBool("ismoving", isMoving); // 애니메이션 상태 로컬 업데이트
     
 
         }
+        else
+        {
+        // 위치 보간
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * positionLerpSpeed);
+
+                // 애니메이션 상태 보간
+        bool isMoving = anit.GetBool("ismoving");
+        animLerp = Mathf.Lerp(animLerp, isMoving ? 1f : 0f, Time.deltaTime * animLerpSpeed);
+        anit.SetFloat("MoveSpeed", animLerp); // Animator의 파라미터로 보간 값 전달
+        }
         
     }
-    bool previousIsMoving = false;
+   
     void Moving(float x)//움직임 관련 함수
     {
         bool isMoving = Mathf.Abs(x) > 0;
-
-        // 상태가 변경될 때만 애니메이션 동기화
-        if (isMoving != previousIsMoving)
-        {
-            anit.SetBool("ismoving", isMoving);
-            photonView.RPC("SyncAnimation", RpcTarget.Others, "ismoving", isMoving);
-            previousIsMoving = isMoving;
-        }
+        anit.SetBool("ismoving", isMoving);
+        
+       
         //방향
         if(x > 0 && !isDashing)
         {
             direction = MULTI_DIRECTION.RIGHT;
             transform.rotation = Quaternion.Euler(0, 0, 0);
-
-            photonView.RPC("SyncDirection", RpcTarget.Others, direction);//방향 동기화
         }
         else if(x < 0 && !isDashing)
         {
             direction = MULTI_DIRECTION.LEFT;
             transform.rotation = Quaternion.Euler(0, 180, 0);
-
-            photonView.RPC("SyncDirection", RpcTarget.Others, direction);
         }
 
         //이동거리
@@ -277,6 +287,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
             isFallingAttacking = true;
             rb.gravityScale = 4f;
             upDownTrail.SetActive(true);
+            photonView.RPC("SyncFallingAttack", RpcTarget.Others);
         }
     }
 
@@ -385,6 +396,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
                 //이펙트 추가해서 공격 되도록 설계
+                photonView.RPC("EndFallingAttack", RpcTarget.Others);
             }
         }
 
@@ -524,12 +536,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         StartCoroutine(ResetAttackState());
     }
 
-    [PunRPC]
-    void SyncDirection(MULTI_DIRECTION networkDirection)
-    {
-        direction = networkDirection;
-        transform.rotation = direction == MULTI_DIRECTION.RIGHT ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
-    }
+    
     
 
     [PunRPC]
@@ -538,23 +545,34 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         StartCoroutine(Dash(dir));
     }
 
-    [PunRPC]
-    void SyncAnimation(string paramName, bool state)
-    {
-        anit.SetBool(paramName, state);
-    }
 
     [PunRPC]
     void SyncAnimationTrigger(string paramName)
     {
         anit.SetTrigger(paramName);
     }
+    [PunRPC]
+    void EndFallingAttack()
+    {
+        rb.gravityScale = 1;
+        isFallingAttacking = false;
+        upDownTrail.SetActive(false);
+        // 동기화된 상태에서 애니메이션이나 추가 동작도 처리
+        //anit.SetTrigger("fallingAttack");
+    }
+
+    [PunRPC]
+    void SyncFallingAttack()
+    {
+        isFallingAttacking = true;
+        rb.gravityScale = 4f;
+        upDownTrail.SetActive(true);
+
+        
+    }
+
 
     #endregion
 
 }
-
-
-
-
 

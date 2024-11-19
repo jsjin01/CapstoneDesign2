@@ -12,11 +12,12 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         CreatePlayerCharacter();
     }
 
-    private void CreatePlayerCharacter()
-    {
-        // 네트워크에 캐릭터를 생성
-        GameObject playerCharacter = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
-    }
+   private void CreatePlayerCharacter()
+{
+    int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber; // 플레이어의 고유 ActorNumber
+    Vector3 spawnPosition = new Vector3(playerIndex * 2f, 0f, 0f); // 간격을 두고 생성
+    GameObject playerCharacter = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
+}
 
     // 다른 플레이어가 룸에 들어왔을 때 호출되는 콜백
     public override void OnPlayerEnteredRoom(Player newPlayer)

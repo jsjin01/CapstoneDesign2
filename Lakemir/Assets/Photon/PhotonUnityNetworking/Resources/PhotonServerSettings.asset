@@ -47,6 +47,8 @@ MonoBehaviour:
   - SyncDashState
   - SyncDirection
   - SyncJumpState
+  - EndFallingAttack
+  - SyncFallingAttack
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
