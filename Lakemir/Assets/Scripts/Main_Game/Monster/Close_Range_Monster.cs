@@ -5,13 +5,13 @@ using UnityEngine.AI;
 
 public class Close_Range_Monster : Monster
 {
-    public Transform[] patrolPoints; // 순찰 경로의 포인트들
-    public Transform player; // 플레이어의 Transform
+    public Transform[] patrolPoints;    // 순찰 경로의 포인트들
+    public Transform player;            // 플레이어의 Transform
     public float detectionRadius = 10f; // 플레이어를 감지할 거리
-    public float attackRange = 2f; // 공격 범위
-    public float attackCooldown = 2f; // 공격 쿨다운
+    public float attackRange = 2f;      // 공격 범위
+    public float attackCooldown = 2f;   // 공격 쿨다운
 
-    private NavMeshAgent agent;
+    [SerializeField]private NavMeshAgent agent;
     private int currentPatrolIndex = 0;
     private float lastAttackTime = 0f;
 
@@ -81,7 +81,7 @@ public class Close_Range_Monster : Monster
 
     private void AttackMotion()
     {
-        agent.isStopped = true; // 멈춤
+        agent.isStopped = true;   // 멈춤
         transform.LookAt(player); // 플레이어 방향으로 회전
 
         if(Time.time - lastAttackTime >= attackCooldown)
