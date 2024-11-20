@@ -311,12 +311,10 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             {
                 anit.SetTrigger("jumpFall");
             }
-
             jumpCount = 0;  //점프 횟수 초기화
             if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
             {
                 anit.Play("GroundSlam", -1, 0.3f);
-                //anit.SetTrigger("fallingAttack");
                 rb.gravityScale = 1;
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
@@ -397,7 +395,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void OnTriggerExit2D(Collider2D collision)      //tirgger 밖으로 나갔을 때
     {
-        if(collision.gameObject.CompareTag("Ladder")) // 사다리
+        if(collision.gameObject.CompareTag("Ladder"))       //사다리
         {
             rb.gravityScale = 1;
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);
