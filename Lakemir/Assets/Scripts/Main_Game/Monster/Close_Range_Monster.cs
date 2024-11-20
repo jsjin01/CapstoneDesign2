@@ -1,100 +1,92 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Close_Range_Monster : Monster
 {
-    public Transform[] patrolPoints;    // ¼øÂû °æ·ÎÀÇ Æ÷ÀÎÆ®µé
-    public Transform player;            // ÇÃ·¹ÀÌ¾îÀÇ Transform
-    public float detectionRadius = 10f; // ÇÃ·¹ÀÌ¾î¸¦ °¨ÁöÇÒ °Å¸®
-    public float attackRange = 2f;      // °ø°İ ¹üÀ§
-    public float attackCooldown = 2f;   // °ø°İ Äğ´Ù¿î
+    [Header("ìì‹ ì´ ë°Ÿê³  ìˆëŠ” ë°œíŒ")]
+    [SerializeField] GameObject platform;
 
-    [SerializeField]private NavMeshAgent agent;
-    private int currentPatrolIndex = 0;
-    private float lastAttackTime = 0f;
+    [Header("ìˆœì°° ê²½ë¡œì˜ í¬ì¸íŠ¸ë“¤")]
+    [SerializeField] Vector2[] patrolPoints;
+    //Transfrom ì„¤ì •ì‹œ ê·¸ í¬ì¸íŠ¸ ì‚¬ì´ë¥¼ ê³„ì† ì´ë™í•¨
 
-    private enum State { Patrol, Chase, Attack }
-    private State currentState = State.Patrol;
+    //Player ìœ„ì¹˜ ë³€ìˆ˜ ë° ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ì˜ ìœ„ì¹˜
+    Vector2[] playerPoints; //Playerë“¤ì˜ ì¢Œí‘œ ë°›ì•„ì˜¤ê¸°(ìµœëŒ€ 4ëª…)
+    Vector2 closestPlayerVecter; //ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ì˜ ì¢Œí‘œ
 
-    void Start()
+    [Header("í”Œë ˆì´ì–´ íƒì§€ ê´€ë ¨ ë³€ìˆ˜")]
+    [SerializeField] float detectionRadius; //í”Œë ˆì´ì–´ ê°ì§€ ê±°ë¦¬
+    [SerializeField] float attackRange;     //ëª¬ìŠ¤í„°ì˜ ì‚¬ì • ê±°ë¦¬
+    [SerializeField] float attackCooldown;  //ê³µê²© ì¿¨íƒ€ì„
+
+    //í–‰ë™ë“¤
+    int currentPatrolIndex = 0; //ìˆœì°° ìœ„ì¹˜ ì¸ë±ìŠ¤
+    enum STATE { PATROL, CHASE, ATTACK } //enum ë¬¸ìœ¼ë¡œ ì„¤ì •
+    STATE currentState = STATE.PATROL;   //í˜„ì¬ ìƒíƒœ
+
+    private void OnEnable() //ëª¬ìŠ¤í„°ê°€ ìƒì„±ë˜ì—ˆì„ ë•Œ
     {
-        agent = GetComponent<NavMeshAgent>();
-        MoveToNextPatrolPoint();
+
     }
 
-    void Update()
+    private void Update()   
     {
-        switch(currentState)
-        {
-            case State.Patrol:
-                Patrol();
-                break;
-            case State.Chase:
-                Chase();
-                break;
-            case State.Attack:
-                AttackMotion();
-                break;
-        }
+        
     }
-
-    private void Patrol()
+    
+    void PatrolMotion() //ìˆœì°° í•¨ìˆ˜
     {
-        if(!agent.pathPending && agent.remainingDistance < 0.5f)
+        //í˜„ì¬ ìˆœì°° ì§€ì ìœ¼ë¡œ ì´ë™ 
+        transform.position = Vector2.MoveTowards(transform.position, patrolPoints[currentPatrolIndex], speed * Time.deltaTime);
+    
+        //ìˆœì°° ì§€ì ì— ë„ì°©í•˜ë©´ ë‹¤ìŒ ì§€ì ìœ¼ë¡œ ì´ë™(ê±°ë¦¬ê°€ 0.5f ì´í•˜ê°€ ë˜ë©´)
+        if(Vector2.Distance((Vector2)transform.position, patrolPoints[currentPatrolIndex]) < 0.5f)
         {
             MoveToNextPatrolPoint();
         }
 
-        // ÇÃ·¹ÀÌ¾î °¨Áö
-        if(Vector3.Distance(transform.position, player.position) <= detectionRadius)
-        {
-            currentState = State.Chase;
-        }
     }
 
-    private void MoveToNextPatrolPoint()//¼øÂû Æ÷ÀÎÆ® ´Ù´Ï±â
+    void MoveToNextPatrolPoint() //ë‹¤ìŒ ìˆœì°°í¬ì¸íŠ¸ ê³„ì‚°
     {
-        if(patrolPoints.Length == 0) return;
-
-        agent.destination = patrolPoints[currentPatrolIndex].position;
-        currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length; // ¼øÈ¯ °æ·Î
+        currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
     }
 
-    private void Chase()
+    void GetClosestPlayer() //ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ ê³„ì‚°
     {
-        agent.destination = player.position;
-
-        // °ø°İ ¹üÀ§ ¾È¿¡ µé¾î¿À¸é °ø°İ »óÅÂ·Î ÀüÈ¯
-        if(Vector3.Distance(transform.position, player.position) <= attackRange)
-        {
-            currentState = State.Attack;
-        }
-        // ÇÃ·¹ÀÌ¾î¸¦ °¨ÁöÇÏÁö ¸øÇÏ¸é ´Ù½Ã ¼øÂû »óÅÂ·Î ÀüÈ¯
-        else if(Vector3.Distance(transform.position, player.position) > detectionRadius)
-        {
-            currentState = State.Patrol;
-            MoveToNextPatrolPoint();
-        }
+        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+        
     }
 
-    private void AttackMotion()
+    void ChaseMotion() //í”Œë ˆì´ì–´ ë°œê²¬ ì‹œ ì¶”ê²©
     {
-        agent.isStopped = true;   // ¸ØÃã
-        transform.LookAt(player); // ÇÃ·¹ÀÌ¾î ¹æÇâÀ¸·Î È¸Àü
 
-        if(Time.time - lastAttackTime >= attackCooldown)
-        {
-            Debug.Log("Monster attacks the player!");
-            lastAttackTime = Time.time;
-        }
+    }
 
-        // ÇÃ·¹ÀÌ¾î°¡ °ø°İ ¹üÀ§¸¦ ¹ş¾î³ª¸é ÃßÀû »óÅÂ·Î ÀüÈ¯
-        if(Vector3.Distance(transform.position, player.position) > attackRange)
+    void AttackMotion()//í”Œë ˆì´ì–´ ê³µê²©
+    {
+
+    }
+
+    void CalculatePlatformPoints() //ìì‹ ì´ ë°Ÿê³  ìˆëŠ” ë°œíŒì˜ í¬ê¸°ë¥¼ ê³„ì‚°
+    {
+        float halfWidth = platform.transform.localScale.x / 2;
+        float pointHeight = platform.transform.localScale.y / 2 + transform.position.y;
+        patrolPoints[0] = (Vector2)platform.transform.position + new Vector2(halfWidth, pointHeight);
+        patrolPoints[1] = (Vector2)platform.transform.position - new Vector2(halfWidth, -pointHeight);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) // ì¶©ëŒí–ˆì„ ë•Œ
+    {
+        if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))//ë°œíŒì— ëª¬ìŠ¤í„°ê°€ ë‹³ì•˜ì„ ë•Œ
         {
-            agent.isStopped = false; // ´Ù½Ã ÀÌµ¿ ½ÃÀÛ
-            currentState = State.Chase;
+            if(platform == null || collision.gameObject != platform)
+            {
+                platform = collision.gameObject;
+                CalculatePlatformPoints(); //í•´ë‹¹ í”Œë ›í¼ì˜ ì–‘ë ê³„ì‚°í•˜ê¸°
+            }
         }
     }
 }
