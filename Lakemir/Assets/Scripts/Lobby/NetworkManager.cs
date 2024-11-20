@@ -154,7 +154,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             startButton.gameObject.SetActive(true); 
             readyButton.gameObject.SetActive(false);// 마스터 클라이언트만 시작 버튼을 활성화
-            PV.RPC("UpdateReadyStatus", RpcTarget.All, PhotonNetwork.LocalPlayer, true); // 마스터 클라이언트는 항상 준비 상태
+            isReady = true; // 방장은 항상 준비 상태로 설정
+            PV.RPC("UpdateReadyStatus", RpcTarget.All, PhotonNetwork.LocalPlayer, isReady); // 모든 클라이언트에 방장의 준비 상태 동기화
             //startButton.onClick.AddListener(OnStartGame);
         }
         else
@@ -179,6 +180,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         ChatRPC("<color=yellow>" + newPlayer.NickName + "님이 참가하셨습니다</color>");
         if (PhotonNetwork.IsMasterClient)
         {
+            foreach (var player in playerReadyStatus.Keys)
+            {
+                PV.RPC("UpdateReadyStatus", newPlayer, player, playerReadyStatus[player]);
+            }
             startButton.interactable = false;
         }
     }
@@ -253,6 +258,11 @@ void OnReady()
             CellBtnPlayer[i].GetComponent<Image>().color = readyStatus ? readyColor : notReadyColor;
             break;
         }
+    }
+    // 방장이 준비 상태인지도 다시 동기화
+    if (PhotonNetwork.IsMasterClient && player == PhotonNetwork.MasterClient)
+    {
+        playerReadyStatus[player] = true; // 방장은 항상 준비 상태
     }
     // 여기에서 각 플레이어의 준비 상태를 확인하거나 준비한 인원을 체크할 수 있습니다.
     // 예: 모든 플레이어가 준비되었는지 확인하고 게임을 시작

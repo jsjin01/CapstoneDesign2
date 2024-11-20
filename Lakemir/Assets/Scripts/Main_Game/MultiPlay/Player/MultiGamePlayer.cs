@@ -230,6 +230,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         else
         {
         // 위치 보간
+        PassableGroundPass();//통과 가능한지 불가능한지 판별
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * positionLerpSpeed);
 
                 // 애니메이션 상태 보간
@@ -570,6 +571,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
         
     }
+    
 
 
     #endregion
