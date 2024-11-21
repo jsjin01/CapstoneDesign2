@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Experimental.GlobalIllumination;
+using MonsterEnum;
 
-public enum MOSTERTYPE
-{
-    CLOSE_RANGE,
-    LONG_RANGE
-}
 public class Close_Range_Monster : Monster
 {
     [Header("몬스터 종류")]

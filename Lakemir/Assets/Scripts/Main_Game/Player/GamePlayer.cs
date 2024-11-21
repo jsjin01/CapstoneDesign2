@@ -6,25 +6,8 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Photon.Pun;
 using UnityEngine.InputSystem;
+using GamePlayerEnum;
 
-
-public enum DIRECTION
-{
-    RIGHT,
-    LEFT
-}
-public enum INTERECTION
-{
-    WEAPON,
-    NPC,
-    CAPABILITYFRAGMENT
-}
-
-public enum ATTACKKEY
-{
-    RIGHT,
-    LEFT
-}
 public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 {
     // IPunObservable 인터페이스 구현
@@ -226,6 +209,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(atkKey == ATTACKKEY.RIGHT)
         {
+
             Debug.Log("1번 무기 공격");
         }
         else if(atkKey == ATTACKKEY.LEFT)

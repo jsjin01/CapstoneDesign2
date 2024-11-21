@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-public enum EFFECT//디버프 효과
-{
-    NONE,
-    SLOW,
-    WEAKENING,
-    DOTDEAL
-}
+using MonsterEnum;
 public abstract class Monster : MonoBehaviour //추상 클래스 선언
 {
     public int maxHp;                 //Max Hp일때
