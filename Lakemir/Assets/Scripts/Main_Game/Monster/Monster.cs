@@ -22,15 +22,16 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
 
     public void TakeDamage(int dmg, EFFECT eft = EFFECT.NONE)//데미지 받는 부분
     {
+        Debug.Log($"입은 데미지: {dmg} , 효과 적용 : {eft}" );
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
         if (currentHp < 0)
         {
             Debug.Log("몬스터 죽음");
-            anit.SetTrigger("Die");
+            //anit.SetTrigger("Die");
         }
         else
         {
-            anit.SetTrigger("Damage");
+            //anit.SetTrigger("Damage");
         }
     }
 

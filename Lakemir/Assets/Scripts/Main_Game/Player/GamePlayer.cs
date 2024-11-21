@@ -7,6 +7,8 @@ using UnityEngine.UIElements;
 using Photon.Pun;
 using UnityEngine.InputSystem;
 using GamePlayerEnum;
+using WeaponEnum;
+using Unity.Burst.Intrinsics;
 
 public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 {
@@ -42,6 +44,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     //공격키
     bool isAttacking = false;   //공격하고 있는지 여부
+    float lastAttackTime = 0;   //마지막으로 공격한 시간
+    [SerializeField] GameObject closeRangeEffect; //공격범위
 
     //점프 관련 변수
     int jumpCount = 0;       //현재 점프한 횟수
@@ -72,6 +76,13 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     bool isInteracable = false; //상호작용 가능 여부
     INTERECTION interectObj;    //상호작용을 하는 물체
 
+    //무기 관련 변수
+    Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
+    Weapon leftWeapon = null;  //왼쪽(2번)에 착용한 무기 
+
+    //전투 비전투 관련 변수
+    float lastCombattingTime = 0; //마지막으로 전투했던 상태
+    bool isCombating = false;     //전투 상태인지 아닌지 
 
     [Header("연결 변수")]
     public Joystick joystick;              //Joystick을 추가할 변수
@@ -84,6 +95,10 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     [SerializeField] GameObject dashTrail;   //Dash 트레일
 
 
+    private void Start()
+    {
+        rightWeapon = new WeaponID01(); //TEST용
+    }
 
     void Update()
     {
@@ -163,6 +178,15 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             anit.SetBool("ismoving", false);
         }
+
+        if(Time.time - lastCombattingTime > 5)  //비전투 상태로 변환
+        {
+            isCombating = false;
+        }
+        if(Time.time -lastAttackTime > 0.5f)
+        {
+            isAttacking = false;
+        }
     }
     void Moving(float x)//움직임 관련 함수
     {
@@ -207,17 +231,82 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void Attack(ATTACKKEY atkKey) //공격
     {
+        if(isCritical())//치명타 뜰 때 안 뜰 때 구분
+        {
+            damage = attackPower * fatalHitDamage;
+        }
+        else
+        {
+            damage = attackPower;
+        }
+        isAttacking = true;
         if(atkKey == ATTACKKEY.RIGHT)
         {
-
-            Debug.Log("1번 무기 공격");
+            if(rightWeapon != null)
+            {
+                AttackMotion(rightWeapon);
+            }
         }
         else if(atkKey == ATTACKKEY.LEFT)
         {
-            Debug.Log("2번 무기 공격");
+            if(leftWeapon != null)
+            {
+                AttackMotion(leftWeapon);
+            }
         }
     }
 
+    void AttackMotion(Weapon weapon)// 무기 모션 정하기 및 적용
+    {
+        switch(weapon.w_type)
+        {
+            case WEAPON_TYPE.CLOSE_RANGE_WEAPON:
+                lastAttackTime = Time.time;        //공격딜레이를 위해서 초를 잼
+
+                weapon.selfEffects();              //특수 효과 부여
+                anit.SetTrigger("CloseAttackKey"); //공격모션 
+                closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, ((CloseRangeWeapon)weapon).comboDamage[anit.GetInteger("Combo")], weapon.hitEffect);//데미지랑 효과 설정
+                
+                if(Time.time - lastCombattingTime < 1)//1초안에 연속동작을 하지 않으면 풀리도록
+                {
+                    anit.SetInteger("Combo", anit.GetInteger("Combo") + 1);
+                }
+                else
+                {
+                    anit.SetInteger("Combo", 0);
+                }
+
+                if(anit.GetInteger("Combo") >= ((CloseRangeWeapon)weapon).comboNumber) // 최대 comboNumber번까지 가능
+                {
+                    anit.SetInteger("Combo", 0);
+                }
+
+                lastCombattingTime = Time.time; //초재기
+                
+                //적용효과 
+                break;
+            case WEAPON_TYPE.LONG_RANGE_WEAPON: //화살 생성
+                lastAttackTime = Time.time + 1f; //공격딜레이를 위해서 초를 잼
+                anit.SetTrigger("LongAttackKey");
+                break;
+            case WEAPON_TYPE.SHIELD:            //쉴드 모션만 있으면 됨
+                break;
+        }
+    }
+
+    bool isCritical()//치명타 뜨면 true
+    {
+        int randomNumber = Random.Range(1, 101);
+
+        if(randomNumber <= fatalHitProbability)
+        {
+            return true;
+        }
+        else 
+        { 
+            return false; 
+        }
+    }
     public void InteractionKey() // 상호작용키
     {
         if(isInteracable)
@@ -267,6 +356,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void TakeDamage(int dmg)// 데미지 입는 부분
     {
+        lastCombattingTime = Time.time;
+
         if(currentShield > 0)
         {
             currentShield -= dmg;

@@ -1,14 +1,20 @@
 using UnityEngine;
+using WeaponEnum; //Enum 가져옴
 
 [System.Serializable]
 public class Weapon
 {
     public string weaponName; //무기이름
-    public string weaponGrade; //무기등급
+    public int weaponGrade; //무기등급  => 강화정도?
     public string description; //설명
     public Sprite weaponImage; //UI에 표시할 이미지
-    public string ability; //무기 능력치 
-    public bool isEquipped = false; //무기 장착 여부
+
+    public string ability; //무기 능력
+    public bool isEquipped = false; //무기 장착 여부 => player 부분에 class 넣는 곳 선언 
+
+    //추가한 코드들 -전상진
+    public WEAPON_TYPE w_type;             //무기 종류 분류
+    public EFFECT hitEffect;               //무기에 부여된 효과
 
     //무기 정보 반환하는 함수
     public string GetWeaponInfo()
@@ -38,4 +44,8 @@ public class Weapon
             Debug.Log("무기가 장착되지 않았습니다. 공격할 수 없습니다.");
         }
     }
+
+    public virtual void selfEffects() { }    //자기 자신에 적용되는 효과 => 능력 적용
+
+    public virtual void AttackEffects() { }   //타수 관련 함수나 P
 }

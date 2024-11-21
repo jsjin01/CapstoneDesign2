@@ -9,7 +9,7 @@ using MonsterEnum;
 public class Close_Range_Monster : Monster
 {
     [Header("몬스터 종류")]
-    [SerializeField] MOSTERTYPE monsterType;
+    [SerializeField] MOSTER_TYPE monsterType;
 
     [Header("자신이 밟고 있는 발판")]
     [SerializeField] GameObject platform;
@@ -105,7 +105,7 @@ public class Close_Range_Monster : Monster
 
     void ChaseMotion() //플레이어 발견 시 추격
     {
-        if(monsterType == MOSTERTYPE.CLOSE_RANGE)
+        if(monsterType == MOSTER_TYPE.CLOSE_RANGE)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPlayer.transform.position, speed * Time.deltaTime);
 
