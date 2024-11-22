@@ -1857,6 +1857,26 @@ MonoBehaviour:
   fatalHitDamage: 0
   damage: 0
   closeRangeEffect: {fileID: 7975777636841826123}
+  ArrowPrefabs:
+  - {fileID: 3303570833072228735, guid: 750c34bb0e5a4eb429aa84846072446b, type: 3}
+  rightWeapon:
+    weaponName: 
+    weaponGrade: 0
+    description: 
+    weaponImage: {fileID: 0}
+    ability: 
+    isEquipped: 0
+    w_type: 0
+    hitEffect: 0
+  leftWeapon:
+    weaponName: 
+    weaponGrade: 0
+    description: 
+    weaponImage: {fileID: 0}
+    ability: 
+    isEquipped: 0
+    w_type: 0
+    hitEffect: 0
   joystick: {fileID: 4827166285537034103}
   rb: {fileID: 3604123892545885198}
   col: {fileID: 1376873420976058405}
