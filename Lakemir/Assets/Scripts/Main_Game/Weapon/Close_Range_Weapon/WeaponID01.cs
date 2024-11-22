@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +6,10 @@ public class WeaponID01 : CloseRangeWeapon
 {
     public WeaponID01()
     {
-        weaponName = "¿À¿°µÈ »ç½½ °Ë";
-        description = "¾îµÒ°ú ºûÀÇ ÈûÀÌ µ¿½Ã¿¡ ±êµç »ç½½·Î ¿¬°áµÈ °Ë.";
-        ability = "»ç½½ÀÇ Æ÷È¹: 3¹øÂ° °ø°ÝÀÏ ¶§, °ø°Ý´çÇÑ ÀûÀÌ ÀÏ¹Ý ¸ó½ºÅÍ³ª ¿¤¸®Æ® ¸ó½ºÅÍÀÏ °æ¿ì ÂªÀº ½Ã°£(0.5ÃÊ)µ¿¾È ±âÀýÇÏ°Ô ¸¸µç´Ù.\n\n" +
-            "ºÎ½ÄÀÇ Æ÷½Ä: ¸ó½ºÅÍ°¡ ¸ÂÀ» ¶§¸¶´Ù 3ÃÊ°£ ºÎ½Ä(ÃÊ´ç °ø°Ý·Â 5%¾¿ µ¥¹ÌÁö)¸¦ ºÎ¿©ÇÔ(ÁßÃ¸ °¡´É)";
+        weaponName = "ì˜¤ì—¼ëœ ì‚¬ìŠ¬ ê²€";
+        description = "ì–´ë‘ ê³¼ ë¹›ì˜ íž˜ì´ ë™ì‹œì— ê¹ƒë“  ì‚¬ìŠ¬ë¡œ ì—°ê²°ëœ ê²€.";
+        ability = "ì‚¬ìŠ¬ì˜ í¬íš: 3ë²ˆì§¸ ê³µê²©ì¼ ë•Œ, ê³µê²©ë‹¹í•œ ì ì´ ì¼ë°˜ ëª¬ìŠ¤í„°ë‚˜ ì—˜ë¦¬íŠ¸ ëª¬ìŠ¤í„°ì¼ ê²½ìš° ì§§ì€ ì‹œê°„(0.5ì´ˆ)ë™ì•ˆ ê¸°ì ˆí•˜ê²Œ ë§Œë“ ë‹¤.\n\n" +
+            "ë¶€ì‹ì˜ í¬ì‹: ëª¬ìŠ¤í„°ê°€ ë§žì„ ë•Œë§ˆë‹¤ 3ì´ˆê°„ ë¶€ì‹(ì´ˆë‹¹ ê³µê²©ë ¥ 5%ì”© ë°ë¯¸ì§€)ë¥¼ ë¶€ì—¬í•¨(ì¤‘ì²© ê°€ëŠ¥)";
         comboNumber =  3;
         currentcomboNumber = 0;
         hitEffect = EFFECT.DOTDEAL;
@@ -22,11 +22,11 @@ public class WeaponID01 : CloseRangeWeapon
     {
         if(currentcomboNumber == 3)
         {
-            hitEffect = EFFECT.STUN;//3Å¸¸¶´Ù ½ºÅÏ È¿°ú ºÎ¿©
+            hitEffect = EFFECT.STUN;//3íƒ€ë§ˆë‹¤ ìŠ¤í„´ íš¨ê³¼ ë¶€ì—¬
         }
         else
         {
-            hitEffect = EFFECT.DOTDEAL; //¾Æ´Ï¸é µµÆ®µô ºÎ¿©
+            hitEffect = EFFECT.DOTDEAL; //ì•„ë‹ˆë©´ ë„íŠ¸ë”œ ë¶€ì—¬
         }
     }
 }

@@ -1,22 +1,22 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace GamePlayerEnum //GamePlayer.cs 
 {
-    public enum DIRECTION//¹Ù¶óº¸´Â ¹æÇâ
+    public enum DIRECTION//ë°”ë¼ë³´ëŠ” ë°©í–¥
     {
         RIGHT,
         LEFT
     }
-    public enum INTERECTION//»óÈ£ÀÛ¿ë Á¾·ù
+    public enum INTERECTION//ìƒí˜¸ì‘ìš© ì¢…ë¥˜
     {
         WEAPON,
         NPC,
         CAPABILITYFRAGMENT
     }
 
-    public enum ATTACKKEY //°ø°İÅ° Á¾·ù
+    public enum ATTACKKEY //ê³µê²©í‚¤ ì¢…ë¥˜
     {
         RIGHT,
         LEFT
@@ -25,7 +25,7 @@ namespace GamePlayerEnum //GamePlayer.cs
 
 namespace MonsterEnum//Monste.cs
 {
-    public enum MOSTER_TYPE //ÀÏ¹İ ¸ó½ºÅÍ Å¸ÀÔ
+    public enum MOSTER_TYPE //ì¼ë°˜ ëª¬ìŠ¤í„° íƒ€ì…
     {
         CLOSE_RANGE,
         LONG_RANGE
@@ -34,7 +34,7 @@ namespace MonsterEnum//Monste.cs
 
 namespace WeaponEnum//Weapon.cs && GamePlayer.cs && AttackMotion
 {
-    public enum WEAPON_TYPE //¹«±â Å¸ÀÔ
+    public enum WEAPON_TYPE //ë¬´ê¸° íƒ€ì…
     {
         CLOSE_RANGE_WEAPON,
         LONG_RANGE_WEAPON,
@@ -42,11 +42,11 @@ namespace WeaponEnum//Weapon.cs && GamePlayer.cs && AttackMotion
     }
 }
 
-public enum EFFECT//µğ¹öÇÁ È¿°ú
+public enum EFFECT//ë””ë²„í”„ íš¨ê³¼
 {
-    NONE,       //¾Æ¹«°Íµµ ¾øÀ» ¶§
-    SLOW,       //30% ½½·Î¿ì 2ÃÊ
-    WEAKENING,  //¹æ¾î·Â 20% °¨¼Ò
-    DOTDEAL,    //°ø°İ·ÂÀÇ 1% ÇØ´çÇÏ´Â µµÆ®µô
-    STUN,       //±âÀı
+    NONE,       //ì•„ë¬´ê²ƒë„ ì—†ì„ ë•Œ
+    SLOW,       //30% ìŠ¬ë¡œìš° 2ì´ˆ
+    WEAKENING,  //ë°©ì–´ë ¥ 20% ê°ì†Œ
+    DOTDEAL,    //ê³µê²©ë ¥ì˜ 1% í•´ë‹¹í•˜ëŠ” ë„íŠ¸ë”œ
+    STUN,       //ê¸°ì ˆ
 }

@@ -1,26 +1,26 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponManager : MonoBehaviour
 {
-    public Weapon currentWeapon; // ÇöÀç ÀåÂøµÈ ¹«±â
-    public Weapon newWeapon; // ±³Ã¼ÇÒ ¹«±â
+    public Weapon currentWeapon; // í˜„ì¬ ì¥ì°©ëœ ë¬´ê¸°
+    public Weapon newWeapon; // êµì²´í•  ë¬´ê¸°
 
-    // UI ¿ä¼Òµé
-    public Text currentWeaponInfoText; // ÇöÀç ¹«±âÀÇ Á¤º¸ ÅØ½ºÆ®
-    public Text newWeaponInfoText; // ±³Ã¼ÇÒ ¹«±âÀÇ Á¤º¸ ÅØ½ºÆ®
-    public Image currentWeaponImage; // ÇöÀç ¹«±âÀÇ ÀÌ¹ÌÁö
-    public Image newWeaponImage; // ±³Ã¼ÇÒ ¹«±âÀÇ ÀÌ¹ÌÁö
-    public Button changeWeaponButton; // ±³Ã¼ ¹öÆ°
+    // UI ìš”ì†Œë“¤
+    public Text currentWeaponInfoText; // í˜„ì¬ ë¬´ê¸°ì˜ ì •ë³´ í…ìŠ¤íŠ¸
+    public Text newWeaponInfoText; // êµì²´í•  ë¬´ê¸°ì˜ ì •ë³´ í…ìŠ¤íŠ¸
+    public Image currentWeaponImage; // í˜„ì¬ ë¬´ê¸°ì˜ ì´ë¯¸ì§€
+    public Image newWeaponImage; // êµì²´í•  ë¬´ê¸°ì˜ ì´ë¯¸ì§€
+    public Button changeWeaponButton; // êµì²´ ë²„íŠ¼
 
     void Start()
     {
-        UpdateUI(); // ÃÊ±â UI °»½Å
-        changeWeaponButton.onClick.AddListener(ChangeWeapon); // ¹öÆ° Å¬¸¯ ½Ã ChangeWeapon ÇÔ¼ö È£Ãâ
-        changeWeaponButton.gameObject.SetActive(false); // Ã³À½¿¡´Â ¹öÆ° ºñÈ°¼ºÈ­ (±³Ã¼ÇÒ ¹«±â°¡ ¾øÀ¸¸é)
+        UpdateUI(); // ì´ˆê¸° UI ê°±ì‹ 
+        changeWeaponButton.onClick.AddListener(ChangeWeapon); // ë²„íŠ¼ í´ë¦­ ì‹œ ChangeWeapon í•¨ìˆ˜ í˜¸ì¶œ
+        changeWeaponButton.gameObject.SetActive(false); // ì²˜ìŒì—ëŠ” ë²„íŠ¼ ë¹„í™œì„±í™” (êµì²´í•  ë¬´ê¸°ê°€ ì—†ìœ¼ë©´)
     }
 
-    // UI ¾÷µ¥ÀÌÆ® ÇÔ¼ö
+    // UI ì—…ë°ì´íŠ¸ í•¨ìˆ˜
     void UpdateUI()
     {
         if (currentWeapon != null)
@@ -33,27 +33,27 @@ public class WeaponManager : MonoBehaviour
         {
             newWeaponInfoText.text = newWeapon.GetWeaponInfo();
             newWeaponImage.sprite = newWeapon.weaponImage;
-            changeWeaponButton.gameObject.SetActive(true); // ±³Ã¼ÇÒ ¹«±â°¡ ÀÖÀ¸¸é ¹öÆ° È°¼ºÈ­
+            changeWeaponButton.gameObject.SetActive(true); // êµì²´í•  ë¬´ê¸°ê°€ ìˆìœ¼ë©´ ë²„íŠ¼ í™œì„±í™”
         }
         else
         {
-            newWeaponInfoText.text = "±³Ã¼ÇÒ ¹«±â°¡ ¾ø½À´Ï´Ù.";
+            newWeaponInfoText.text = "êµì²´í•  ë¬´ê¸°ê°€ ì—†ìŠµë‹ˆë‹¤.";
             newWeaponImage.sprite = null;
-            changeWeaponButton.gameObject.SetActive(false); // ±³Ã¼ÇÒ ¹«±â°¡ ¾øÀ¸¸é ¹öÆ° ºñÈ°¼ºÈ­
+            changeWeaponButton.gameObject.SetActive(false); // êµì²´í•  ë¬´ê¸°ê°€ ì—†ìœ¼ë©´ ë²„íŠ¼ ë¹„í™œì„±í™”
         }
     }
 
-    // ¹«±â ±³Ã¼ ÇÔ¼ö
+    // ë¬´ê¸° êµì²´ í•¨ìˆ˜
     void ChangeWeapon()
     {
         if (currentWeapon != null)
         {
-            Debug.Log($"{currentWeapon.weaponName}¿¡¼­ {newWeapon.weaponName}À¸·Î º¯°æµÇ¾ú½À´Ï´Ù.");
+            Debug.Log($"{currentWeapon.weaponName}ì—ì„œ {newWeapon.weaponName}ìœ¼ë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
 
-        currentWeapon = newWeapon; // »õ·Î¿î ¹«±â¸¦ ÇöÀç ÀåÂøµÈ ¹«±â·Î ¼³Á¤
-        newWeapon = null; // »õ·Î¿î ¹«±â¸¦ ºñ¿öÁÜ (±³Ã¼ ¿Ï·á ÈÄ)
+        currentWeapon = newWeapon; // ìƒˆë¡œìš´ ë¬´ê¸°ë¥¼ í˜„ì¬ ì¥ì°©ëœ ë¬´ê¸°ë¡œ ì„¤ì •
+        newWeapon = null; // ìƒˆë¡œìš´ ë¬´ê¸°ë¥¼ ë¹„ì›Œì¤Œ (êµì²´ ì™„ë£Œ í›„)
 
-        UpdateUI(); // UI °»½Å
+        UpdateUI(); // UI ê°±ì‹ 
     }
 }

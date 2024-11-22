@@ -1,10 +1,10 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CloseRangeWeapon : Weapon
 {
-    public int comboNumber;             //ÃÖ´ë ÄŞº¸ ¼ö
-    public int currentcomboNumber;      //ÇöÀç ÄŞº¸ ¼ö 
-    public float[] comboDamage = {0, 0, 0, 0 };  //ÄŞº¸ µ¥¹ÌÁö ¼³Á¤
+    public int comboNumber;             //ìµœëŒ€ ì½¤ë³´ ìˆ˜
+    public int currentcomboNumber;      //í˜„ì¬ ì½¤ë³´ ìˆ˜ 
+    public float[] comboDamage = {0, 0, 0, 0 };  //ì½¤ë³´ ë°ë¯¸ì§€ ì„¤ì •
 }

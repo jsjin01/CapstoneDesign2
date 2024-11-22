@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LongRangeWeapon : Weapon
 {
     public int damage = 0;
-    public int currentArrow = 0;           //ÇöÀç È­»ì ¼ö 
-    public int maxArrow = 0;               //ÃÖ´ë È­»ì ¼ö 
-    public int reloadingTime = 0;          //ÀçÀåÀü½Ã°£ 
+    public int currentArrow = 0;           //í˜„ìž¬ í™”ì‚´ ìˆ˜ 
+    public int maxArrow = 0;               //ìµœëŒ€ í™”ì‚´ ìˆ˜ 
+    public int reloadingTime = 0;          //ìž¬ìž¥ì „ì‹œê°„ 
 }

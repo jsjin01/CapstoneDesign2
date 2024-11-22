@@ -1,51 +1,51 @@
-using UnityEngine;
-using WeaponEnum; //Enum °¡Á®¿È
+ï»¿using UnityEngine;
+using WeaponEnum; //Enum ê°€ì ¸ì˜´
 
 [System.Serializable]
 public class Weapon
 {
-    public string weaponName; //¹«±âÀÌ¸§
-    public int weaponGrade; //¹«±âµî±Ş  => °­È­Á¤µµ?
-    public string description; //¼³¸í
-    public Sprite weaponImage; //UI¿¡ Ç¥½ÃÇÒ ÀÌ¹ÌÁö
+    public string weaponName; //ë¬´ê¸°ì´ë¦„
+    public int weaponGrade; //ë¬´ê¸°ë“±ê¸‰  => ê°•í™”ì •ë„?
+    public string description; //ì„¤ëª…
+    public Sprite weaponImage; //UIì— í‘œì‹œí•  ì´ë¯¸ì§€
 
-    public string ability; //¹«±â ´É·Â
-    public bool isEquipped = false; //¹«±â ÀåÂø ¿©ºÎ => player ºÎºĞ¿¡ class ³Ö´Â °÷ ¼±¾ğ 
+    public string ability; //ë¬´ê¸° ëŠ¥ë ¥
+    public bool isEquipped = false; //ë¬´ê¸° ì¥ì°© ì—¬ë¶€ => player ë¶€ë¶„ì— class ë„£ëŠ” ê³³ ì„ ì–¸ 
 
-    //Ãß°¡ÇÑ ÄÚµåµé -Àü»óÁø
-    public WEAPON_TYPE w_type;             //¹«±â Á¾·ù ºĞ·ù
-    public EFFECT hitEffect;               //¹«±â¿¡ ºÎ¿©µÈ È¿°ú
+    //ì¶”ê°€í•œ ì½”ë“œë“¤ -ì „ìƒì§„
+    public WEAPON_TYPE w_type;             //ë¬´ê¸° ì¢…ë¥˜ ë¶„ë¥˜
+    public EFFECT hitEffect;               //ë¬´ê¸°ì— ë¶€ì—¬ëœ íš¨ê³¼
 
-    //¹«±â Á¤º¸ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    //ë¬´ê¸° ì •ë³´ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
     public string GetWeaponInfo()
     {
-        return $"{weaponName}({weaponGrade})\n{description}\n´É·Â:{ability}";
+        return $"{weaponName}({weaponGrade})\n{description}\nëŠ¥ë ¥:{ability}";
     
     }
 
-    //¹«±â¸¦ ÇØÁ¦ÇÏ´Â ÇÔ¼ö
+    //ë¬´ê¸°ë¥¼ í•´ì œí•˜ëŠ” í•¨ìˆ˜
     public void Unequip()
     {
         isEquipped = false ;
-        Debug.Log($"{weaponName}ÀÌ(°¡) ÇØÁ¦ µÇ¾ú½À´Ï´Ù.");
+        Debug.Log($"{weaponName}ì´(ê°€) í•´ì œ ë˜ì—ˆìŠµë‹ˆë‹¤.");
     }
 
-    //¹«±âÀÇ °ø°İÀ» ½ÇÇàÇÏ´Â ÇÔ¼ö (´É·Â ¼³¸íÀû¿ë)
+    //ë¬´ê¸°ì˜ ê³µê²©ì„ ì‹¤í–‰í•˜ëŠ” í•¨ìˆ˜ (ëŠ¥ë ¥ ì„¤ëª…ì ìš©)
     public void Attack()
     {
         if(isEquipped) 
         {
-        Debug.Log($"{weaponName}À¸·Î °ø°İ");
+        Debug.Log($"{weaponName}ìœ¼ë¡œ ê³µê²©");
 
-    //½ÇÁ¦ °ø°İ ·ÎÁ÷ ¿©±â¿¡  Ãß°¡ÇÏ±â
+    //ì‹¤ì œ ê³µê²© ë¡œì§ ì—¬ê¸°ì—  ì¶”ê°€í•˜ê¸°
         }
         else
         {
-            Debug.Log("¹«±â°¡ ÀåÂøµÇÁö ¾Ê¾Ò½À´Ï´Ù. °ø°İÇÒ ¼ö ¾ø½À´Ï´Ù.");
+            Debug.Log("ë¬´ê¸°ê°€ ì¥ì°©ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤. ê³µê²©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
         }
     }
 
-    public virtual void selfEffects() { }    //ÀÚ±â ÀÚ½Å¿¡ Àû¿ëµÇ´Â È¿°ú => ´É·Â Àû¿ë
+    public virtual void selfEffects() { }    //ìê¸° ìì‹ ì— ì ìš©ë˜ëŠ” íš¨ê³¼ => ëŠ¥ë ¥ ì ìš©
 
-    public virtual void AttackEffects() { }   //Å¸¼ö °ü·Ã ÇÔ¼ö³ª P
+    public virtual void AttackEffects() { }   //íƒ€ìˆ˜ ê´€ë ¨ í•¨ìˆ˜ë‚˜ P
 }

@@ -1,21 +1,21 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackMotion : MonoBehaviour
 {
-    EFFECT effect;  //¹«±â°¡ ¸ó½ºÅÍ¿¡°Ô È¿°ú¸¦ ºÎ¿©ÇÏ´Â ºÎºĞ
-    int damage;  //ÃÖÁ¾ µ¥¹ÌÁö(¹«±â¿Í ÇÃ·¹ÀÌ¾î µ¥¹ÌÁö ¸ğµÎ ÇÕÄ§)
+    EFFECT effect;  //ë¬´ê¸°ê°€ ëª¬ìŠ¤í„°ì—ê²Œ íš¨ê³¼ë¥¼ ë¶€ì—¬í•˜ëŠ” ë¶€ë¶„
+    int damage;  //ìµœì¢… ë°ë¯¸ì§€(ë¬´ê¸°ì™€ í”Œë ˆì´ì–´ ë°ë¯¸ì§€ ëª¨ë‘ í•©ì¹¨)
     public void Setting(int playerDamge,float comboDmg, EFFECT eft = EFFECT.NONE)
     {
         damage = (int)(playerDamge * comboDmg);
         effect = eft;
     }
-    private void OnTriggerEnter2D(Collider2D collision)//¸ó½ºÅÍ¶û ´ê¾ÒÀ» ¶§ È£ÃâµÇµµ·Ï
+    private void OnTriggerEnter2D(Collider2D collision)//ëª¬ìŠ¤í„°ë‘ ë‹¿ì•˜ì„ ë•Œ í˜¸ì¶œë˜ë„ë¡
     {
         if(collision.CompareTag("Monster"))
         {
-            Debug.Log("¸ó½ºÅÍ°¡ µ¥¹ÌÁö¸¦ ÀÔÀ½");
+            Debug.Log("ëª¬ìŠ¤í„°ê°€ ë°ë¯¸ì§€ë¥¼ ì…ìŒ");
             collision.gameObject.GetComponent<Monster>().TakeDamage(damage, effect);
         }
     }
