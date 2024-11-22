@@ -5,25 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Photon.Pun;
+using MultiGamePlayerEnum;
+using WeaponEnum;
 
 
-public enum MULTI_DIRECTION
-{
-    RIGHT,
-    LEFT
-}
-public enum MULTI_INTERECTION
-{
-    WEAPON,
-    NPC,
-    CAPABILITYFRAGMENT
-}
-
-public enum MULTI_ATTACKKEY
-{
-    RIGHT,
-    LEFT
-}
 public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 {
     private PhotonView photonView;
@@ -34,9 +19,10 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
 
 
-    void Start()
+    private void Start()
     {
         photonView = GetComponent<PhotonView>();
+        rightWeapon = new WeaponID01(); //TEST용
     }
 
     // IPunObservable 인터페이스 구현
@@ -90,6 +76,8 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
     //공격키
     bool isAttacking = false;   //공격하고 있는지 여부
+    float lastAttackTime = 0;   //마지막으로 공격한 시간
+    [SerializeField] GameObject closeRangeEffect; //공격범위
 
     //점프 관련 변수
     int jumpCount = 0;       //현재 점프한 횟수
@@ -114,10 +102,19 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
     //Ladder 관련 변수
     bool canLadder = false;  //사다리 타고 있는지 여부
+    bool handLadder =false;  //사다리를 잡았는지 여부
 
     //상호작용 키
     bool isInteracable = false; //상호작용 가능 여부
     MULTI_INTERECTION interectObj;    //상호작용을 하는 물체
+
+    //무기 관련 변수
+    Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
+    Weapon leftWeapon = null;  //왼쪽(2번)에 착용한 무기 
+    
+    //전투 비전투 관련 변수
+    float lastCombattingTime = 0; //마지막으로 전투했던 상태
+    bool isCombating = false;     //전투 상태인지 아닌지 
 
 
     [Header("연결 변수")]
@@ -153,7 +150,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         }
 
         //공격키
-        if(Input.GetKeyDown(KeyCode.RightControl) && !isAttacking)
+        if(Input.GetKeyDown(KeyCode.Q) && !isAttacking)
         {
             Attack(MULTI_ATTACKKEY.RIGHT);
         }
@@ -224,7 +221,15 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
         bool isMoving = joystick.Horizontal != 0 || Input.GetAxis("Horizontal") != 0; // 이동 여부 확인
         anit.SetBool("ismoving", isMoving); // 애니메이션 상태 로컬 업데이트
-    
+
+        if(Time.time - lastCombattingTime > 5)  //비전투 상태로 변환
+            {
+                isCombating = false;
+            }
+        if(Time.time -lastAttackTime > 0.5f)
+            {
+                isAttacking = false;
+            }
 
         }
         else
@@ -294,17 +299,86 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
     public void Attack(MULTI_ATTACKKEY atkKey) //공격
     {
+        if(isCritical())//치명타 뜰 때 안 뜰 때 구분
+        {
+            damage = attackPower * fatalHitDamage;
+        }
+        else
+        {
+            damage = attackPower;
+        }
+        isAttacking = true;
         if(atkKey == MULTI_ATTACKKEY.RIGHT)
         {
-            Debug.Log("1번 무기 공격");
+            if(rightWeapon != null)
+            {
+                AttackMotion(rightWeapon);
+                Debug.Log("1번 무기 공격");
+            }
+            
         }
         else if(atkKey == MULTI_ATTACKKEY.LEFT)
         {
-            Debug.Log("2번 무기 공격");
+            if(leftWeapon != null)
+            {
+                AttackMotion(leftWeapon);
+                Debug.Log("2번 무기 공격");
+            }
+            
         }
         // 공격 상태 동기화
         photonView.RPC("SyncAttackState", RpcTarget.Others, atkKey);
         StartCoroutine(ResetAttackState());
+    }
+    void AttackMotion(Weapon weapon)// 무기 모션 정하기 및 적용
+    {
+        switch(weapon.w_type)
+        {
+            case WEAPON_TYPE.CLOSE_RANGE_WEAPON:
+                lastAttackTime = Time.time;        //공격딜레이를 위해서 초를 잼
+
+                weapon.selfEffects();              //특수 효과 부여
+                anit.SetTrigger("CloseAttackKey"); //공격모션 
+                closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, ((CloseRangeWeapon)weapon).comboDamage[anit.GetInteger("Combo")], weapon.hitEffect);//데미지랑 효과 설정
+                
+                if(Time.time - lastCombattingTime < 1)//1초안에 연속동작을 하지 않으면 풀리도록
+                {
+                    anit.SetInteger("Combo", anit.GetInteger("Combo") + 1);
+                }
+                else
+                {
+                    anit.SetInteger("Combo", 0);
+                }
+
+                if(anit.GetInteger("Combo") >= ((CloseRangeWeapon)weapon).comboNumber) // 최대 comboNumber번까지 가능
+                {
+                    anit.SetInteger("Combo", 0);
+                }
+
+                lastCombattingTime = Time.time; //초재기
+                
+                //적용효과 
+                break;
+            case WEAPON_TYPE.LONG_RANGE_WEAPON: //화살 생성
+                lastAttackTime = Time.time + 1f; //공격딜레이를 위해서 초를 잼
+                anit.SetTrigger("LongAttackKey");
+                break;
+            case WEAPON_TYPE.SHIELD:            //쉴드 모션만 있으면 됨
+                break;
+        }
+    }
+    bool isCritical()//치명타 뜨면 true
+    {
+        int randomNumber = Random.Range(1, 101);
+
+        if(randomNumber <= fatalHitProbability)
+        {
+            return true;
+        }
+        else 
+        { 
+            return false; 
+        }
     }
 
     
@@ -392,7 +466,6 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
             if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
             {
                 anit.Play("GroundSlam", -1, 0.3f);
-                //anit.SetTrigger("fallingAttack");
                 rb.gravityScale = 1;
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
@@ -401,9 +474,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
             }
         }
 
-        //if(collision.gameObject.CompareTag("Monster") && isAttacking)
-        //{
-        //}
+        
     }
 
     private void OnCollisionStay2D(Collision2D collision) //계속 닿고 있을 때 
@@ -419,22 +490,41 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ladder")) // 사다리
         {
-            if(canLadder) //사다리와 상호작용 중
+            if(canLadder&& !handLadder) //사다리와 상호작용 중
             {
                 rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
                 rb.gravityScale = 0;                                //중력 무시
                 jumpCount = 2;
+                handLadder = true;
             }
 
-            if((joystick.Vertical > 0.5f) || Input.GetKey(KeyCode.W))
+            if((joystick.Vertical > 0.5f) || Input.GetAxis("Vertical") > 0)
             {
                 canLadder = true;
-                transform.position += new Vector3(0, 0.5f, 0);
+                transform.position += new Vector3(0, 0.1f, 0);
+                if(!anit.GetBool("LadderUp"))
+                {
+                    anit.SetTrigger("LadderRiding");
+                    anit.SetBool("LadderUp", true);
+                    if(anit.GetBool("LadderDown"))
+                    {
+                        anit.SetBool("LadderDown", false);
+                    }
+                }
             }
-            else if((joystick.Vertical < -0.5f) || Input.GetKey(KeyCode.S))
+            else if((joystick.Vertical < -0.5f) || Input.GetAxis("Vertical") < 0)
             {
                 canLadder = true;
-                transform.position -= new Vector3(0, 0.5f, 0);
+                transform.position -= new Vector3(0, 0.1f, 0);
+                if(!anit.GetBool("LadderDown"))
+                {
+                    anit.SetTrigger("LadderRiding");
+                    anit.SetBool("LadderDown", true);
+                    if(anit.GetBool("LadderUp"))
+                    {
+                        anit.SetBool("LadderUp", false);
+                    }
+                }
             }
         }
 
@@ -464,6 +554,9 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);
             jumpCount = 0;
             canLadder = false;
+            handLadder = false;
+            anit.SetBool("LadderUp", false);
+            anit.SetBool("LadderDown", false);
         }
     }
 
@@ -528,10 +621,12 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         isAttacking = true;
         if (atkKey == MULTI_ATTACKKEY.RIGHT)
         {
+            anit.SetTrigger("RightAttack");
             Debug.Log("1번 무기 공격 동기화");
         }
         else if (atkKey == MULTI_ATTACKKEY.LEFT)
         {
+            anit.SetTrigger("LeftAttack");
             Debug.Log("2번 무기 공격 동기화");
         }
         StartCoroutine(ResetAttackState());

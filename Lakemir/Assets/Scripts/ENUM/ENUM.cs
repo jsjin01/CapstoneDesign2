@@ -23,6 +23,28 @@ namespace GamePlayerEnum //GamePlayer.cs
     }
 }
 
+namespace MultiGamePlayerEnum //GamePlayer.cs 
+{
+    public enum MULTI_DIRECTION//바라보는 방향
+    {
+        RIGHT,
+        LEFT
+    }
+    public enum MULTI_INTERECTION//상호작용 종류
+    {
+        WEAPON,
+        NPC,
+        CAPABILITYFRAGMENT
+    }
+
+    public enum MULTI_ATTACKKEY //공격키 종류
+    {
+        RIGHT,
+        LEFT
+    }
+}
+
+
 namespace MonsterEnum//Monste.cs
 {
     public enum MOSTER_TYPE //일반 몬스터 타입
