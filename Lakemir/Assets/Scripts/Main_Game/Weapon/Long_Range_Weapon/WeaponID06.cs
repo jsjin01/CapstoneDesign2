@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,18 +6,18 @@ public class WeaponID06 : LongRangeWeapon
 {
     public WeaponID06() 
     {
-        weaponName = "¾îµÒÀÇ È­»ìÃË";
-        description = "¿À·¡µÈ ÀúÁÖ¿Í ¸¶¹ýÀÌ ±êµç ¿ø°Å¸® ¹«±â·Î, ½Åºñ·Ó°í ¾îµÎ¿î ÈûÀ» Áö³æ´Ù. " +
-                       "ÀÌ È­»ìÃËÀº Èñ¹ÌÇÏ°Ô Çª¸¥ºûÀÌ µµ´Â °ËÀº ±Ý¼ÓÀ¸·Î Á¦ÀÛµÇ¾î, ºûÀ» ¹ÞÀ¸¸é ½Åºñ·Î¿î ±¤ÈÖ¸¦ ¹ßÇÔ.";
-        ability = "»ç½½ÀÇ Æ÷È¹: 3¹øÂ° °ø°ÝÀÏ ¶§, °ø°Ý´çÇÑ ÀûÀÌ ÀÏ¹Ý ¸ó½ºÅÍ³ª ¿¤¸®Æ® ¸ó½ºÅÍÀÏ °æ¿ì ÂªÀº ½Ã°£(0.5ÃÊ)µ¿¾È ±âÀýÇÏ°Ô ¸¸µç´Ù.\n" +
-                  "ºÎ½ÄÀÇ Æ÷½Ä: ¸ó½ºÅÍ°¡ ¸ÂÀ» ¶§¸¶´Ù 3ÃÊ°£ ºÎ½Ä(ÃÊ´ç °ø°Ý·Â 5%¾¿ µ¥¹ÌÁö)¸¦ ºÎ¿©ÇÔ(ÁßÃ¸ °¡´É)";
+        weaponName = "ì–´ë‘ ì˜ í™”ì‚´ì´‰";
+        description = "ì˜¤ëž˜ëœ ì €ì£¼ì™€ ë§ˆë²•ì´ ê¹ƒë“  ì›ê±°ë¦¬ ë¬´ê¸°ë¡œ, ì‹ ë¹„ë¡­ê³  ì–´ë‘ìš´ íž˜ì„ ì§€ë…”ë‹¤. " +
+                       "ì´ í™”ì‚´ì´‰ì€ í¬ë¯¸í•˜ê²Œ í‘¸ë¥¸ë¹›ì´ ë„ëŠ” ê²€ì€ ê¸ˆì†ìœ¼ë¡œ ì œìž‘ë˜ì–´, ë¹›ì„ ë°›ìœ¼ë©´ ì‹ ë¹„ë¡œìš´ ê´‘íœ˜ë¥¼ ë°œí•¨.";
+        ability = "ì‚¬ìŠ¬ì˜ í¬íš: 3ë²ˆì§¸ ê³µê²©ì¼ ë•Œ, ê³µê²©ë‹¹í•œ ì ì´ ì¼ë°˜ ëª¬ìŠ¤í„°ë‚˜ ì—˜ë¦¬íŠ¸ ëª¬ìŠ¤í„°ì¼ ê²½ìš° ì§§ì€ ì‹œê°„(0.5ì´ˆ)ë™ì•ˆ ê¸°ì ˆí•˜ê²Œ ë§Œë“ ë‹¤.\n" +
+                  "ë¶€ì‹ì˜ í¬ì‹: ëª¬ìŠ¤í„°ê°€ ë§žì„ ë•Œë§ˆë‹¤ 3ì´ˆê°„ ë¶€ì‹(ì´ˆë‹¹ ê³µê²©ë ¥ 5%ì”© ë°ë¯¸ì§€)ë¥¼ ë¶€ì—¬í•¨(ì¤‘ì²© ê°€ëŠ¥)";
         w_type = WeaponEnum.WEAPON_TYPE.LONG_RANGE_WEAPON;
         damage = 0.4f;
-        currentArrow = 5;           //ÇöÀç È­»ì ¼ö 
-        maxArrow = 5;               //ÃÖ´ë È­»ì ¼ö 
-        reloadingTime = 3;          //ÀçÀåÀü½Ã°£ 
-        isReloading = false;               //ÀçÀåÀü Áß
-        isGuided = false;                  //À¯µµ ¿©ºÎ
+        currentArrow = 5;           //í˜„ìž¬ í™”ì‚´ ìˆ˜ 
+        maxArrow = 5;               //ìµœëŒ€ í™”ì‚´ ìˆ˜ 
+        reloadingTime = 3;          //ìž¬ìž¥ì „ì‹œê°„ 
+        isReloading = false;               //ìž¬ìž¥ì „ ì¤‘
+        isGuided = false;                  //ìœ ë„ ì—¬ë¶€
         hitEffect = EFFECT.DOTDEAL;
     }
 

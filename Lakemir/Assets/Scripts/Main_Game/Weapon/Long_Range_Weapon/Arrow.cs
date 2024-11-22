@@ -1,24 +1,24 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
-    [SerializeField] float speed;//¼Óµµ
+    [SerializeField] float speed;//ì†ë„
     Rigidbody2D rb;              //rigidbody
-    float dTime = 10f;            //Á¦°ÅµÇ´Âµ¥ °É¸®´Â ½Ã°£ 
-    int damage;            //ÇÃ·¹ÀÌ¾î µ¥¹ÌÁö
-    EFFECT effect;               //ÀÌÆåÆ®
-    bool isGuided;               //À¯µµ ¿©ºÎ
+    float dTime = 10f;            //ì œê±°ë˜ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„ 
+    int damage;            //í”Œë ˆì´ì–´ ë°ë¯¸ì§€
+    EFFECT effect;               //ì´í™íŠ¸
+    bool isGuided;               //ìœ ë„ ì—¬ë¶€
 
-    Transform targetMonster;     //¸ó½ºÅÍ Å¸°Ù
+    Transform targetMonster;     //ëª¬ìŠ¤í„° íƒ€ê²Ÿ
 
     private void Update()
     {
         Invoke("isDestroy", 5f);
 
-        if(isGuided)//À¯µµ µÇ´Â Áß
+        if(isGuided)//ìœ ë„ ë˜ëŠ” ì¤‘
         {
             GuideMove();
         }
@@ -38,7 +38,7 @@ public class Arrow : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Setting(int playerDmg, float weaponDmg, EFFECT eft, bool _isGuided ) //µ¥¹ÌÁö ¼³Á¤
+    public void Setting(int playerDmg, float weaponDmg, EFFECT eft, bool _isGuided ) //ë°ë¯¸ì§€ ì„¤ì •
     {
         damage =(int)(playerDmg * weaponDmg);
         effect = eft;
@@ -62,9 +62,9 @@ public class Arrow : MonoBehaviour
         }
     }
 
-    void GuideMove()    //Ãß°İ ¹«ºù
+    void GuideMove()    //ì¶”ê²© ë¬´ë¹™
     {
-        Debug.Log("Ãß°İ Áß");
+        Debug.Log("ì¶”ê²© ì¤‘");
     }
 
 }
