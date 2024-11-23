@@ -4,9 +4,13 @@ using UnityEngine.UI;
 public class OptionManager : MonoBehaviour
 {
     public GameObject optionPanel; // 옵션 패널
+    public GameObject confirmationPanel; //확인 패널
+    public GameObject skillPanel; //스킬 패널
+
     public Button closeButton; // 옵션 창 닫기 버튼
     public Button saveButton; // 게임 저장 버튼
     public Button exitButton; // 게임 종료 버튼
+
     public Slider volumeSlider; // 소리 볼륨 조절 슬라이더
     public Slider interfaceSizeSlider; //인터페이스 크기 조절 슬라이더
 
@@ -21,7 +25,7 @@ public class OptionManager : MonoBehaviour
     {
         closeButton.onClick.AddListener(CloseOptionPanel);
         saveButton.onClick.AddListener(SaveGame);
-        exitButton.onClick.AddListener(ExitGame);
+        exitButton.onClick.AddListener(ConfirmExitGame);
 
         // 초기 슬라이더 값을 설정
         volumeSlider.value = defaultVolume;
@@ -33,6 +37,8 @@ public class OptionManager : MonoBehaviour
 
         // 옵션 창 처음에는 비활성화
         optionPanel.SetActive(false);
+        confirmationPanel.SetActive(false);
+        skillPanel.SetActive(false);
 
         UpdateEquipmentInfo();
         UpdatePlayerStats();
@@ -58,14 +64,14 @@ public class OptionManager : MonoBehaviour
     }
 
     // 장비 정보를 업데이트하는 함수
-    private void UpdateEquipmentInfo()
+    public void UpdateEquipmentInfo()
     {
         equipmentInfoText1.text = "장비 이름: 검\n등급: A\n설명: 강력한 검";
         equipmentInfoText2.text = "장비 이름: 도끼\n등급: B\n설명: 무거운 도끼";
     }
 
     // 플레이어 능력치를 업데이트하는 함수
-    private void UpdatePlayerStats()
+    public void UpdatePlayerStats()
     {
         playerStatsText.text = "체력: 100/100\n공격력: 50\n방어력: 30\n치명타 확률: 10%\n골드: 5000";
     }
@@ -77,21 +83,46 @@ public class OptionManager : MonoBehaviour
     }
 
     // 옵션 창 닫기
-    private void CloseOptionPanel()
+    public void CloseOptionPanel()
     {
-        optionPanel.SetActive(false);
+        optionPanel.SetActive(false); //옵션 패널 비활성화
     }
 
-    // 게임 저장 기능 (임시로 로그 출력)
-    private void SaveGame()
+    // 게임 저장 기능 
+    public void SaveGame()
     {
         Debug.Log("게임이 저장되었습니다.");
     }
 
-    // 게임 종료 기능 (임시로 로그 출력)
-    private void ExitGame()
+    // 확인창 설정
+    public void ShowConfirmationPanel()
+    {
+        confirmationPanel.SetActive(true);
+        Debug.Log("정말 게임을 종료하시겠습니까?");
+    }
+    
+    // 게임 나가기 확인
+    public void ConfirmExitGame()
     {
         Debug.Log("게임이 종료됩니다.");
-        Application.Quit(); // 실제 빌드에서 게임 종료
+        Application.Quit();
+    }
+
+    // 게임 나가기 취소
+    public void CancelExitGame()
+    {
+        confirmationPanel.SetActive(true);
+    }
+
+    // 스킬창 열기
+    public void OpenSkillPanel()
+    {
+        skillPanel.SetActive(true);
+    }
+
+    // 스킬창 닫기
+    public void CloseSkillPanel()
+    {
+        skillPanel.SetActive(false);
     }
 }
