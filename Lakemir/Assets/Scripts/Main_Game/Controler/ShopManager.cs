@@ -1,87 +1,50 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GoddessStatueInteraction : MonoBehaviour
+public class ShopManager : MonoBehaviour
 {
-    public GameObject shopPanel;
-    public Transform content;
-    public Text currencyText;
-    public Button exitButton;
-
-    private int currency = 100;
+    public Text playerGoldText;          // 플레이어 금화 텍스트
+    public int playerGold = 100;         // 초기 금화
+    public Transform shopContent;        // 아이템 패널들이 배치될 부모 오브젝트
+    public GameObject[] itemPanels;      // 아이템 패널들 (에디터에서 직접 연결)
 
     private void Start()
     {
-        UpdateCurrencyText();
-        CreateShopItems();
-        exitButton.onClick.AddListener(CloseShop);
+        UpdatePlayerGoldUI();
+        SetupShopItems();
     }
 
-    private void UpdateCurrencyText()
+    void UpdatePlayerGoldUI()
     {
-        currencyText.text = $"희망의 영혼: {currency}";
+        playerGoldText.text = "희망의 영혼: " + playerGold + "개";
     }
 
-    private void CreateShopItems()
+    void SetupShopItems()
     {
-        string[] itemNames = { "거점 해제", "보호막 강화", "회복약", "무기 강화", "영구 능력치 강화" };
-        string[] descriptions = {
-            "시나리오에서 거점을 해제합니다.",
-            "보호막을 강화합니다.",
-            "체력을 회복합니다.",
-            "무기를 강화합니다.",
-            "플레이어의 능력치를 영구적으로 강화합니다."
-        };
-        int[] costs = { 500, 50, 50, 50, 10 };
-
-        for (int i = 0; i < itemNames.Length; i++)
+        foreach (var panel in itemPanels)
         {
-            int currentIndex = i;
-
-            // 아이템 설정
-            GameObject item = new GameObject(itemNames[currentIndex]);
-            item.transform.SetParent(content);
-
-            // RectTransform 설정
-            RectTransform rectTransform = item.AddComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(400, 100);
-
-            Text nameText = new GameObject("NameText").AddComponent<Text>();
-            nameText.text = itemNames[currentIndex];
-            nameText.fontSize = 20;
-            nameText.color = Color.black;
-            nameText.alignment = TextAnchor.MiddleLeft;
-
-            Button enhanceButton = new GameObject("EnhanceButton").AddComponent<Button>();
-            enhanceButton.transform.SetParent(item.transform);
-            enhanceButton.onClick.AddListener(() => AttemptEnhancement(costs[currentIndex]));
+            Button buyButton = panel.transform.Find("BuyButton").GetComponent<Button>();
+            buyButton.onClick.AddListener(() => PurchaseItem(panel));
         }
     }
 
-    public void CloseShop()
+    void PurchaseItem(GameObject panel)
     {
-        if (shopPanel != null)
+        Text priceText = panel.transform.Find("ItemPrice").GetComponent<Text>();
+        int price = int.Parse(priceText.text.Split(' ')[1].Replace("개", ""));
+
+        if (playerGold >= price)
         {
-            shopPanel.SetActive(false);
-            Debug.Log("상점을 닫았습니다.");
+            playerGold -= price;
+            UpdatePlayerGoldUI();
+            Debug.Log("아이템 구매 성공!");
+            // 구매 후 아이템 효과 적용 로직 추가 가능
         }
         else
         {
-            Debug.LogError("shopPanel이 연결되지 않았습니다!");
-        }
-    }
-
-    private void AttemptEnhancement(int cost)
-    {
-        if (currency >= cost)
-        {
-            currency -= cost;
-            UpdateCurrencyText();
-            Debug.Log($"강화 성공! 남은 희망의 영혼: {currency}");
-        }
-        else
-        {
-            Debug.LogWarning("강화 실패! 재화 부족");
+            Debug.Log("금화가 부족합니다!");
+            // 가격 텍스트 색상 변경 (빨간색)
+            priceText.color = Color.red;
         }
     }
 }

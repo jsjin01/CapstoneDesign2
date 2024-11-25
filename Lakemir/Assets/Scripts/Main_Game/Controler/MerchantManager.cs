@@ -57,6 +57,18 @@ public class MerchantManager : MonoBehaviour
 
     public void DisplayShopItems()
     {
+        if (itemPanelPrefab == null) 
+        {
+            Debug.LogError("itemPanelPrefab이 설정되지 않았습니다!");
+            return;
+        }
+
+        if (shopContent == null)
+        {
+            Debug.LogError("shopContent가 설정되지 않았습니다!");
+            return;
+        }
+
         foreach (Transform child in shopContent)
         {
             Destroy(child.gameObject); // 기존 패널 제거
@@ -65,14 +77,27 @@ public class MerchantManager : MonoBehaviour
         foreach (var item in currentShopItems)
         {
             GameObject panel = Instantiate(itemPanelPrefab, shopContent); // ItemPanel 프리팹 생성
-            panel.transform.Find("ItemName").GetComponent<Text>().text = item.itemName;
+            panel.transform.localScale = Vector3.one; // 스케일 초기화
 
-            int randomPrice = Mathf.RoundToInt(item.basePrice * Random.Range(0.5f, 2f));
-            panel.transform.Find("ItemPrice").GetComponent<Text>().text = "금화: " + randomPrice.ToString() + "개";
-            panel.transform.Find("ItemDescription").GetComponent<Text>().text = item.description;
+            var itemName = panel.transform.Find("ItemName");
+            var itemPrice = panel.transform.Find("ItemPrice");
+            var itemDescription = panel.transform.Find("ItemDescription");
+            var buyButton = panel.transform.Find("BuyButton");
 
-            Button buyButton = panel.transform.Find("BuyButton").GetComponent<Button>();
-            buyButton.onClick.AddListener(() => BuyItem(item, randomPrice));
+            if (itemName == null || itemPrice == null || itemDescription == null || buyButton == null)
+            {
+                Debug.LogError("프리팹 내부의 UI 요소 이름이 잘못되었습니다!");
+                continue;
+            }
+
+            itemName.GetComponent<Text>().text = item.itemName;
+
+           int randomPrice = Mathf.RoundToInt(item.basePrice * Random.Range(0.5f, 2f));
+           itemPrice.GetComponent<Text>().text = "금화:" + randomPrice.ToString() + "개";
+            itemDescription.GetComponent<Text>().text = item.description;
+            buyButton.GetComponent<Button>().onClick.AddListener(() => BuyItem(item, randomPrice));
+
+            Debug.Log($"패널 생성 완료: {item.itemName}, 가격: {randomPrice}");
         }
     }
 
