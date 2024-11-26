@@ -45,7 +45,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     bool isAttacking = false; //공격했는지 판단하는 변수
 
     float dieTime;      //죽은 시간
-    float dieAnimTime;  //죽고 나서 애니메이션이 지속되는 시간
+    float dieAnimTime  = 1f;  //죽고 나서 애니메이션이 지속되는 시간
     bool isDie = false; //죽었는지 판단하는 변수
 
     [SerializeField] GameObject attackmotionObj;
