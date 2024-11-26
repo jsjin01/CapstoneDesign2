@@ -11,6 +11,7 @@ TagManager:
   - Npc
   - CapabilityFragment
   - Monster
+  - Shield
   layers:
   - Default
   - TransparentFX

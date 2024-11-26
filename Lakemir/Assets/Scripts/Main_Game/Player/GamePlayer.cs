@@ -250,7 +250,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             if(rightWeapon != null)
             {
                 AttackMotion(rightWeapon);
-                Debug.Log("d");
             }
         }
         else if(atkKey == ATTACKKEY.LEFT)
@@ -401,7 +400,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
     }
 
-    public void TakeDamage(int dmg)// 데미지 입는 부분
+    public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
         lastCombattingTime = Time.time;
 
@@ -410,18 +409,21 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             currentShield -= dmg;
             if(currentShield < 0)
             {
-                currentHp -= currentShield;
+                currentHp += currentShield;
                 currentShield = 0;
+                StartCoroutine(TakeDamageAinm(obj));
             }
         }
         else
         {
+            StartCoroutine(TakeDamageAinm(obj));
             currentHp -= dmg;
         }
 
         if(currentHp <= 0)
         {
-            Debug.Log("플레이어 사망");
+            anit.SetTrigger("Die");
+            anit.SetBool("isDie", true);
         }
     }
 
@@ -569,6 +571,15 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         dashTrail.SetActive(false);
         yield return new WaitForSeconds(0.2f);
         isDashing = false;
+    }
+
+    IEnumerator TakeDamageAinm(GameObject obj) //데미지 입었을 때 날라감
+    {
+        anit.SetTrigger("takeDamage");
+        Vector2 flyingVector = (gameObject.transform.position - obj.transform.position).normalized;
+        rb.velocity = flyingVector*10f;
+        yield return new WaitForSeconds(0.5f);
+        rb.velocity = new Vector3(0, 0, 0);
     }
 }
 

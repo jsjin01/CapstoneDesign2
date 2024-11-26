@@ -1,22 +1,22 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShieldMotion : MonoBehaviour
 {
-    EFFECT effect;  //¹«±â°¡ ¸ó½ºÅÍ¿¡°Ô È¿°ú¸¦ ºÎ¿©ÇÏ´Â ºÎºĞ
-    float reflect;  //¹İ»çµô
+    EFFECT effect;  //ë¬´ê¸°ê°€ ëª¬ìŠ¤í„°ì—ê²Œ íš¨ê³¼ë¥¼ ë¶€ì—¬í•˜ëŠ” ë¶€ë¶„
+    float reflect;  //ë°˜ì‚¬ë”œ
     public void Setting(float rf, EFFECT eft = EFFECT.NONE)
     {
         reflect = rf;
         effect = eft;
     }
-    private void OnTriggerEnter2D(Collider2D collision)//¸ó½ºÅÍ¶û ´ê¾ÒÀ» ¶§ È£ÃâµÇµµ·Ï
+    private void OnTriggerEnter2D(Collider2D collision)//ëª¬ìŠ¤í„°ë‘ ë‹¿ì•˜ì„ ë•Œ í˜¸ì¶œë˜ë„ë¡
     {
         if(collision.CompareTag("MonsterAttack"))
         {
-            Debug.Log("¸ó½ºÅÍ°¡ µ¥¹ÌÁö¸¦ ÀÔÀ½");
-            collision.gameObject.GetComponent<Monster>().TakeDamage(10, effect);
+            int dmg = collision.gameObject.GetComponent<Close_Range_Attack_Montion>().damage;
+            collision.GetComponentInParent<Monster>().TakeDamage((int)(dmg * reflect),effect);
         }
     }
 }

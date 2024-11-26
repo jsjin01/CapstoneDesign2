@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using MonsterEnum;
-public abstract class Monster : MonoBehaviour //추상 클래스 선언
+public class Monster : MonoBehaviour //추상 클래스 선언
 {
     public int maxHp;                 //Max Hp일때
     public int currentHp;             //현재 HP
@@ -19,7 +19,7 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
     [SerializeField] GameObject platform;
 
     [Header("순찰 경로의 포인트들")]
-    [SerializeField] Vector2[] patrolPoints;
+    [SerializeField] Vector2[] patrolPoints = new Vector2[2];
     //Transfrom 설정시 그 포인트 사이를 계속 이동함
 
     //가장 가까운 Player의 벡터 & 거리
@@ -29,7 +29,6 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
     [Header("플레이어 탐지 관련 변수")]
     [SerializeField] float detectionRadius; //플레이어 감지 거리
     [SerializeField] float attackRange;     //몬스터의 사정 거리
-    [SerializeField] float attackCooldown;  //공격 쿨타임
 
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
@@ -39,6 +38,18 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
     //방향
     enum DIRECTION { RIGHT, LEFT }  //enum문으로 설정
     DIRECTION direction = DIRECTION.RIGHT;
+
+    //시간 관련
+    [SerializeField] float attackCooldown;  //공격 쿨타임
+    float lastAttackTime; //마지막으로 공격한 시간
+    bool isAttacking = false; //공격했는지 판단하는 변수
+
+    float dieTime;      //죽은 시간
+    float dieAnimTime;  //죽고 나서 애니메이션이 지속되는 시간
+    bool isDie = false; //죽었는지 판단하는 변수
+
+    [SerializeField] GameObject attackmotionObj;
+
 
     [SerializeField] protected Animator anit;
 
@@ -57,14 +68,22 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
                 AttackMotion(monsterType);
                 break;
             case STATE.DIE:
+                Die();
                 break;
         }
     }
-    virtual public void Attack(Collision obj)//공격
+
+    void Die()//죽음
     {
-        if(obj.gameObject.CompareTag("Player"))//플레이어에 데미지 입히는 부분
+        if (!isDie)
         {
-            obj.gameObject.GetComponent<GamePlayer>().TakeDamage(attackPower);
+            isDie = true;
+            dieTime = Time.time;
+            anit.SetTrigger("Die");
+        }
+        else if(isDie && Time.time - dieTime > dieAnimTime)
+        {
+            Destroy(gameObject);//게임 오브젝트를 삭제함
         }
     }
 
@@ -74,12 +93,11 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
         if (currentHp < 0)
         {
-            Debug.Log("몬스터 죽음");
-            //anit.SetTrigger("Die");
+            currentState = STATE.DIE;
         }
         else
         {
-            //anit.SetTrigger("Damage");
+            anit.SetTrigger("TakeDamage");
         }
     }
 
@@ -159,10 +177,11 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
 
             transform.position = Vector2.MoveTowards(transform.position, new Vector2(targetPlayer.transform.position.x,transform.position.y), speed * Time.deltaTime);
 
+            //추격하다가 너무 가까워지면 공격
             if(Vector3.Distance(transform.position, targetPlayer.transform.position) <= attackRange)
             {
                 currentState = STATE.ATTACK;
-            }
+            }//너무 멀어지면 타겟팅 해제되면서 순환타입으로 변경
             else if(Vector3.Distance(transform.position, targetPlayer.transform.position) > detectionRadius)
             {
                 targetPlayer = null;
@@ -178,12 +197,44 @@ public abstract class Monster : MonoBehaviour //추상 클래스 선언
 
     void AttackMotion(MOSTER_TYPE _monsterType)//타입에 따라 공격할 수 있도록 플레이어 공격
     {
+        //가는 방향으로 보도록 설정
+        if (targetPlayer.transform.position.x - transform.position.x < 0)
+        {
+            direction = DIRECTION.RIGHT;
+        }
+        else
+        {
+            direction = DIRECTION.LEFT;
+        }
+        RightOrLeft(direction);
         switch(_monsterType) 
         {
             case MOSTER_TYPE.CLOSE_RANGE:
+                CloseRangeAttack();
                 break;
             case MOSTER_TYPE.LONG_RANGE:
                 break;
+        }
+    }
+    void CloseRangeAttack() //근접 몬스터
+    {
+        if (!isAttacking)
+        {
+            attackmotionObj.GetComponent<Close_Range_Attack_Montion>().Setting(attackPower);
+            isAttacking = true;
+            lastAttackTime = Time.time;
+            anit.SetTrigger("Attack");
+        }
+        else if (isAttacking && Time.time - lastAttackTime > 1f)//애니메이션이 끝나고
+        {
+            if(Vector3.Distance(transform.position, targetPlayer.transform.position) > attackRange) //공격범위 밖으로 나가면 상태 변환
+            {
+                currentState = STATE.CHASE;
+            }
+            else if (isAttacking && Time.time - lastAttackTime > attackCooldown) //공격 쿨타임이 지났을 때
+            {
+                isAttacking= false;
+            }
         }
     }
 

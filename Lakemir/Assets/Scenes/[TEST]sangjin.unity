@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 18607207}
   - component: {fileID: 18607208}
+  - component: {fileID: 18607209}
   m_Layer: 0
   m_Name: Attack
   m_TagString: Untagged
@@ -204,6 +205,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.4718215}
   m_EdgeRadius: 0
+--- !u!114 &18607209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18607206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caaedc2832aaf774e9880f274474a9c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
 --- !u!1 &309756969
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,9 +418,9 @@ GameObject:
   - component: {fileID: 407672950}
   - component: {fileID: 407672949}
   - component: {fileID: 407672954}
-  - component: {fileID: 407672955}
   - component: {fileID: 407672953}
   - component: {fileID: 407672952}
+  - component: {fileID: 407672956}
   m_Layer: 0
   m_Name: Close_Range_Monster_01
   m_TagString: Monster
@@ -587,7 +601,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &407672955
+--- !u!114 &407672956
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -596,23 +610,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 407672948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c65dadf931f94747871da50f981075b, type: 3}
+  m_Script: {fileID: 11500000, guid: b6fe6d08a451fd34dba5928b47260b24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
   currentHp: 100
   attackPower: 10
   defensivePower: 0
-  speed: 5
-  anit: {fileID: 0}
+  speed: 4
   monsterType: 0
   platform: {fileID: 0}
   patrolPoints:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   detectionRadius: 5
-  attackRange: 1
+  attackRange: 2
   attackCooldown: 2
+  attackmotionObj: {fileID: 18607206}
+  anit: {fileID: 407672954}
 --- !u!1 &510129121
 GameObject:
   m_ObjectHideFlags: 0
