@@ -72,7 +72,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     //Ladder 관련 변수
     bool canLadder = false;  //사다리 타고 있는지 여부
-    bool handLadder =false;  //사다리를 잡았는지 여부
+    bool ladderUp = false;   //사다리를 타고 위로 가는 여부
+    bool ladderDown = false; //사다리를 타고 아래로 내려가는 여부
 
     //상호작용 키
     bool isInteracable = false; //상호작용 가능 여부
@@ -85,6 +86,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     //전투 비전투 관련 변수
     float lastCombattingTime = 0; //마지막으로 전투했던 상태
     bool isCombating = false;     //전투 상태인지 아닌지 
+    bool takingDamage = false;    //데미지를 입은 후 바닥에 안 닿았을 때
 
     [Header("연결 변수")]
     public Joystick joystick;              //Joystick을 추가할 변수
@@ -109,7 +111,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
         Moving(Input.GetAxis("Horizontal"));
         //점프 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && !canLadder)
         {
             Jump();
         }
@@ -160,7 +162,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         Moving(joystick.Horizontal);
 
         //상하
-        if(joystick.Vertical > 0.5f && canUpKey)
+        if(joystick.Vertical > 0.5f && canUpKey && !canLadder)
         {
             Jump();
             canUpKey = false;
@@ -409,21 +411,31 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             currentShield -= dmg;
             if(currentShield < 0)
             {
-                currentHp += currentShield;
+                currentHp += currentShield;  //음수가 된 실드 만큼 데미지를 추가로 입음
                 currentShield = 0;
-                StartCoroutine(TakeDamageAinm(obj));
+                if (currentHp <= 0)
+                {
+                    anit.SetTrigger("Die");
+                    anit.SetBool("isDie", true);
+                }
+                else
+                {
+                    StartCoroutine(TakeDamageAnim(obj));
+                }
             }
         }
-        else
+        else if (currentShield <= 0)
         {
-            StartCoroutine(TakeDamageAinm(obj));
             currentHp -= dmg;
-        }
-
-        if(currentHp <= 0)
-        {
-            anit.SetTrigger("Die");
-            anit.SetBool("isDie", true);
+            if(currentHp <= 0)
+            {
+                anit.SetTrigger("Die");
+                anit.SetBool("isDie", true);
+            }
+            else
+            {
+                StartCoroutine(TakeDamageAnim(obj));
+            }
         }
     }
 
@@ -431,14 +443,23 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))
         {
-            if(jumpCount != 0 && !isFallingAttacking)
+            if (takingDamage)//데미지 입고 바닥에 닿았을 때
+            {
+                rb.velocity = Vector3.zero;
+                anit.SetTrigger("DamageFall");
+                takingDamage = false;
+            }
+
+            if (jumpCount != 0 && !isFallingAttacking)
             {
                 anit.SetTrigger("jumpFall");
+                anit.ResetTrigger("isJumping");
             }
             jumpCount = 0;  //점프 횟수 초기화
             if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
             {
                 anit.Play("GroundSlam", -1, 0.3f);
+                anit.ResetTrigger("isJumping");
                 rb.gravityScale = 1;
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
@@ -461,42 +482,40 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ladder")) // 사다리
         {
-            if(canLadder && !handLadder) //사다리와 상호작용 중
+            if(canLadder) //사다리와 상호작용 중
             {
+                anit.ResetTrigger("LadderExit");
                 rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
                 rb.gravityScale = 0;                                //중력 무시
                 jumpCount = 2;
-                handLadder = true;
             }
 
-            if((joystick.Vertical > 0.5f) || Input.GetAxis("Vertical") > 0)
+
+            //사다리 모션 작업
+            if((joystick.Vertical > 0.5f) || Input.GetKeyDown(KeyCode.W))
             {
+                anit.SetBool("LadderUp", true);
                 canLadder = true;
-                transform.position += new Vector3(0, 0.1f, 0);
-                if(!anit.GetBool("LadderUp"))
-                {
-                    anit.SetTrigger("LadderRiding");
-                    anit.SetBool("LadderUp", true);
-                    if(anit.GetBool("LadderDown"))
-                    {
-                        anit.SetBool("LadderDown", false);
-                    }
-                }
             }
-            else if((joystick.Vertical < -0.5f) || Input.GetAxis("Vertical") < 0)
+            else if((joystick.Vertical < -0.5f) || Input.GetKeyDown(KeyCode.S))
             {
+                anit.SetBool("LadderDown", true);
                 canLadder = true;
-                transform.position -= new Vector3(0, 0.1f, 0);
-                if(!anit.GetBool("LadderDown"))
-                {
-                    anit.SetTrigger("LadderRiding");
-                    anit.SetBool("LadderDown", true);
-                    if(anit.GetBool("LadderUp"))
-                    {
-                        anit.SetBool("LadderUp", false);
-                    }
-                }
             }
+            else if((canLadder&& joystick.Vertical == 0.0f) || (Input.GetKeyUp(KeyCode.W) && Input.GetKeyUp(KeyCode.S)))
+            {
+                anit.SetBool("LadderUp", false);
+                anit.SetBool("LadderDown", false);
+                anit.SetTrigger("LadderPause");
+            }
+            //while (anit.GetBool("LadderUp"))
+            //{
+            //    transform.position += new Vector3(0, 0.1f, 0);
+            //}
+            //while (anit.GetBool("LadderDown"))
+            //{
+            //    transform.position -= new Vector3(0, 0.1f, 0);
+            //}
         }
 
         if(collision.gameObject.CompareTag("Weapon") || collision.gameObject.CompareTag("Npc") || collision.gameObject.CompareTag("CapabilityFragment"))// 상호작용 가능 여부 
@@ -521,13 +540,26 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ladder"))       //사다리
         {
+
+            //사다리 모션 작업
+            if (anit.GetBool("LadderUp"))
+            {
+                anit.SetBool("LadderUp", false);
+            }
+
+            if(anit.GetBool("LadderDown"))
+            {
+                anit.SetBool("LadderDown", false);
+            }
+
+            anit.ResetTrigger("LadderPause");
+            anit.SetTrigger("LadderExit");
+
+
             rb.gravityScale = 1;
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);
             jumpCount = 0;
             canLadder = false;
-            handLadder = false; ;
-            anit.SetBool("LadderUp", false);
-            anit.SetBool("LadderDown", false);
         }
     }
 
@@ -573,13 +605,13 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         isDashing = false;
     }
 
-    IEnumerator TakeDamageAinm(GameObject obj) //데미지 입었을 때 날라감
+    IEnumerator TakeDamageAnim(GameObject obj) //데미지 입었을 때 날라감
     {
+        takingDamage = true;
         anit.SetTrigger("takeDamage");
-        Vector2 flyingVector = (gameObject.transform.position - obj.transform.position).normalized;
+        Vector2 flyingVector = (gameObject.transform.position - obj.transform.position + new Vector3(0,2,0)).normalized;
         rb.velocity = flyingVector*10f;
         yield return new WaitForSeconds(0.5f);
-        rb.velocity = new Vector3(0, 0, 0);
     }
 }
 
