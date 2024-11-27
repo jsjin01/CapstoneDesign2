@@ -405,7 +405,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
         lastCombattingTime = Time.time;
-
+        takingDamage = true;
         if(currentShield > 0)
         {
             currentShield -= dmg;

@@ -30,6 +30,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     [SerializeField] float detectionRadius; //플레이어 감지 거리
     [SerializeField] float attackRange;     //몬스터의 사정 거리
 
+    [Header("기타 변수들")]
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
     enum STATE { PATROL, CHASE, ATTACK, DIE } //enum 문으로 설정
@@ -45,14 +46,13 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     bool isAttacking = false; //공격했는지 판단하는 변수
 
     float dieTime;      //죽은 시간
-    float dieAnimTime  = 1f;  //죽고 나서 애니메이션이 지속되는 시간
+    [SerializeField]float dieAnimTime  = 1f;  //죽고 나서 애니메이션이 지속되는 시간
     bool isDie = false; //죽었는지 판단하는 변수
 
     [SerializeField] GameObject attackmotionObj;
 
 
     [SerializeField] protected Animator anit;
-
     private void Update()
     {
         GetClosestPlayer();
@@ -142,6 +142,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
         foreach(GameObject playerObject in playerObjects)
         {
+            Physics2D.IgnoreCollision(playerObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
             Transform playerTransform = playerObject.transform;
             float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 
