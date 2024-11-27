@@ -484,6 +484,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             if(canLadder) //사다리와 상호작용 중
             {
+                anit.ResetTrigger("isJumping");
                 anit.ResetTrigger("LadderExit");
                 rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
                 rb.gravityScale = 0;                                //중력 무시
@@ -492,30 +493,24 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
 
             //사다리 모션 작업
-            if((joystick.Vertical > 0.5f) || Input.GetKeyDown(KeyCode.W))
+            if((joystick.Vertical > 0.5f) || Input.GetAxis("Vertical") > 0)
             {
                 anit.SetBool("LadderUp", true);
                 canLadder = true;
+                transform.position += new Vector3(0, 0.1f, 0);
             }
-            else if((joystick.Vertical < -0.5f) || Input.GetKeyDown(KeyCode.S))
+            else if((joystick.Vertical < -0.5f) || Input.GetAxis("Vertical") < 0)
             {
                 anit.SetBool("LadderDown", true);
                 canLadder = true;
+                transform.position -= new Vector3(0, 0.1f, 0);
             }
-            else if((canLadder&& joystick.Vertical == 0.0f) || (Input.GetKeyUp(KeyCode.W) && Input.GetKeyUp(KeyCode.S)))
+            else if(canLadder && (joystick.Vertical == 0.0f || Input.GetAxis("Vertical") == 0))
             {
                 anit.SetBool("LadderUp", false);
                 anit.SetBool("LadderDown", false);
                 anit.SetTrigger("LadderPause");
             }
-            //while (anit.GetBool("LadderUp"))
-            //{
-            //    transform.position += new Vector3(0, 0.1f, 0);
-            //}
-            //while (anit.GetBool("LadderDown"))
-            //{
-            //    transform.position -= new Vector3(0, 0.1f, 0);
-            //}
         }
 
         if(collision.gameObject.CompareTag("Weapon") || collision.gameObject.CompareTag("Npc") || collision.gameObject.CompareTag("CapabilityFragment"))// 상호작용 가능 여부 
