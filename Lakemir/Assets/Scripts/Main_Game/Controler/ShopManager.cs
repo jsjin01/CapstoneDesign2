@@ -3,48 +3,155 @@ using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour
 {
-    public Text playerGoldText;          // 플레이어 금화 텍스트
-    public int playerGold = 100;         // 초기 금화
-    public Transform shopContent;        // 아이템 패널들이 배치될 부모 오브젝트
-    public GameObject[] itemPanels;      // 아이템 패널들 (에디터에서 직접 연결)
+    public int playerSouls = 500; // 플레이어 영혼 초기 자원
+
+    public GameObject shopPanel; // 여신상 패널
+
+    // 스킬 비용과 레벨
+    public int outpostUnlockCost = 500;
+    public int outpostLevel = 1;
+
+    public int shieldUpgradeCost = 50;
+    public int shieldLevel = 1;
+
+    public int potionUpgradeCost = 50;
+    public int potionLevel = 1;
+
+    public int weaponUpgradeCost = 50;
+    public int weaponLevel = 1;
+
+    // 능력치 변수들
+    public int permanentUpgradeCost = 10; // 초기 비용
+    public int permanentUpgradeMaxLevel = 30; // 최대 30회 강화 가능
+    public int permanentUpgradeLevel = 0; // 현재 강화 횟수
+
+    // UI 요소들
+    public Text soulText;
+    public Button outpostButton;
+    public Text outpostButtonText;
+
+    public Button shieldButton;
+    public Text shieldButtonText;
+
+    public Button potionButton;
+    public Text potionButtonText;
+
+    public Button weaponButton;
+    public Text weaponButtonText;
+
+    public Button permanentUpgradeButton;
+    public Text permanentUpgradeButtonText;
 
     private void Start()
     {
-        UpdatePlayerGoldUI();
-        SetupShopItems();
+        // 초기 UI 설정
+        UpdateUI();
+
+        // 버튼에 기능 연결
+        outpostButton.onClick.AddListener(() => UpgradeOutpost());
+        shieldButton.onClick.AddListener(() => UpgradeShield());
+        potionButton.onClick.AddListener(() => UpgradePotion());
+        weaponButton.onClick.AddListener(() => UpgradeWeapon());
+        permanentUpgradeButton.onClick.AddListener(() => UpgradePermanentStats());
     }
 
-    void UpdatePlayerGoldUI()
+    private void UpgradeOutpost() // 거점 해제 함수
     {
-        playerGoldText.text = "희망의 영혼: " + playerGold + "개";
-    }
-
-    void SetupShopItems()
-    {
-        foreach (var panel in itemPanels)
+        if (playerSouls >= outpostUnlockCost) 
         {
-            Button buyButton = panel.transform.Find("BuyButton").GetComponent<Button>();
-            buyButton.onClick.AddListener(() => PurchaseItem(panel));
-        }
-    }
-
-    void PurchaseItem(GameObject panel)
-    {
-        Text priceText = panel.transform.Find("ItemPrice").GetComponent<Text>();
-        int price = int.Parse(priceText.text.Split(' ')[1].Replace("개", ""));
-
-        if (playerGold >= price)
-        {
-            playerGold -= price;
-            UpdatePlayerGoldUI();
-            Debug.Log("아이템 구매 성공!");
-            // 구매 후 아이템 효과 적용 로직 추가 가능
+            playerSouls -= outpostUnlockCost;
+            outpostLevel++;
+            outpostUnlockCost *= 4; //비용 증가
         }
         else
         {
-            Debug.Log("금화가 부족합니다!");
-            // 가격 텍스트 색상 변경 (빨간색)
-            priceText.color = Color.red;
+            Debug.Log("영혼이 부족합니다!");
         }
+        UpdateUI();
+    }
+
+    private void UpgradeShield() //보호막 강화 함수
+    {
+        if (playerSouls >= shieldUpgradeCost)
+        {
+            playerSouls -= shieldUpgradeCost;
+            shieldLevel++;
+            shieldUpgradeCost += 25; //비용 증가
+        }
+        else
+        {
+            Debug.Log("영혼이 부족합니다!");
+        }
+        UpdateUI();
+    }
+
+    private void UpgradePotion() //회복약 함수
+    {
+        if (playerSouls >= potionUpgradeCost)
+        {
+            playerSouls -= potionUpgradeCost;
+            potionLevel++;
+            potionUpgradeCost += 50; //비용 증가
+        }
+        else
+        {
+            Debug.Log("영혼이 부족합니다!");
+        }
+        UpdateUI();
+    }
+
+    private void UpgradeWeapon() //회복약 함수
+    {
+        if (playerSouls >= weaponUpgradeCost)
+        {
+            playerSouls -= weaponUpgradeCost;
+            weaponLevel++;
+            weaponUpgradeCost += 50; //비용 증가
+        }
+        else
+        {
+            Debug.Log("영혼이 부족합니다!");
+        }
+        UpdateUI();
+    }
+
+    private void UpdateUI() // 업데이트 함수
+    {
+        soulText.text = $"희망의 영혼: {playerSouls}개";
+
+        outpostButton.GetComponentInChildren<Text>().text = $"비용: {outpostUnlockCost}";
+        shieldButton.GetComponentInChildren<Text>().text = $"비용: {shieldUpgradeCost}";
+        potionButton.GetComponentInChildren<Text>().text = $"비용: {potionUpgradeCost}";
+        weaponButton.GetComponentInChildren<Text>().text = $"비용: {weaponUpgradeCost}";
+        permanentUpgradeButtonText.text = $"비용: {permanentUpgradeCost}";
+
+    }
+
+    private void UpgradePermanentStats()
+    {
+        if (permanentUpgradeLevel >= permanentUpgradeMaxLevel)
+        {
+            Debug.Log("영구 능력치 강화 최대 레벨에 도달했습니다!");
+            return;
+        }
+
+        if (playerSouls >= permanentUpgradeCost)
+        {
+            playerSouls -= permanentUpgradeCost;
+            permanentUpgradeLevel++;
+
+            permanentUpgradeCost = Mathf.CeilToInt(permanentUpgradeCost * 1.2f);
+        }
+        else
+        {
+            Debug.Log("영혼이 부족하빈다!");
+        }
+        UpdateUI();
+    }
+
+    private void onExitButtonClick()
+    {
+        shopPanel.SetActive(false);
+        Debug.Log("상점을 나갑니다.");
     }
 }
