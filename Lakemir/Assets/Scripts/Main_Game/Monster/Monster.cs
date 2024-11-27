@@ -75,7 +75,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     void Die()//죽음
     {
-        if (!isDie)
+        if(!isDie)
         {
             isDie = true;
             dieTime = Time.time;
@@ -83,8 +83,13 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
         else if(isDie && Time.time - dieTime > dieAnimTime)
         {
-            Destroy(gameObject);//게임 오브젝트를 삭제함
+             ToDestoy();
         }
+    }
+
+    protected virtual void ToDestoy() //삭제하는 함수 
+    {
+        Destroy(gameObject);//게임 오브젝트를 삭제함
     }
 
     public void TakeDamage(int dmg, EFFECT eft = EFFECT.NONE)//데미지 받는 부분
