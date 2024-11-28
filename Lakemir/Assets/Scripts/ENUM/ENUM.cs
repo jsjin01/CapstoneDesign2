@@ -72,3 +72,13 @@ public enum EFFECT//디버프 효과
     DOTDEAL,    //공격력의 1% 해당하는 도트딜
     STUN,       //기절
 }
+
+namespace GameItem //MerchantManager.cs
+{
+    public enum ItemType //떠돌이 상인 아이템
+    {
+        Food, //체력 회복 음식
+        Weapon, // 무기
+        Buff // 능력 향상 아이템
+    }
+}
