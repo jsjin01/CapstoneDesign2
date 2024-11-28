@@ -254,12 +254,14 @@ MonoBehaviour:
   currentHp: 100
   maxShield: 0
   currentShield: 0
-  attackPower: 0
+  attackPower: 100
   speed: 5
   fatalHitProbability: 0
   fatalHitDamage: 0
   damage: 0
   closeRangeEffect: {fileID: 1399683157129175311}
+  ArrowPrefabs:
+  - {fileID: 3303570833072228735, guid: 750c34bb0e5a4eb429aa84846072446b, type: 3}
   joystick: {fileID: 7197094442781544630, guid: 0a4c3522aef094072aabf1243ed3465f, type: 3}
   rb: {fileID: 6621704357616819226}
   col: {fileID: 1387786862472671669}

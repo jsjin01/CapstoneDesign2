@@ -23,6 +23,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     {
         photonView = GetComponent<PhotonView>();
         rightWeapon = new WeaponID01(); //TEST용
+        leftWeapon = new WeaponID06();  //TEST용
     }
 
     // IPunObservable 인터페이스 구현
@@ -78,6 +79,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     bool isAttacking = false;   //공격하고 있는지 여부
     float lastAttackTime = 0;   //마지막으로 공격한 시간
     [SerializeField] GameObject closeRangeEffect; //공격범위
+    [SerializeField] GameObject[] ArrowPrefabs;     //원거리 탄환
 
     //점프 관련 변수
     int jumpCount = 0;       //현재 점프한 횟수
@@ -154,7 +156,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         {
             Attack(MULTI_ATTACKKEY.RIGHT);
         }
-        else if(Input.GetKeyDown(KeyCode.RightAlt) && !isAttacking)
+        else if(Input.GetKeyDown(KeyCode.LeftControl) && !isAttacking)
         {
             Attack(MULTI_ATTACKKEY.LEFT);
         }
@@ -360,10 +362,32 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
                 //적용효과 
                 break;
             case WEAPON_TYPE.LONG_RANGE_WEAPON: //화살 생성
+                if(Time.time - ((LongRangeWeapon)weapon).lastReloadingTime > ((LongRangeWeapon)weapon).reloadingTime && ((LongRangeWeapon)weapon).isReloading) //재정전 끝
+                {
+                    ((LongRangeWeapon)weapon).isReloading =false;
+                }
+
+                if(((LongRangeWeapon)weapon).isReloading) //재장전 중일때는 총알이 안가도록
+                {
+                    return;
+                }
+                
                 lastAttackTime = Time.time + 1f; //공격딜레이를 위해서 초를 잼
-                anit.SetTrigger("LongAttackKey");
+                if(((LongRangeWeapon)weapon).currentArrow == 0)
+                {
+                    ((LongRangeWeapon)weapon).ReloadingTime();
+                }
+                else
+                {
+                    weapon.selfEffects();
+                    anit.SetTrigger("LongAttackKey");
+                    StartCoroutine(ArrowCreat(weapon));
+                    ((LongRangeWeapon)weapon).currentArrow--;
+                }
                 break;
-            case WEAPON_TYPE.SHIELD:            //쉴드 모션만 있으면 됨
+            case WEAPON_TYPE.SHIELD://쉴드 모션만 있으면 됨
+                lastAttackTime = Time.time; //공격딜레이를 위해서 초를 잼
+                anit.SetTrigger("ShieldAttackKey");
                 break;
         }
     }
@@ -381,7 +405,24 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         }
     }
 
-    
+        IEnumerator ArrowCreat(Weapon weapon)//화살 생성
+    {
+        
+        yield return new WaitForSeconds(0.8f);
+        Quaternion rotation = Quaternion.Euler(0f, 0f, 0f);//방향에 따른 화살 방향 설정
+        if(direction == MULTI_DIRECTION.RIGHT)
+        {
+            rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+        else if(direction == MULTI_DIRECTION.LEFT) 
+        {
+            rotation = Quaternion.Euler(0f, 180f, 0);
+        }
+
+        GameObject arrow = Instantiate(ArrowPrefabs[0],gameObject.transform.position - new Vector3(0, 2.39f, 0), rotation); //화살 오브젝트 생성
+        arrow.GetComponent<Arrow>().Setting(damage, ((LongRangeWeapon)weapon).damage, weapon.hitEffect, ((LongRangeWeapon)weapon).isGuided);    //화살 데미지 설정
+        arrow.GetComponent<Arrow>().move((int)direction);                                                   //화살 이동방향 설정
+    }
 
     public void InteractionKey() // 상호작용키
     {
@@ -600,6 +641,14 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         dashTrail.SetActive(false);
         yield return new WaitForSeconds(0.2f);
         isDashing = false;
+    }
+        IEnumerator TakeDamageAinm(GameObject obj) //데미지 입었을 때 날라감
+    {
+        anit.SetTrigger("takeDamage");
+        Vector2 flyingVector = (gameObject.transform.position - obj.transform.position).normalized;
+        rb.velocity = flyingVector*10f;
+        yield return new WaitForSeconds(0.5f);
+        rb.velocity = new Vector3(0, 0, 0);
     }
     IEnumerator ResetAttackState()
     {
