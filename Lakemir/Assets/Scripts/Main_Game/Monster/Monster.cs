@@ -96,7 +96,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     {
         Debug.Log($"입은 데미지: {dmg} , 효과 적용 : {eft}" );
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
-        if (currentHp < 0)
+        if (currentHp <= 0)
         {
             currentState = STATE.DIE;
         }
@@ -147,7 +147,8 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
         foreach(GameObject playerObject in playerObjects)
         {
-            Physics2D.IgnoreCollision(playerObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(playerObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>()); //플레이어와 충돌을 안하도록
+
             Transform playerTransform = playerObject.transform;
             float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 
@@ -213,6 +214,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
             direction = DIRECTION.LEFT;
         }
         RightOrLeft(direction);
+
         switch(_monsterType) 
         {
             case MOSTER_TYPE.CLOSE_RANGE:
@@ -273,6 +275,11 @@ public class Monster : MonoBehaviour //추상 클래스 선언
                 platform = collision.gameObject;
                 CalculatePlatformPoints(); //해당 플렛폼의 양끝 계산하기
             }
+        }
+
+        if(collision.gameObject.CompareTag("Monster"))//몬스터끼리 충돌 안하도록
+        {
+            Physics2D.IgnoreCollision(collision.gameObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>());
         }
     }
 
