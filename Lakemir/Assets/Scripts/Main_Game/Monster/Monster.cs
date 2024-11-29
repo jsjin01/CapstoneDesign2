@@ -38,7 +38,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     [Header("기타 변수들")]
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
-    enum STATE { PATROL, CHASE, ATTACK, DIE } //enum 문으로 설정
+    enum STATE { PATROL, CHASE, ATTACK, STUN ,DIE } //enum 문으로 설정
     STATE currentState = STATE.PATROL;   //현재 상태
 
     //방향
@@ -46,19 +46,49 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     DIRECTION direction = DIRECTION.RIGHT;
 
     //시간 관련
-    [SerializeField] float attackCooldown;  //공격 쿨타임
-    float lastAttackTime; //마지막으로 공격한 시간
-    bool isAttacking = false; //공격했는지 판단하는 변수
+    [SerializeField] float attackCooldown;          //공격 쿨타임
+    float lastAttackTime;                           //마지막으로 공격한 시간
+    bool isAttacking = false;                       //공격했는지 판단하는 변수
     [SerializeField] float attackLongRangeMonster; //원거리 몬스터 투사체 나가는 시간
 
-    float dieTime;      //죽은 시간
+    float dieTime;                            //죽은 시간
     [SerializeField]float dieAnimTime  = 1f;  //죽고 나서 애니메이션이 지속되는 시간
-    bool isDie = false; //죽었는지 판단하는 변수
+    bool isDie = false;                       //죽었는지 판단하는 변수
 
-    [SerializeField] GameObject attackmotionObj;
+    [SerializeField] GameObject attackmotionObj; //근접 공격 범위 설정
+
+    [SerializeField] protected Animator anit;   //애니메이션 설정 
+
+    //효과 관련 함수 
+    //지속되고 있는지 여부
+    bool isSlow = false;
+    bool isWeakening = false;
+    bool isDotDeal = false;
+    bool isStun = false;
+
+    //마지막으로 맞은 시간
+    float lastSlowTime;
+    float lastWeakeningTime;
+    float lastDotDealTime;
+    float lastStunTime;
+
+    //지속시간
+    const float slowTime = 3f;
+    const float weakeningTime = 5f;
+    const float dotDealTime = 5f;
+    const float stunTime = 0.5f;
+
+    //남은 지속 시간
+    float slowDurationTime = 0f;
+    float weakeningDurationTime = 0f;
+    float dotDealDurationTime = 0f;
+    float stunDurationTime = 0f;
+
+    //변화 이전 스탯
+    int preDp;        //약화 적용 전 방어력
+    float preSp;      //슬로우 적용 전 이동속도
 
 
-    [SerializeField] protected Animator anit;
     private void Update()
     {
         GetClosestPlayer();
@@ -101,6 +131,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     public void TakeDamage(int dmg, EFFECT eft = EFFECT.NONE)//데미지 받는 부분
     {
         Debug.Log($"입은 데미지: {dmg} , 효과 적용 : {eft}" );
+        EffectMonster(eft);
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
         if (currentHp <= 0)
         {
@@ -109,6 +140,69 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         else
         {
             anit.SetTrigger("TakeDamage");
+        }
+    }
+
+    void EffectMonster(EFFECT eft)//타격 시 몬스터한테 효과 적용
+    {
+        switch(eft)
+        {
+            case EFFECT.NONE:
+                break;
+            case EFFECT.SLOW:
+                if(!isSlow)//효과 적용
+                {
+                    isSlow = true;
+                    slowDurationTime = slowTime;
+                    lastSlowTime = Time.time;
+                    preSp = speed;//변화 전 스피드 저장
+                    speed *= 0.7f;
+                }
+                else //이전에 효과 적용되어 있으면 
+                {
+                    slowDurationTime += slowTime;
+                }
+                break;
+            case EFFECT.WEAKENING:
+                if(!isWeakening)//효과 적용
+                {
+                    isWeakening = true;
+                    weakeningDurationTime = weakeningTime;
+                    lastWeakeningTime = Time.time;
+                    preDp = defensivePower;//변화 전 방어력 저장
+                    defensivePower = (int)(defensivePower * 0.8f);
+                }
+                else //이전에 효과 적용되어 있으면 
+                {
+                    weakeningDurationTime += weakeningTime;
+                }
+                break;
+            case EFFECT.DOTDEAL:
+                if(!isDotDeal)//효과 적용
+                {
+                    isDotDeal = true;
+                    dotDealDurationTime = dotDealTime;
+                    lastWeakeningTime = Time.time;
+                }
+                else //이전에 효과 적용되어 있으면 
+                {
+                    dotDealDurationTime += dotDealTime;
+                }
+                break;
+            case EFFECT.STUN:
+                if(!isStun)//효과 적용
+                {
+                    isStun = true;
+                    stunDurationTime = stunTime;
+                    lastStunTime = Time.time;
+                }
+                else //이전에 효과 적용되어 있으면 
+                {
+                    stunDurationTime += stunTime;
+                }
+                break;
+            default:
+                break;
         }
     }
 
