@@ -7,53 +7,77 @@ public class WeaponManager : MonoBehaviour
     public Weapon newWeapon; // 교체할 무기
 
     // UI 요소들
-    public Text currentWeaponInfoText; // 현재 무기의 정보 텍스트
-    public Text newWeaponInfoText; // 교체할 무기의 정보 텍스트
-    public Image currentWeaponImage; // 현재 무기의 이미지
-    public Image newWeaponImage; // 교체할 무기의 이미지
+    public Text currentWeaponText; // 현재 무기의 정보 텍스트
+    public Text newWeaponText; // 교체할 무기의 정보 텍스트
+    public GameObject exchangePanel; // 무기 교체 창 패널
     public Button changeWeaponButton; // 교체 버튼
 
     void Start()
     {
-        UpdateUI(); // 초기 UI 갱신
-        changeWeaponButton.onClick.AddListener(ChangeWeapon); // 버튼 클릭 시 ChangeWeapon 함수 호출
-        changeWeaponButton.gameObject.SetActive(false); // 처음에는 버튼 비활성화 (교체할 무기가 없으면)
+        currentWeapon = CreateWeapon("서리검", 2, "강력한 냉기의 검", "공격력 +50%");
+        newWeapon = CreateWeapon("암흑 도끼", 3, "암흑의 힘을 가진 도끼", "방어력 +30%");
+        UpdateWeaponUI(); // 초기 UI 업데이트
+       
     }
 
     // UI 업데이트 함수
-    void UpdateUI()
+    public void UpdateWeaponUI()
     {
         if (currentWeapon != null)
         {
-            currentWeaponInfoText.text = currentWeapon.GetWeaponInfo();
-            currentWeaponImage.sprite = currentWeapon.weaponImage;
+            currentWeaponText.text = $"이름:{currentWeapon.weaponName}\n등급: {currentWeapon.weaponGrade}\n설명: {currentWeapon.description}\n능력치:{currentWeapon.ability}";
+            newWeaponText.text = $"이름:{newWeapon.weaponName}\n등급: {newWeapon.weaponGrade}\n설명: {newWeapon.description}\n능력치:{newWeapon.ability}";
         }
 
-        if (newWeapon != null)
+        if (Input.GetMouseButton(0))
         {
-            newWeaponInfoText.text = newWeapon.GetWeaponInfo();
-            newWeaponImage.sprite = newWeapon.weaponImage;
-            changeWeaponButton.gameObject.SetActive(true); // 교체할 무기가 있으면 버튼 활성화
-        }
-        else
-        {
-            newWeaponInfoText.text = "교체할 무기가 없습니다.";
-            newWeaponImage.sprite = null;
-            changeWeaponButton.gameObject.SetActive(false); // 교체할 무기가 없으면 버튼 비활성화
+            //UI 외부를 클릭하면 패널 닫기
+            if (exchangePanel.activeSelf && !RectTransformUtility.RectangleContainsScreenPoint(
+                exchangePanel.GetComponent<RectTransform>(), Input.mousePosition, Camera.main))
+            {
+                CloseExchangePanel();
+            }
         }
     }
 
-    // 무기 교체 함수
-    void ChangeWeapon()
+    // 교체 버튼을 눌렀을 때 실행
+    public void  ExchangeWeapon()
     {
-        if (currentWeapon != null)
+        Weapon temp = currentWeapon;
+        currentWeapon = newWeapon;
+        newWeapon = temp;
+
+        Debug.Log("무기가 교체되었습니다!");
+
+        // 교체 후 UI 및 추가 
+        UpdateWeaponUI();
+    
+    }
+
+    // 패널 열기
+    public void OpenExchangePanel()
+    {
+        exchangePanel.SetActive(true);
+        Debug.Log("무기 교체 창이 열렸습니다.");
+    }
+
+    // 패널 닫기
+    public void CloseExchangePanel()
+    {
+        exchangePanel.SetActive(false);
+        Debug.Log("무기 교체 창이 닫혔습니다.");
+    }
+
+    // 무기 반환
+    public Weapon CreateWeapon(string weaponName, int weaponGrade, string description, string ability)
+    {
+        Weapon weapon = new Weapon
         {
-            Debug.Log($"{currentWeapon.weaponName}에서 {newWeapon.weaponName}으로 변경되었습니다.");
-        }
-
-        currentWeapon = newWeapon; // 새로운 무기를 현재 장착된 무기로 설정
-        newWeapon = null; // 새로운 무기를 비워줌 (교체 완료 후)
-
-        UpdateUI(); // UI 갱신
+            weaponName = weaponName,
+            weaponGrade = weaponGrade,
+            description = description,
+            ability = ability
+        };
+        return weapon;
     }
 }

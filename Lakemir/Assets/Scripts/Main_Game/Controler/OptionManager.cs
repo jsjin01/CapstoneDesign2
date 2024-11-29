@@ -21,14 +21,15 @@ public class OptionManager : MonoBehaviour
     public Text equipmentInfoText2; // 두 번째 장비 정보 텍스트
     public Text playerStatsText; // 플레이어 능력치 텍스트
 
-    private void Start()
+    public void Start()
     {
         closeButton.onClick.AddListener(CloseOptionPanel);
         saveButton.onClick.AddListener(SaveGame);
         exitButton.onClick.AddListener(ConfirmExitGame);
+    
 
-        // 초기 슬라이더 값을 설정
-        volumeSlider.value = defaultVolume;
+    // 초기 슬라이더 값을 설정
+    volumeSlider.value = defaultVolume;
         interfaceSizeSlider.value = defaultInterfaceSize;
 
         // 슬라이더 값이 변경될 때 호출될 함수 연결

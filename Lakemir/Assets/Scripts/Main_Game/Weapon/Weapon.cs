@@ -9,8 +9,9 @@ public class Weapon
     public string description; //설명
     public Sprite weaponImage; //UI에 표시할 이미지
 
-    public string ability; //무기 능력
+    public string ability; //무기 능력치
     public bool isEquipped = false; //무기 장착 여부 => player 부분에 class 넣는 곳 선언 
+
 
     //추가한 코드들 -전상진
     public WEAPON_TYPE w_type;             //무기 종류 분류

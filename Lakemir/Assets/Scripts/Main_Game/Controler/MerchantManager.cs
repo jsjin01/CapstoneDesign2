@@ -149,4 +149,18 @@ public class MerchantManager : MonoBehaviour
         //ui 텍스트에 표시
         itemInfoText.text = combinedText ;
     }
+
+    [SerializeField] private GameObject menuPanel;
+
+    public void OnCloseButtonClicked()
+    {
+        if (menuPanel != null)
+        {
+            menuPanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("MenuPanel이 연결되지 않았습니다.");
+        }
+    }
 }
