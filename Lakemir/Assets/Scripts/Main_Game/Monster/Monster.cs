@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using MonsterEnum;
+using UnityEditor.SceneManagement;
+
 public class Monster : MonoBehaviour //추상 클래스 선언
 {
     public int maxHp;                 //Max Hp일때
@@ -30,6 +32,9 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     [SerializeField] float detectionRadius; //플레이어 감지 거리
     [SerializeField] float attackRange;     //몬스터의 사정 거리
 
+    [Header("투사체")]
+    [SerializeField] GameObject monsterArrow;   //몬스터 화살
+
     [Header("기타 변수들")]
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
@@ -44,6 +49,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     [SerializeField] float attackCooldown;  //공격 쿨타임
     float lastAttackTime; //마지막으로 공격한 시간
     bool isAttacking = false; //공격했는지 판단하는 변수
+    [SerializeField] float attackLongRangeMonster; //원거리 몬스터 투사체 나가는 시간
 
     float dieTime;      //죽은 시간
     [SerializeField]float dieAnimTime  = 1f;  //죽고 나서 애니메이션이 지속되는 시간
@@ -153,7 +159,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
             float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 
             if(distanceToPlayer < closestDistance && distanceToPlayer <= detectionRadius && //감지 범위 안에 있는
-                (playerObject.transform.position.y < transform.position.y + 3 && playerObject.transform.position.y > transform.position.y - 3)) //위아래로 너무 차이가 나지 않도록
+                (playerObject.transform.position.y < transform.position.y  + 2 && playerObject.transform.position.y > transform.position.y - 2)) //위아래로 너무 차이가 나지 않도록
             {
                 closestDistance = distanceToPlayer;
                 closestPlayer = playerTransform;
@@ -169,36 +175,30 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     void ChaseMotion() //플레이어 발견 시 추격
     {
-        if(monsterType == MOSTER_TYPE.CLOSE_RANGE)
+
+        //가는 방향으로 보도록 설정
+        if(targetPlayer.transform.position.x - transform.position.x < 0)
         {
-            //가는 방향으로 보도록 설정
-            if(targetPlayer.transform.position.x - transform.position.x < 0)
-            {
-                direction = DIRECTION.RIGHT;
-            }
-            else
-            {
-                direction = DIRECTION.LEFT;
-            }
-            RightOrLeft(direction);
-
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(targetPlayer.transform.position.x,transform.position.y), speed * Time.deltaTime);
-
-            //추격하다가 너무 가까워지면 공격
-            if(Vector3.Distance(transform.position, targetPlayer.transform.position) <= attackRange)
-            {
-                currentState = STATE.ATTACK;
-            }//너무 멀어지면 타겟팅 해제되면서 순환타입으로 변경
-            else if(Vector3.Distance(transform.position, targetPlayer.transform.position) > detectionRadius)
-            {
-                targetPlayer = null;
-                currentState = STATE.PATROL;
-                MoveToNextPatrolPoint();
-            }
+            direction = DIRECTION.RIGHT;
         }
         else
         {
+            direction = DIRECTION.LEFT;
+        }
+        RightOrLeft(direction);
 
+        transform.position = Vector2.MoveTowards(transform.position, new Vector2(targetPlayer.transform.position.x, transform.position.y), speed * Time.deltaTime);
+
+        //추격하다가 너무 가까워지면 공격
+        if(Vector3.Distance(transform.position, targetPlayer.transform.position) <= attackRange)
+        {
+            currentState = STATE.ATTACK;
+        }//너무 멀어지면 타겟팅 해제되면서 순환타입으로 변경
+        else if(Vector3.Distance(transform.position, targetPlayer.transform.position) > detectionRadius)
+        {
+            targetPlayer = null;
+            currentState = STATE.PATROL;
+            MoveToNextPatrolPoint();
         }
     }
 
@@ -221,6 +221,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
                 CloseRangeAttack();
                 break;
             case MOSTER_TYPE.LONG_RANGE:
+                LongRangeAttack();
                 break;
         }
     }
@@ -242,6 +243,42 @@ public class Monster : MonoBehaviour //추상 클래스 선언
             else if (isAttacking && Time.time - lastAttackTime > attackCooldown) //공격 쿨타임이 지났을 때
             {
                 isAttacking= false;
+            }
+        }
+    }
+
+    void LongRangeAttack()//원거리 몬스터일 때
+    {
+        if(!isAttacking)
+        {
+            isAttacking = true;
+            lastAttackTime = Time.time;
+            anit.SetTrigger("Attack");
+            StartCoroutine(Shoot(direction));
+        }
+        else if(isAttacking && Time.time - lastAttackTime > 1f)//애니메이션이 끝나고
+        {
+            if(Vector3.Distance(transform.position, targetPlayer.transform.position) > attackRange) //공격범위 밖으로 나가면 상태 변환
+            {
+                currentState = STATE.CHASE;
+            }
+            else if(Vector3.Distance(transform.position, targetPlayer.transform.position) <= attackRange / 2) //너무 가까우면 다시 멀어지는 방향으로 이동
+            {
+                if(targetPlayer.transform.position.x - transform.position.x < 0) //멀어지는 방향을 보도록 설계
+                {
+                    direction = DIRECTION.LEFT;
+                }
+                else
+                {
+                    direction = DIRECTION.RIGHT;
+                }
+
+                RightOrLeft(direction);
+                transform.position = Vector2.MoveTowards(transform.position, (Vector2)transform.position - new Vector2(targetPlayer.transform.position.x, transform.position.y).normalized, speed * Time.deltaTime);
+            }
+            else if(isAttacking && Time.time - lastAttackTime > attackCooldown) //공격 쿨타임이 지났을 때
+            {
+                isAttacking = false;
             }
         }
     }
@@ -283,4 +320,21 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
+    IEnumerator Shoot(DIRECTION dir) //1초후에 몬스터 화살 쏘는 부분
+    {
+        yield return new WaitForSeconds(attackLongRangeMonster);
+        Quaternion rotation = Quaternion.Euler(0f, 0f, 0f);//방향에 따른 화살 방향 설정
+        if(dir == DIRECTION.RIGHT)
+        {
+            rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
+        else if(dir == DIRECTION.LEFT)
+        {
+            rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+        GameObject arrow = Instantiate(monsterArrow, transform.position - new Vector3(0, 1.5f, 0), rotation);
+        arrow.GetComponent<MonsterArrow>().Setting(attackPower);
+        arrow.GetComponent<MonsterArrow>().move((int)direction);
+
+    }
 }

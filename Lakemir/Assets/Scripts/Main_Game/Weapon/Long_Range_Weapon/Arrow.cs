@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
-    [SerializeField] float speed;//속도
-    Rigidbody2D rb;              //rigidbody
-    float dTime = 10f;            //제거되는데 걸리는 시간 
-    int damage;            //플레이어 데미지
-    EFFECT effect;               //이펙트
-    bool isGuided;               //유도 여부
+    [SerializeField] float speed;   //속도
+    Rigidbody2D rb;                 //rigidbody
+    [SerializeField]float dTime;              //제거되는데 걸리는 시간 
+    int damage;                     //플레이어 데미지
+    EFFECT effect;                  //이펙트
+    bool isGuided;                  //유도 여부
 
-    Transform targetMonster;     //몬스터 타겟
+    Transform targetMonster;        //몬스터 타겟
 
     private void Update()
     {
-        Invoke("isDestroy", 5f);
+        Invoke("isDestroy", dTime);
 
         if(isGuided)//유도 되는 중
         {
