@@ -7,6 +7,9 @@ using UnityEngine.UIElements;
 using Photon.Pun;
 using MultiGamePlayerEnum;
 using WeaponEnum;
+using UnityEngine.InputSystem;
+using Unity.Burst.Intrinsics;
+using Unity.VisualScripting;
 
 
 public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
@@ -22,6 +25,9 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
+        PhotonNetwork.SendRate = 20; // 초당 20회 업데이트
+        PhotonNetwork.SerializationRate = 20; // Serialize 호출 빈도
+
         rightWeapon = new WeaponID01(); //TEST용
         leftWeapon = new WeaponID06();  //TEST용
     }
@@ -111,12 +117,14 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     MULTI_INTERECTION interectObj;    //상호작용을 하는 물체
 
     //무기 관련 변수
-    Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
-    Weapon leftWeapon = null;  //왼쪽(2번)에 착용한 무기 
+    [SerializeField]  Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
+    [SerializeField] Weapon leftWeapon = null;  //왼쪽(2번)에 착용한 무기 
     
     //전투 비전투 관련 변수
+
     float lastCombattingTime = 0; //마지막으로 전투했던 상태
     bool isCombating = false;     //전투 상태인지 아닌지 
+    bool takingDamage = false;    //데미지를 입은 후 바닥에 안 닿았을 때
 
 
     [Header("연결 변수")]
@@ -472,25 +480,40 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         }
     }
 
-    public void TakeDamage(int dmg)// 데미지 입는 부분
+ public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
+        lastCombattingTime = Time.time;
+        takingDamage = true;
         if(currentShield > 0)
         {
             currentShield -= dmg;
             if(currentShield < 0)
             {
-                currentHp -= currentShield;
+                currentHp += currentShield;  //음수가 된 실드 만큼 데미지를 추가로 입음
                 currentShield = 0;
+                if (currentHp <= 0)
+                {
+                    anit.SetTrigger("Die");
+                    anit.SetBool("isDie", true);
+                }
+                else
+                {
+                    StartCoroutine(TakeDamageAnim(obj));
+                }
             }
         }
-        else
+        else if (currentShield <= 0)
         {
             currentHp -= dmg;
-        }
-
-        if(currentHp <= 0)
-        {
-            Debug.Log("플레이어 사망");
+            if(currentHp <= 0)
+            {
+                anit.SetTrigger("Die");
+                anit.SetBool("isDie", true);
+            }
+            else
+            {
+                StartCoroutine(TakeDamageAnim(obj));
+            }
         }
     }
 
@@ -498,15 +521,24 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("PassableGround"))
         {
+             if (takingDamage)//데미지 입고 바닥에 닿았을 때
+            {
+                rb.velocity = Vector3.zero;
+                anit.SetTrigger("DamageFall");
+                takingDamage = false;
+            }
+
             if(jumpCount != 0 && !isFallingAttacking)
             {
                 anit.SetTrigger("jumpFall");
+                anit.ResetTrigger("isJumping");
             }
 
             jumpCount = 0;  //점프 횟수 초기화
             if(isFallingAttacking)//낙하공격 하고 땅에 닿았을 때
             {
                 anit.Play("GroundSlam", -1, 0.3f);
+                anit.ResetTrigger("isJumping");
                 rb.gravityScale = 1;
                 isFallingAttacking = false;
                 upDownTrail.SetActive(false);
@@ -642,18 +674,20 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         yield return new WaitForSeconds(0.2f);
         isDashing = false;
     }
-        IEnumerator TakeDamageAinm(GameObject obj) //데미지 입었을 때 날라감
-    {
-        anit.SetTrigger("takeDamage");
-        Vector2 flyingVector = (gameObject.transform.position - obj.transform.position).normalized;
-        rb.velocity = flyingVector*10f;
-        yield return new WaitForSeconds(0.5f);
-        rb.velocity = new Vector3(0, 0, 0);
-    }
+
     IEnumerator ResetAttackState()
     {
         yield return new WaitForSeconds(0.5f); // 공격 딜레이
         isAttacking = false;
+    }
+
+        IEnumerator TakeDamageAnim(GameObject obj) //데미지 입었을 때 날라감
+    {
+        takingDamage = true;
+        anit.SetTrigger("takeDamage");
+        Vector2 flyingVector = (gameObject.transform.position - obj.transform.position + new Vector3(0,2,0)).normalized;
+        rb.velocity = flyingVector*10f;
+        yield return new WaitForSeconds(0.5f);
     }
     #region Photon RPC Methods
 

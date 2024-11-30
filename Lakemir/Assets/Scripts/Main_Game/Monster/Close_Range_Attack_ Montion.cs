@@ -7,21 +7,44 @@ public class Close_Range_Attack_Montion : MonoBehaviour
     public int damage;
     bool takeDamage = false;
 
-    public void Setting(int dmg) //������ ����
+    public void Setting(int dmg) //������ ����
     {
         damage = dmg;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+private void OnTriggerEnter2D(Collider2D collision)
+{
+    if (collision.gameObject.CompareTag("Shield"))
     {
-        if (collision.gameObject.CompareTag("Shield"))
-        {
-            gameObject.SetActive(false); //��Ȱ��ȭ
-        }
-        else if (collision.gameObject.CompareTag("Player") && !takeDamage)
-        {
-            collision.gameObject.GetComponent<GamePlayer>().TakeDamage(damage,gameObject.transform.parent.gameObject);
-            takeDamage = false;
-        }
+        gameObject.SetActive(false); // 비활성화
     }
+    else if (collision.gameObject.CompareTag("Player") && !takeDamage)
+    {
+        // GamePlayer 컴포넌트 확인
+        GamePlayer player = collision.gameObject.GetComponent<GamePlayer>();
+
+        if (player != null)
+        {
+            // GamePlayer가 있는 경우
+            player.TakeDamage(damage, gameObject.transform.parent?.gameObject);
+        }
+        else
+        {
+            // GamePlayer가 없을 때 MultiGamePlayer 확인
+            MultiGamePlayer multiPlayer = collision.gameObject.GetComponent<MultiGamePlayer>();
+            if (multiPlayer != null)
+            {
+                multiPlayer.TakeDamage(damage, gameObject.transform.parent?.gameObject);
+            }
+            else
+            {
+                // 두 컴포넌트가 모두 없을 경우 경고 출력
+                Debug.LogError($"GamePlayer 또는 MultiGamePlayer 컴포넌트가 {collision.gameObject.name}에 없습니다!");
+            }
+        }
+
+        takeDamage = false;
+    }
+}
+
 }
