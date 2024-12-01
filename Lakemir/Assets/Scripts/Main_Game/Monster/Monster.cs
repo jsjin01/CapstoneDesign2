@@ -84,6 +84,9 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     float dotDealDurationTime = 0f;
     float stunDurationTime = 0f;
 
+    //도트딜 관련 시간 함수
+    float tikDamageTime = 0f;
+
     //변화 이전 스탯
     int preDp;        //약화 적용 전 방어력
     float preSp;      //슬로우 적용 전 이동속도
@@ -92,7 +95,8 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     private void Update()
     {
         GetClosestPlayer();
-        switch(currentState)//각각의 상황에 맞게 모션을 취함
+        EffectApply();
+        switch(currentState) //각각의 상황에 맞게 모션을 취함
         {
             case STATE.PATROL:
                 PatrolMotion();
@@ -182,7 +186,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
                 {
                     isDotDeal = true;
                     dotDealDurationTime = dotDealTime;
-                    lastWeakeningTime = Time.time;
+                    lastDotDealTime = Time.time;
                 }
                 else //이전에 효과 적용되어 있으면 
                 {
@@ -193,6 +197,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
                 if(!isStun)//효과 적용
                 {
                     isStun = true;
+                    currentState = STATE.STUN; //스턴 상태로 변경
                     stunDurationTime = stunTime;
                     lastStunTime = Time.time;
                 }
@@ -204,6 +209,44 @@ public class Monster : MonoBehaviour //추상 클래스 선언
             default:
                 break;
         }
+    }
+
+    void EffectApply()//Update로 적용되는 효과 + 다중으로 걸렸을 때도 해제 가능
+    {
+        if(isSlow && ((lastSlowTime + slowDurationTime) - Time.time  < 0))//슬로우 효과 해제 
+        {
+            speed = preSp;
+            isSlow = false;
+        }
+
+        if(isStun && ((lastStunTime + stunDurationTime) - Time.time < 0)) //스턴 효과 해제
+        {
+            isStun = false;
+        }
+
+        if(isWeakening && ((lastWeakeningTime + weakeningDurationTime) - Time.time < 0)) //약화 효과 해제
+        {
+            defensivePower = preDp;
+            isWeakening = false;
+        }
+
+        if(isStun && ((lastStunTime + stunDurationTime) - Time.time < 0)) //스턴 상태 해제
+        {
+            currentState = STATE.PATROL;
+            isStun = false;
+        }
+
+        if(isDotDeal && ((lastDotDealTime + dotDealDurationTime) - Time.time < 0)) //도트딜 해제
+        {
+            isDotDeal = false;
+        }
+        else if(isDotDeal && (Time.time - tikDamageTime > 1f))//1초당 틱데미지
+        {
+            Debug.Log("도트딜 적용 중");
+            currentHp = (int)(currentHp * 0.9f);
+            tikDamageTime = Time.time;
+        }
+
     }
 
     void PatrolMotion() //순찰 함수

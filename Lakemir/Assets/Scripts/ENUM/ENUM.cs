@@ -69,7 +69,7 @@ public enum EFFECT//디버프 효과
     NONE,       //아무것도 없을 때
     SLOW,       //30% 슬로우 2초
     WEAKENING,  //방어력 20% 감소
-    DOTDEAL,    //공격력의 1% 해당하는 도트딜
+    DOTDEAL,    //현재 체력에 1% 해당하는 도트딜
     STUN,       //기절
 }
 
