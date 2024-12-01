@@ -262,6 +262,24 @@ MonoBehaviour:
   closeRangeEffect: {fileID: 1399683157129175311}
   ArrowPrefabs:
   - {fileID: 3303570833072228735, guid: 750c34bb0e5a4eb429aa84846072446b, type: 3}
+  rightWeapon:
+    weaponName: 
+    weaponGrade: 0
+    description: 
+    weaponImage: {fileID: 0}
+    ability: 
+    isEquipped: 0
+    w_type: 0
+    hitEffect: 0
+  leftWeapon:
+    weaponName: 
+    weaponGrade: 0
+    description: 
+    weaponImage: {fileID: 0}
+    ability: 
+    isEquipped: 0
+    w_type: 0
+    hitEffect: 0
   joystick: {fileID: 7197094442781544630, guid: 0a4c3522aef094072aabf1243ed3465f, type: 3}
   rb: {fileID: 6621704357616819226}
   col: {fileID: 1387786862472671669}
