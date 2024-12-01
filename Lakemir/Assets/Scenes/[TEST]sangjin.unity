@@ -1661,7 +1661,7 @@ MonoBehaviour:
   currentHp: 100
   maxShield: 0
   currentShield: 0
-  attackPower: 100
+  attackPower: 10
   speed: 5
   fatalHitProbability: 0
   fatalHitDamage: 0

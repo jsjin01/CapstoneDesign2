@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using WebSocketSharp;
 
 public class Arrow : MonoBehaviour
 {
@@ -38,11 +39,14 @@ public class Arrow : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Setting(int playerDmg, float weaponDmg, EFFECT eft, bool _isGuided ) //데미지 설정
+    public void Setting(int playerDmg, LongRangeWeapon lw ) //데미지 설정
     {
-        damage =(int)(playerDmg * weaponDmg);
-        effect = eft;
-        isGuided = _isGuided;
+        damage =(int)(playerDmg * lw.damage);
+        if(lw.hitEffect != EFFECT.NONE)
+        {
+            effect = lw.hitEffect;
+        }
+        isGuided = lw.isGuided;
     }
 
     public void move(int dir)
