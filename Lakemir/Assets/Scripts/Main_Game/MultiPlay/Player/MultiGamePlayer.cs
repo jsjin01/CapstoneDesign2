@@ -86,6 +86,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
     float lastAttackTime = 0;   //마지막으로 공격한 시간
     [SerializeField] GameObject closeRangeEffect; //공격범위
     [SerializeField] GameObject[] ArrowPrefabs;     //원거리 탄환
+    [SerializeField] GameObject shieldRange;              //쉴드 적용
 
     //점프 관련 변수
     int jumpCount = 0;       //현재 점프한 횟수
@@ -318,87 +319,82 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
             damage = attackPower;
         }
         isAttacking = true;
-        if(atkKey == MULTI_ATTACKKEY.RIGHT)
+        Weapon currentWeapon = atkKey == MULTI_ATTACKKEY.RIGHT ? rightWeapon : leftWeapon;
+        if (currentWeapon != null)
         {
-            if(rightWeapon != null)
-            {
-                AttackMotion(rightWeapon);
-                Debug.Log("1번 무기 공격");
-            }
-            
+            AttackMotion(currentWeapon); // 동기화는 AttackMotion에서 처리
+            Debug.Log($"공격 요청: {atkKey}, {currentWeapon.w_type}");
         }
-        else if(atkKey == MULTI_ATTACKKEY.LEFT)
-        {
-            if(leftWeapon != null)
-            {
-                AttackMotion(leftWeapon);
-                Debug.Log("2번 무기 공격");
-            }
-            
-        }
-        // 공격 상태 동기화
-        photonView.RPC("SyncAttackState", RpcTarget.Others, atkKey);
-        StartCoroutine(ResetAttackState());
+            StartCoroutine(ResetAttackState());
     }
-    void AttackMotion(Weapon weapon)// 무기 모션 정하기 및 적용
+    void AttackMotion(Weapon weapon)
+{
+    switch (weapon.w_type)
     {
-        switch(weapon.w_type)
-        {
-            case WEAPON_TYPE.CLOSE_RANGE_WEAPON:
-                lastAttackTime = Time.time;        //공격딜레이를 위해서 초를 잼
+        case WEAPON_TYPE.CLOSE_RANGE_WEAPON:
+            lastAttackTime = Time.time;
 
-                weapon.selfEffects();              //특수 효과 부여
-                anit.SetTrigger("CloseAttackKey"); //공격모션 
-                closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, anit.GetInteger("Combo"), ((CloseRangeWeapon)weapon));//데미지랑 효과 설정
-                
-                if(Time.time - lastCombattingTime < 1)//1초안에 연속동작을 하지 않으면 풀리도록
-                {
-                    anit.SetInteger("Combo", anit.GetInteger("Combo") + 1);
-                }
-                else
-                {
-                    anit.SetInteger("Combo", 0);
-                }
+            // 콤보 관리
+            if (Time.time - lastCombattingTime < 1) // 1초 안에 연속 공격 시 콤보 증가
+            {
+                anit.SetInteger("Combo", anit.GetInteger("Combo") + 1);
+            }
+            else
+            {
+                anit.SetInteger("Combo", 0);
+            }
 
-                if(anit.GetInteger("Combo") >= ((CloseRangeWeapon)weapon).comboNumber) // 최대 comboNumber번까지 가능
-                {
-                    anit.SetInteger("Combo", 0);
-                }
+            if (anit.GetInteger("Combo") >= ((CloseRangeWeapon)weapon).comboNumber) // 최대 콤보 제한
+            {
+                anit.SetInteger("Combo", 0);
+            }
 
-                lastCombattingTime = Time.time; //초재기
-                
-                //적용효과 
-                break;
-            case WEAPON_TYPE.LONG_RANGE_WEAPON: //화살 생성
-                if(Time.time - ((LongRangeWeapon)weapon).lastReloadingTime > ((LongRangeWeapon)weapon).reloadingTime && ((LongRangeWeapon)weapon).isReloading) //재정전 끝
-                {
-                    ((LongRangeWeapon)weapon).isReloading =false;
-                }
+            // 근거리 특수 효과 및 애니메이션
+            weapon.selfEffects();
+            anit.SetTrigger("CloseAttackKey"); 
+            closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, anit.GetInteger("Combo"), (CloseRangeWeapon)weapon);
+            
+            lastCombattingTime = Time.time; // 전투 시작 시간 업데이트
 
-                if(((LongRangeWeapon)weapon).isReloading) //재장전 중일때는 총알이 안가도록
-                {
-                    return;
-                }
-                
-                lastAttackTime = Time.time + 1f; //공격딜레이를 위해서 초를 잼
-                if(((LongRangeWeapon)weapon).currentArrow == 0)
-                {
-                    ((LongRangeWeapon)weapon).ReloadingTime();
-                }
-                else
-                {
-                    weapon.selfEffects();
-                    anit.SetTrigger("LongAttackKey");
-                    StartCoroutine(ArrowCreat(weapon));
-                    ((LongRangeWeapon)weapon).currentArrow--;
-                }
-                break;
-            case WEAPON_TYPE.SHIELD://쉴드 모션만 있으면 됨
-                lastAttackTime = Time.time; //공격딜레이를 위해서 초를 잼
-                anit.SetTrigger("ShieldAttackKey");
-                break;
-        }
+            // 동기화 호출
+            photonView.RPC("SyncCloseAttackState", RpcTarget.Others, weapon == rightWeapon ? MULTI_ATTACKKEY.RIGHT : MULTI_ATTACKKEY.LEFT);
+            break;
+
+        case WEAPON_TYPE.LONG_RANGE_WEAPON:
+            // 재장전 상태 확인
+            if (Time.time - ((LongRangeWeapon)weapon).lastReloadingTime > ((LongRangeWeapon)weapon).reloadingTime && ((LongRangeWeapon)weapon).isReloading)
+            {
+                ((LongRangeWeapon)weapon).isReloading = false;
+            }
+
+            // 탄환 소모 및 공격
+            if (!((LongRangeWeapon)weapon).isReloading && ((LongRangeWeapon)weapon).currentArrow > 0)
+            {
+                lastAttackTime = Time.time + 1f; // 공격 딜레이
+                weapon.selfEffects();
+                anit.SetTrigger("LongAttackKey");
+                StartCoroutine(ArrowCreat(weapon));
+                ((LongRangeWeapon)weapon).currentArrow--;
+
+                // 동기화 호출
+                photonView.RPC("SyncLongAttackState", RpcTarget.Others, weapon == rightWeapon ? MULTI_ATTACKKEY.RIGHT : MULTI_ATTACKKEY.LEFT);
+            }
+            else if (((LongRangeWeapon)weapon).currentArrow == 0)
+            {
+                ((LongRangeWeapon)weapon).ReloadingTime(); // 탄환이 없을 경우 재장전
+            }
+            break;
+
+        case WEAPON_TYPE.SHIELD:
+            lastAttackTime = Time.time;
+            anit.SetTrigger("ShieldAttackKey");
+
+            // 동기화 호출
+            photonView.RPC("SyncShieldAttackState", RpcTarget.Others, weapon == rightWeapon ? MULTI_ATTACKKEY.RIGHT : MULTI_ATTACKKEY.LEFT);
+            break;
     }
+}
+
     bool isCritical()//치명타 뜨면 true
     {
         int randomNumber = Random.Range(1, 101);
@@ -413,24 +409,53 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         }
     }
 
-        IEnumerator ArrowCreat(Weapon weapon)//화살 생성
-    {
-        
-        yield return new WaitForSeconds(0.8f);
-        Quaternion rotation = Quaternion.Euler(0f, 0f, 0f);//방향에 따른 화살 방향 설정
-        if(direction == MULTI_DIRECTION.RIGHT)
-        {
-            rotation = Quaternion.Euler(0f, 0f, 0f);
-        }
-        else if(direction == MULTI_DIRECTION.LEFT) 
-        {
-            rotation = Quaternion.Euler(0f, 180f, 0);
-        }
+IEnumerator ArrowCreat(Weapon weapon)
+{
+    yield return new WaitForSeconds(0.8f);
 
-        GameObject arrow = Instantiate(ArrowPrefabs[0],gameObject.transform.position - new Vector3(0, 2.39f, 0), rotation); //화살 오브젝트 생성
-        arrow.GetComponent<Arrow>().Setting(damage, (LongRangeWeapon)weapon);    //화살 데미지 설정
-        arrow.GetComponent<Arrow>().move((int)direction);                                                   //화살 이동방향 설정
-    }
+    // 화살 생성 데이터
+    Vector3 spawnPosition = transform.position - new Vector3(0, 2.39f, 0);
+    int directionValue = (int)direction;
+    float damageValue = damage;
+
+    LongRangeWeapon longWeapon = (LongRangeWeapon)weapon;
+    float weaponDamage = longWeapon.damage;
+    EFFECT weaponEffect = longWeapon.hitEffect;
+    bool weaponGuided = longWeapon.isGuided;
+
+    // 화살 생성 동기화
+
+    photonView.RPC(
+        "SyncArrowCreation",
+        RpcTarget.Others,
+        spawnPosition,
+        directionValue,
+        damageValue,
+        weaponDamage,       // 데미지 계수
+        weaponEffect,       // 명중 효과
+        weaponGuided        // 유도 여부
+    );
+    // 로컬에서 화살 생성
+    CreateArrow(spawnPosition, directionValue, damageValue, weaponDamage, weaponEffect, weaponGuided);
+}
+
+void CreateArrow(Vector3 position, int dir, float dmg, float weaponDamage, EFFECT weaponEffect, bool weaponGuided)
+{
+    Quaternion rotation = Quaternion.Euler(0f, dir == (int)MULTI_DIRECTION.RIGHT ? 0f : 180f, 0f);
+    GameObject arrow = Instantiate(ArrowPrefabs[0], position, rotation);
+
+    // LongRangeWeapon 데이터를 Setting 메서드에 전달
+    LongRangeWeapon tempWeapon = new LongRangeWeapon
+    {
+        damage = weaponDamage,
+        hitEffect = weaponEffect,
+        isGuided = weaponGuided
+    };
+    arrow.GetComponent<Arrow>().Setting((int)dmg, tempWeapon); // Setting은 변경하지 않음
+    arrow.GetComponent<Arrow>().move(dir);
+}
+
+
 
     public void InteractionKey() // 상호작용키
     {
@@ -698,22 +723,53 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         anit.SetTrigger("isJumping");
     }
 
-    [PunRPC]
-    void SyncAttackState(MULTI_ATTACKKEY atkKey)
+[PunRPC]
+void SyncCloseAttackState(MULTI_ATTACKKEY atkKey)
+{
+    isAttacking = true;
+    if (atkKey == MULTI_ATTACKKEY.RIGHT)
     {
-        isAttacking = true;
-        if (atkKey == MULTI_ATTACKKEY.RIGHT)
-        {
-            anit.SetTrigger("RightAttack");
-            Debug.Log("1번 무기 공격 동기화");
-        }
-        else if (atkKey == MULTI_ATTACKKEY.LEFT)
-        {
-            anit.SetTrigger("LeftAttack");
-            Debug.Log("2번 무기 공격 동기화");
-        }
-        StartCoroutine(ResetAttackState());
+        anit.SetTrigger("CloseAttackKey");
+        Debug.Log("근거리 공격: 오른손 동기화");
     }
+    else if (atkKey == MULTI_ATTACKKEY.LEFT)
+    {
+        anit.SetTrigger("CloseAttackKey");
+        Debug.Log("근거리 공격: 왼손 동기화");
+    }
+}
+
+[PunRPC]
+void SyncLongAttackState(MULTI_ATTACKKEY atkKey)
+{
+    isAttacking = true;
+    if (atkKey == MULTI_ATTACKKEY.RIGHT)
+    {
+        anit.SetTrigger("LongAttackKey");
+        Debug.Log("원거리 공격: 오른손 동기화");
+    }
+    else if (atkKey == MULTI_ATTACKKEY.LEFT)
+    {
+        anit.SetTrigger("LongAttackKey");
+        Debug.Log("원거리 공격: 왼손 동기화");
+    }
+}
+
+[PunRPC]
+void SyncShieldAttackState(MULTI_ATTACKKEY atkKey)
+{
+    isAttacking = true;
+    if (atkKey == MULTI_ATTACKKEY.RIGHT)
+    {
+        anit.SetTrigger("ShieldAttackKey");
+        Debug.Log("쉴드 공격: 오른손 동기화");
+    }
+    else if (atkKey == MULTI_ATTACKKEY.LEFT)
+    {
+        anit.SetTrigger("ShieldAttackKey");
+        Debug.Log("쉴드 공격: 왼손 동기화");
+    }
+}
 
     
     
@@ -749,6 +805,14 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
         
     }
+[PunRPC]
+void SyncArrowCreation(Vector3 position, int dir, float dmg, float weaponDamage, EFFECT weaponEffect, bool weaponGuided)
+{
+    // 받은 데이터를 이용해 화살 생성
+    CreateArrow(position, dir, dmg, weaponDamage, weaponEffect, weaponGuided);
+}
+
+
     
 
 
