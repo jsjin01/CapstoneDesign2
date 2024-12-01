@@ -857,6 +857,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 208143704033475709, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
+      propertyPath: currentHp
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 208143704033475709, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
+      propertyPath: attackCooldown
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6524352433619245409, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
