@@ -349,7 +349,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
 
                 weapon.selfEffects();              //특수 효과 부여
                 anit.SetTrigger("CloseAttackKey"); //공격모션 
-                closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, ((CloseRangeWeapon)weapon).comboDamage[anit.GetInteger("Combo")], weapon.hitEffect);//데미지랑 효과 설정
+                closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, anit.GetInteger("Combo"), ((CloseRangeWeapon)weapon));//데미지랑 효과 설정
                 
                 if(Time.time - lastCombattingTime < 1)//1초안에 연속동작을 하지 않으면 풀리도록
                 {
@@ -428,7 +428,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
         }
 
         GameObject arrow = Instantiate(ArrowPrefabs[0],gameObject.transform.position - new Vector3(0, 2.39f, 0), rotation); //화살 오브젝트 생성
-        arrow.GetComponent<Arrow>().Setting(damage, ((LongRangeWeapon)weapon).damage, weapon.hitEffect, ((LongRangeWeapon)weapon).isGuided);    //화살 데미지 설정
+        arrow.GetComponent<Arrow>().Setting(damage, (LongRangeWeapon)weapon);    //화살 데미지 설정
         arrow.GetComponent<Arrow>().move((int)direction);                                                   //화살 이동방향 설정
     }
 

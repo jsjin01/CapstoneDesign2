@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class ShieldMotion : MonoBehaviour
 {
+    Shield shield;  //방패 중류
     EFFECT effect;  //무기가 몬스터에게 효과를 부여하는 부분
     float reflect;  //반사딜
-    public void Setting(float rf, EFFECT eft = EFFECT.NONE)
+    public void Setting(Shield _shield)
     {
-        reflect = rf;
-        effect = eft;
+        shield = _shield;
+        reflect = shield.reflect;
+        effect = shield.hitEffect;
     }
     private void OnTriggerEnter2D(Collider2D collision)//몬스터랑 닿았을 때 호출되도록
     {

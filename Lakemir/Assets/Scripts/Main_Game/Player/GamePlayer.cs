@@ -44,10 +44,12 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     public int damage;                //최종 데미지
 
     //공격키
-    bool isAttacking = false;                     //공격하고 있는지 여부
-    float lastAttackTime = 0;                     //마지막으로 공격한 시간
-    [SerializeField] GameObject closeRangeEffect; //공격범위
-    [SerializeField] GameObject[] ArrowPrefabs;     //원거리 탄환
+    bool isAttacking = false;                             //공격하고 있는지 여부
+    float lastAttackTime = 0;                             //마지막으로 공격한 시간
+    [SerializeField] GameObject closeRangeWeaponRange;    //근거리 공격범위
+    [SerializeField] GameObject[] ArrowPrefabs;           //원거리 탄환
+    [SerializeField] GameObject shieldRange;              //쉴드 적용
+    
 
     //점프 관련 변수
     int jumpCount = 0;       //현재 점프한 횟수
@@ -97,7 +99,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     [Header("이펙트 관련 변수")]
     [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
     [SerializeField] GameObject dashTrail;   //Dash 트레일
-
 
     private void Start()
     {
@@ -272,7 +273,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
                 weapon.selfEffects();              //특수 효과 부여
                 anit.SetTrigger("CloseAttackKey"); //공격모션 
-                closeRangeEffect.GetComponent<AttackMotion>().Setting(damage, ((CloseRangeWeapon)weapon).comboDamage[anit.GetInteger("Combo")], weapon.hitEffect);//데미지랑 효과 설정
+                closeRangeWeaponRange.GetComponent<AttackMotion>().Setting(damage, anit.GetInteger("Combo") , (CloseRangeWeapon)weapon );//데미지랑 효과 설정
                 
                 if(Time.time - lastCombattingTime < 1)//1초안에 연속동작을 하지 않으면 풀리도록
                 {
@@ -316,7 +317,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                     ((LongRangeWeapon)weapon).currentArrow--;
                 }
                 break;
-            case WEAPON_TYPE.SHIELD://쉴드 모션만 있으면 됨
+            case WEAPON_TYPE.SHIELD:
+                shieldRange.GetComponent<ShieldMotion>().Setting((Shield)weapon);
                 lastAttackTime = Time.time; //공격딜레이를 위해서 초를 잼
                 anit.SetTrigger("ShieldAttackKey");
                 break;
@@ -352,8 +354,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
 
         GameObject arrow = Instantiate(ArrowPrefabs[0],gameObject.transform.position - new Vector3(0, 2.39f, 0), rotation); //화살 오브젝트 생성
-        arrow.GetComponent<Arrow>().Setting(damage, ((LongRangeWeapon)weapon).damage, weapon.hitEffect, ((LongRangeWeapon)weapon).isGuided);    //화살 데미지 설정
-        arrow.GetComponent<Arrow>().move((int)direction);                                                   //화살 이동방향 설정
+        arrow.GetComponent<Arrow>().Setting(damage,((LongRangeWeapon)weapon));                                              //화살 데미지 설정
+        arrow.GetComponent<Arrow>().move((int)direction);                                                                   //화살 이동방향 설정
     }
     public void InteractionKey() // 상호작용키
     {
@@ -404,7 +406,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
-        
         lastCombattingTime = Time.time;
         takingDamage = true;
         if(currentShield > 0)
@@ -603,7 +604,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     IEnumerator TakeDamageAnim(GameObject obj) //데미지 입었을 때 날라감
     {
-        
         takingDamage = true;
         anit.SetTrigger("takeDamage");
         Vector2 flyingVector = (gameObject.transform.position - obj.transform.position + new Vector3(0,2,0)).normalized;

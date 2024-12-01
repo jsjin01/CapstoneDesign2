@@ -21,7 +21,7 @@ public class WeaponID01 : CloseRangeWeapon
 
     public override void selfEffects()
     {
-        if(currentcomboNumber == 3)
+        if(currentcomboNumber == 2)
         {
             hitEffect = EFFECT.STUN;//3타마다 스턴 효과 부여
         }

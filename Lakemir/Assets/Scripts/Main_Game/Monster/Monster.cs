@@ -39,7 +39,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
     enum STATE { PATROL, CHASE, ATTACK, STUN ,DIE } //enum 문으로 설정
-    STATE currentState = STATE.PATROL;   //현재 상태
+    [SerializeField]STATE currentState = STATE.PATROL;   //현재 상태
 
     //방향
     enum DIRECTION { RIGHT, LEFT }  //enum문으로 설정
@@ -61,10 +61,10 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     //효과 관련 함수 
     //지속되고 있는지 여부
-    bool isSlow = false;
-    bool isWeakening = false;
-    bool isDotDeal = false;
-    bool isStun = false;
+    [SerializeField] bool isSlow = false;
+    [SerializeField] bool isWeakening = false;
+    [SerializeField] bool isDotDeal = false;
+    [SerializeField] bool isStun = false;
 
     //마지막으로 맞은 시간
     float lastSlowTime;
@@ -106,6 +106,12 @@ public class Monster : MonoBehaviour //추상 클래스 선언
                 break;
             case STATE.ATTACK:
                 AttackMotion(monsterType);
+                break;
+            case STATE.STUN:
+                if(!isStun)
+                {
+                    currentState = STATE.PATROL;
+                }
                 break;
             case STATE.DIE:
                 Die();
@@ -232,7 +238,6 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
         if(isStun && ((lastStunTime + stunDurationTime) - Time.time < 0)) //스턴 상태 해제
         {
-            currentState = STATE.PATROL;
             isStun = false;
         }
 
