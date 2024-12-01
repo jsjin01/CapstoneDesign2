@@ -1666,9 +1666,10 @@ MonoBehaviour:
   fatalHitProbability: 0
   fatalHitDamage: 0
   damage: 0
-  closeRangeEffect: {fileID: 7975777636841826123}
+  closeRangeWeaponRange: {fileID: 7975777636841826123}
   ArrowPrefabs:
   - {fileID: 3303570833072228735, guid: 750c34bb0e5a4eb429aa84846072446b, type: 3}
+  shieldRange: {fileID: 148095650350160514}
   rightWeapon:
     weaponName: 
     weaponGrade: 0
