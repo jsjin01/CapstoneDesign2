@@ -98,7 +98,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
     [SerializeField] GameObject dashTrail;   //Dash 트레일
 
-
     private void Start()
     {
         rightWeapon = new WeaponID01(); //TEST용
@@ -404,7 +403,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
-        
         lastCombattingTime = Time.time;
         takingDamage = true;
         if(currentShield > 0)
@@ -603,7 +601,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     IEnumerator TakeDamageAnim(GameObject obj) //데미지 입었을 때 날라감
     {
-        
         takingDamage = true;
         anit.SetTrigger("takeDamage");
         Vector2 flyingVector = (gameObject.transform.position - obj.transform.position + new Vector3(0,2,0)).normalized;
