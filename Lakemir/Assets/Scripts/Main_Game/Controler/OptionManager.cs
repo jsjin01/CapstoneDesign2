@@ -4,32 +4,45 @@ using UnityEngine.UI;
 public class OptionManager : MonoBehaviour
 {
     public GameObject optionPanel; // 옵션 패널
-    public GameObject confirmationPanel; //확인 패널
-    public GameObject skillPanel; //스킬 패널
+    public GameObject confirmationPanel; // 게임 종료 확인 패널
+    public GameObject skillPanel; // 스킬창 패널
+    public GameObject optionSoundPanel; // 옵션창 패널
 
-    public Button closeButton; // 옵션 창 닫기 버튼
-    public Button saveButton; // 게임 저장 버튼
-    public Button exitButton; // 게임 종료 버튼
+    public Button returnToGameButton; // 게임 돌아가기 버튼
+    public Button openSkillButton; // 스킬창 버튼
+    public Button exitGameButton; // 게임 종료 버튼
+    public Button optionButton; // 옵션창 버튼
+    public Button optionCloseButton; // 옵션창 닫기 버튼
+
+    public Button confirmExitButton; // YES 버튼
+    public Button cancelExitButton; // NO 버튼
 
     public Slider volumeSlider; // 소리 볼륨 조절 슬라이더
     public Slider interfaceSizeSlider; //인터페이스 크기 조절 슬라이더
-
-    private float defaultVolume = 1f; //기본 소리 볼륨 값
-    private float defaultInterfaceSize = 1f; //기본 인터페이스 크기 값
+    public Text volumeValueText; // 볼륨 값을 표시할 텍스트
+    public Text interfaceSizeValueText; // 인터페이스 크기 값을 표시할 텍스트
 
     public Text equipmentInfoText1; // 첫 번째 장비 정보 텍스트
     public Text equipmentInfoText2; // 두 번째 장비 정보 텍스트
     public Text playerStatsText; // 플레이어 능력치 텍스트
 
+    public float defaultVolume = 1f;
+    public float defaultInterfaceSize = 1f;
+
     public void Start()
     {
-        closeButton.onClick.AddListener(CloseOptionPanel);
-        saveButton.onClick.AddListener(SaveGame);
-        exitButton.onClick.AddListener(ConfirmExitGame);
-    
+        // 버튼 클릭 이벤트 설정
+        returnToGameButton.onClick.AddListener(ReturnToGame);
+        openSkillButton.onClick.AddListener(OpenSkillPanel);
+        exitGameButton.onClick.AddListener(ShowConfirmationPanel);
+        confirmExitButton.onClick.AddListener(ExitGame);
+        cancelExitButton.onClick.AddListener(CloseConfirmationPanel);
+        optionButton.onClick.AddListener(OpenOptionPanel);
+        optionCloseButton.onClick.AddListener(CloseOptionPanel);
 
-    // 초기 슬라이더 값을 설정
-    volumeSlider.value = defaultVolume;
+
+        // 슬라이더 초기값을 설정
+        volumeSlider.value = defaultVolume; // 기본값
         interfaceSizeSlider.value = defaultInterfaceSize;
 
         // 슬라이더 값이 변경될 때 호출될 함수 연결
@@ -37,18 +50,62 @@ public class OptionManager : MonoBehaviour
         interfaceSizeSlider.onValueChanged.AddListener(SetInterfaceSize);
 
         // 옵션 창 처음에는 비활성화
-        optionPanel.SetActive(false);
+        optionSoundPanel.SetActive(false);
         confirmationPanel.SetActive(false);
         skillPanel.SetActive(false);
 
+        // 초기 정보 업데이트
         UpdateEquipmentInfo();
         UpdatePlayerStats();
+        UpdateVolumeText(defaultVolume);
+        UpdateInterfaceSizeText(defaultInterfaceSize);
+    }
+
+    // 게임 돌아가기 버튼
+    public void ReturnToGame()
+    {
+        Debug.Log("인게임 화면으로 돌아갑니다.");
+        optionPanel.SetActive(false); // 옵션창 닫기
+    }
+
+    // 스킬창 열기
+    public void OpenSkillPanel()
+    {
+        Debug.Log("스킬창을 엽니다");
+        skillPanel.SetActive(true); // 스킬창 열기
+    }
+
+    // 스킬창 닫기
+    public void CloseSkillPanel()
+    {
+        skillPanel.SetActive(false);
+    }
+
+    // 게임 종료하기 확인창
+    public void ShowConfirmationPanel()
+    {
+        confirmationPanel.SetActive(true);
+        Debug.Log("정말 게임을 종료하시겠습니까?");
+    }
+
+    // yes 버튼 기능
+    public void ExitGame()
+    {
+        Debug.Log("게임이 종료됩니다.");
+        Application.Quit(); // 게임 종료
+    }
+
+    // no 버튼 기능
+    public void CloseConfirmationPanel()
+    {
+        confirmationPanel.SetActive(false);
     }
 
     // 소리 볼륨 설정 함수
     public void SetVolume(float value)
     {
         AudioListener.volume = value; //전체 게임의 소리 볼륨을 설정
+        UpdateVolumeText(value); // ui 업데이트
         Debug.Log("소리 볼륨:" + value);
     }
 
@@ -56,11 +113,12 @@ public class OptionManager : MonoBehaviour
     public void SetInterfaceSize(float value)
     {
         // 인터페이스 크기를 조절하는 로직
-        CanvasScaler canvasScaler = FindObjectOfType<CanvasScaler>();
-        if (canvasScaler != null )
+        CanvasScaler scaler = FindObjectOfType<CanvasScaler>();
+        if (scaler != null)
         {
-            canvasScaler.scaleFactor = value; //Canvas 전체의 스케일을 변경
-            Debug.Log("인터페이스 크기:"+ value);
+            scaler.scaleFactor = value; //ui 크기 조정
+            UpdateInterfaceSizeText(value); //ui 업데이트
+            Debug.Log("인터페이스 크기:" + value);
         }
     }
 
@@ -80,13 +138,13 @@ public class OptionManager : MonoBehaviour
     // 옵션 창 열기 함수
     public void OpenOptionPanel()
     {
-        optionPanel.SetActive(true); // 옵션 패널 활성화
+        optionSoundPanel.SetActive(true); // 옵션창 패널 활성화
     }
 
     // 옵션 창 닫기
     public void CloseOptionPanel()
     {
-        optionPanel.SetActive(false); //옵션 패널 비활성화
+        optionSoundPanel.SetActive(false); //옵션창 패널 비활성화
     }
 
     // 게임 저장 기능 
@@ -95,35 +153,16 @@ public class OptionManager : MonoBehaviour
         Debug.Log("게임이 저장되었습니다.");
     }
 
-    // 확인창 설정
-    public void ShowConfirmationPanel()
+    // 볼륨 값을 텍스트로 업데이트
+    public void UpdateVolumeText(float value)
     {
-        confirmationPanel.SetActive(true);
-        Debug.Log("정말 게임을 종료하시겠습니까?");
-    }
-    
-    // 게임 나가기 확인
-    public void ConfirmExitGame()
-    {
-        Debug.Log("게임이 종료됩니다.");
-        Application.Quit();
+        volumeValueText.text = $"볼륨: {Mathf.Round(value * 100)}%";
     }
 
-    // 게임 나가기 취소
-    public void CancelExitGame()
-    {
-        confirmationPanel.SetActive(true);
-    }
+    // 인터페이스 크기 값을 텍스트로 업데이트
 
-    // 스킬창 열기
-    public void OpenSkillPanel()
+    public void UpdateInterfaceSizeText(float value)
     {
-        skillPanel.SetActive(true);
-    }
-
-    // 스킬창 닫기
-    public void CloseSkillPanel()
-    {
-        skillPanel.SetActive(false);
+        interfaceSizeValueText.text = $"UI 크기: {Mathf.Round(value * 100)}%";
     }
 }
