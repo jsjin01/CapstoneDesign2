@@ -23,6 +23,13 @@ public class AttackMotion : MonoBehaviour
         if(collision.CompareTag("Monster"))
         {
             Debug.Log("몬스터가 데미지를 입음");
+            if(wp is WeaponID02) //WeaponID02일 때 호출
+            {
+                if(collision.gameObject.GetComponent<Monster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
+                {
+                    ((WeaponID02)wp).IncreaseDmg();//데미지 증가
+                }
+            }
             collision.gameObject.GetComponent<Monster>().TakeDamage(damage, effect);
         }
     }

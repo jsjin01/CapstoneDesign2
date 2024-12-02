@@ -25,4 +25,13 @@ public class WeaponID02 : CloseRangeWeapon
     public override void selfEffects()
     {
     }
+
+    public void IncreaseDmg() //데미지 증가 
+    {
+        if(killedMonster <= maxMonster)
+        {
+            killedMonster++;
+            comboDamage[0] = (1.2f + dmgIncrease * killedMonster) * (1 + 0.1f * weaponGrade);
+        }
+    }
 }
