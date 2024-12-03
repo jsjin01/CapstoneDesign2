@@ -16,6 +16,7 @@ public class Weapon
     //추가한 코드들 -전상진
     public WEAPON_TYPE w_type;             //무기 종류 분류
     public EFFECT hitEffect;               //무기에 부여된 효과
+    public Vector3 playerHitPoint;         //무기 히트 포인트
 
     //무기 정보 반환하는 함수
     public string GetWeaponInfo()
@@ -48,5 +49,10 @@ public class Weapon
 
     public virtual void selfEffects() { }    //자기 자신에 적용되는 효과 => 능력 적용
 
-    public virtual void AttackEffects() { }   //타수 관련 함수나 P
+    public virtual void AttackEffects() { }   //타수 관련 함수
+
+    public void SetPosition(Vector3 pos)      //히트 포지션 설정 
+    {
+        playerHitPoint = pos;
+    }
 }

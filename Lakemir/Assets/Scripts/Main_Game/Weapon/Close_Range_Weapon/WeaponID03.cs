@@ -1,20 +1,25 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class WeaponID03 : CloseRangeWeapon
 {
     float dmgIncrease = 0.1f;
     int killedMonster = 0;
     int maxMonster = 10;
-    GameObject tripleParticle;
+    int comboNum = 26;
 
+    public string prefabAddress1 = "Assets/Prefabs/Weapon Effect/WeaponID03/WeaponID03.prefab";                         // ì²« ë²ˆì§¸ í”„ë¦¬íŒ¹ ì£¼ì†Œ
+    public string prefabAddress2 = "Assets/Prefabs/Weapon Effect/WeaponID03/WeaponID03 Strong Atk.prefab";             // ë‘ ë²ˆì§¸ í”„ë¦¬íŒ¹ ì£¼ì†Œ
+    GameObject[] tripleParticle = new GameObject[2];
     public WeaponID03()
     {
-        weaponName = "Èæ¿ä¼® ¸ÁÄ¡";
-        description = "¾î¹«°Å¿î Èæ¿ä¼®À¸·Î ¸¸µé¾îÁø ¸ÁÄ¡·Î, °­·ÂÇÑ ±¤¿ª Å¸°İÀ» Á¦°øÇÕ´Ï´Ù.";
-        ability = "ÁöÁø ¹ßµ¿: 3Å¸¸¶´Ù Å« Ãæ°İÆÄ¸¦ ¸¸µé¾î ´Ù¼öÀÇ ¸ó½ºÅÍ¸¦ °ø°İ\n\n" +
-            "¾ÏÈæÀÇ Æø¹ß: 27Å¸¸¶´Ù Ãæ°İÆÄº¸´Ù ÈÎ¾À Å« Æø¹ßÀ» ¸¸µé¾î °ø°İ(µ¥¹ÌÁö 150%)";
+        weaponName = "í‘ìš”ì„ ë§ì¹˜";
+        description = "ì–´ë¬´ê±°ìš´ í‘ìš”ì„ìœ¼ë¡œ ë§Œë“¤ì–´ì§„ ë§ì¹˜ë¡œ, ê°•ë ¥í•œ ê´‘ì—­ íƒ€ê²©ì„ ì œê³µí•©ë‹ˆë‹¤.";
+        ability = "ì§€ì§„ ë°œë™: 3íƒ€ë§ˆë‹¤ í° ì¶©ê²©íŒŒë¥¼ ë§Œë“¤ì–´ ë‹¤ìˆ˜ì˜ ëª¬ìŠ¤í„°ë¥¼ ê³µê²©\n\n" +
+            "ì•”í‘ì˜ í­ë°œ: 27íƒ€ë§ˆë‹¤ ì¶©ê²©íŒŒë³´ë‹¤ í›¨ì”¬ í° í­ë°œì„ ë§Œë“¤ì–´ ê³µê²©(ë°ë¯¸ì§€ 150%)";
         w_type = WeaponEnum.WEAPON_TYPE.CLOSE_RANGE_WEAPON;
         comboNumber = 3;
         currentcomboNumber = 0;
@@ -25,11 +30,36 @@ public class WeaponID03 : CloseRangeWeapon
         comboDamage[0] = 0.7f * (1 + 0.1f * weaponGrade);
         comboDamage[1] = 0.8f * (1 + 0.1f * weaponGrade);
         comboDamage[2] = 1f * (1 + 0.1f * weaponGrade);
+
     }
 
     public override void selfEffects()
     {
+        comboNum++;     //ì½¤ë³´ë„˜++
+        Debug.Log(comboNum);
+        if(comboNum % 3 == 0 && comboNum % 27 != 0)
+        {
+            Debug.Log("3íƒ€ ê°•í™”");
+            Addressables.LoadAssetAsync<GameObject>(prefabAddress1).Completed += handle1 =>
+            {
+                if(handle1.Status == AsyncOperationStatus.Succeeded)
+                {
+                    tripleParticle[0] = Object.Instantiate(handle1.Result, playerHitPoint, Quaternion.identity);
+                }
+            };
+        }
+        else if(comboNum % 3 == 0 && comboNum % 27 == 0)
+        {
+            Debug.Log("27íƒ€ ê°•í™”");
+            Addressables.LoadAssetAsync<GameObject>(prefabAddress2).Completed += handle2 =>
+            {
+                if(handle2.Status == AsyncOperationStatus.Succeeded)
+                {
+                    tripleParticle[1] = Object.Instantiate(handle2.Result, playerHitPoint, Quaternion.identity);
+                }
+            };
+        }
     }
 
-
+   
 }

@@ -49,6 +49,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     [SerializeField] GameObject closeRangeWeaponRange;    //근거리 공격범위
     [SerializeField] GameObject[] ArrowPrefabs;           //원거리 탄환
     [SerializeField] GameObject shieldRange;              //쉴드 적용
+    [SerializeField] Transform playerAtkPoint;              //공격타점
     
 
     //점프 관련 변수
@@ -102,7 +103,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void Start()
     {
-        rightWeapon = new WeaponID02(); //TEST용
+        rightWeapon = new WeaponID03(); //TEST용
         leftWeapon = new WeaponID06();  //TEST용
     }
 
@@ -252,6 +253,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             if(rightWeapon != null)
             {
+                rightWeapon.SetPosition(playerAtkPoint.position);
                 AttackMotion(rightWeapon);
             }
         }
@@ -259,6 +261,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             if(leftWeapon != null)
             {
+                leftWeapon.SetPosition(playerAtkPoint.position);
                 AttackMotion(leftWeapon);
             }
         }

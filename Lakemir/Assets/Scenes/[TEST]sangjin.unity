@@ -531,6 +531,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e1e7c0438940d4399e1b1463f8cb94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &551886347
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 551886348}
+  m_Layer: 0
+  m_Name: AtkPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &551886348
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551886347}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.64, y: 0.64, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4118656622956377052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &571066461
 GameObject:
   m_ObjectHideFlags: 0
@@ -1993,6 +2024,7 @@ MonoBehaviour:
   ArrowPrefabs:
   - {fileID: 3303570833072228735, guid: 750c34bb0e5a4eb429aa84846072446b, type: 3}
   shieldRange: {fileID: 148095650350160514}
+  playerAtkPoint: {fileID: 551886348}
   rightWeapon:
     weaponName: 
     weaponGrade: 0
@@ -2002,6 +2034,7 @@ MonoBehaviour:
     isEquipped: 0
     w_type: 0
     hitEffect: 0
+    playerHitPoint: {x: 0, y: 0, z: 0}
   leftWeapon:
     weaponName: 
     weaponGrade: 0
@@ -2011,6 +2044,7 @@ MonoBehaviour:
     isEquipped: 0
     w_type: 0
     hitEffect: 0
+    playerHitPoint: {x: 0, y: 0, z: 0}
   joystick: {fileID: 4827166285537034103}
   rb: {fileID: 3604123892545885198}
   col: {fileID: 1376873420976058405}
@@ -2104,6 +2138,7 @@ Transform:
   m_Children:
   - {fileID: 3306693581765607595}
   - {fileID: 5978471558937759487}
+  - {fileID: 551886348}
   m_Father: {fileID: 339237743294964728}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!222 &4827166285284375422

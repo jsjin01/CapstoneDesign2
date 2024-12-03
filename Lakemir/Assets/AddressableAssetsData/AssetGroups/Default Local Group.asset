@@ -16,7 +16,17 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 7d0173378eafc374bac8189029ed2fee
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: eb00cda716680624fb809a1e31fef0fd
+    m_Address: Assets/Prefabs/Weapon Effect/WeaponID03/WeaponID03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cb08fc165913c248bdf0abfbdbc6b51
+    m_Address: Assets/Prefabs/Weapon Effect/WeaponID03/WeaponID03 Strong Atk.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e0eeaa06e43457b47997a671abc0ba15, type: 2}
   m_SchemaSet:

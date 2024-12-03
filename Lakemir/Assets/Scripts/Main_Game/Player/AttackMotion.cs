@@ -12,7 +12,6 @@ public class AttackMotion : MonoBehaviour
         wp = weapon;
         wp.currentcomboNumber = comboNum;
         damage = (int)(playerDamge * weapon.comboDamage[comboNum]);
-        wp.selfEffects();
         if(weapon.hitEffect != EFFECT.NONE) //무기 효과가 None이 아니라면
         {
             effect = weapon.hitEffect; //적용
