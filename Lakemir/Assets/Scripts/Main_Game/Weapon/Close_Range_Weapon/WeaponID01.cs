@@ -23,6 +23,7 @@ public class WeaponID01 : CloseRangeWeapon
     {
         if(currentcomboNumber == 2)
         {
+            Debug.Log($"[WeaponID01] 3타 STUN 부여");
             hitEffect = EFFECT.STUN;//3타마다 스턴 효과 부여
         }
         else

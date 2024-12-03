@@ -103,7 +103,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void Start()
     {
-        rightWeapon = new WeaponID03(); //TEST용
+        rightWeapon = new WeaponID04(); //TEST용
         leftWeapon = new WeaponID06();  //TEST용
     }
 
@@ -274,10 +274,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             case WEAPON_TYPE.CLOSE_RANGE_WEAPON:
                 lastAttackTime = Time.time;        //공격딜레이를 위해서 초를 잼
 
-                weapon.selfEffects();              //특수 효과 부여
-                anit.SetTrigger("CloseAttackKey"); //공격모션 
-                closeRangeWeaponRange.GetComponent<AttackMotion>().Setting(damage, anit.GetInteger("Combo") , (CloseRangeWeapon)weapon );//데미지랑 효과 설정
-                
                 if(Time.time - lastCombattingTime < 1)//1초안에 연속동작을 하지 않으면 풀리도록
                 {
                     anit.SetInteger("Combo", anit.GetInteger("Combo") + 1);
@@ -291,6 +287,11 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                 {
                     anit.SetInteger("Combo", 0);
                 }
+                weapon.selfEffects();              //특수 효과 부여
+                anit.SetTrigger("CloseAttackKey"); //공격모션 
+
+                closeRangeWeaponRange.GetComponent<AttackMotion>().Setting(damage, anit.GetInteger("Combo"), (CloseRangeWeapon)weapon);//데미지랑 효과 설정
+                Debug.Log($"[Combo]현재 콤보 사이클 : {anit.GetInteger("Combo")}");
 
                 lastCombattingTime = Time.time; //초재기
                 
@@ -603,6 +604,15 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         dashTrail.SetActive(false);
         yield return new WaitForSeconds(0.2f);
         isDashing = false;
+    }
+
+    public void CurrentHpHealing(float per) //현재 체력의 per 만큼 채움
+    {
+        currentHp = currentHp + (int)(currentHp * per);
+        if(currentHp > maxHp)
+        {
+            currentHp = maxHp;
+        }
     }
 
     IEnumerator TakeDamageAnim(GameObject obj) //데미지 입었을 때 날라감

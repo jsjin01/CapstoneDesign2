@@ -140,7 +140,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     public void TakeDamage(int dmg, EFFECT eft = EFFECT.NONE)//데미지 받는 부분
     {
-        Debug.Log($"입은 데미지: {dmg} , 효과 적용 : {eft}" );
+        Debug.Log($"[Monster] 입은 데미지: {dmg} , 효과 적용 : {eft}" );
         EffectMonster(eft);
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
         if (currentHp <= 0)
@@ -247,7 +247,6 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
         else if(isDotDeal && (Time.time - tikDamageTime > 1f))//1초당 틱데미지
         {
-            Debug.Log("도트딜 적용 중");
             currentHp = (int)(currentHp * 0.9f);
             tikDamageTime = Time.time;
         }

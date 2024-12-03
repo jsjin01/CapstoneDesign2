@@ -32,6 +32,7 @@ public class WeaponID02 : CloseRangeWeapon
         {
             killedMonster++;
             comboDamage[0] = (1.2f + dmgIncrease * killedMonster) * (1 + 0.1f * weaponGrade);
+            Debug.Log($"[WeaponID2] 처치 시 데미지 증가 효과 적용, 적용 횟수: {killedMonster}");
         }
     }
 }

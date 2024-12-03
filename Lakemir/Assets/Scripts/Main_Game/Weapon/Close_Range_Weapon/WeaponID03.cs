@@ -9,7 +9,7 @@ public class WeaponID03 : CloseRangeWeapon
     float dmgIncrease = 0.1f;
     int killedMonster = 0;
     int maxMonster = 10;
-    int comboNum = 26;
+    int comboNum = 0;
 
     public string prefabAddress1 = "Assets/Prefabs/Weapon Effect/WeaponID03/WeaponID03.prefab";                         // 첫 번째 프리팹 주소
     public string prefabAddress2 = "Assets/Prefabs/Weapon Effect/WeaponID03/WeaponID03 Strong Atk.prefab";             // 두 번째 프리팹 주소
@@ -39,23 +39,25 @@ public class WeaponID03 : CloseRangeWeapon
         Debug.Log(comboNum);
         if(comboNum % 3 == 0 && comboNum % 27 != 0)
         {
-            Debug.Log("3타 강화");
+            Debug.Log($"[WeaponID03] 3회 강화 공격, 공격 횟수 :{comboNum}");
             Addressables.LoadAssetAsync<GameObject>(prefabAddress1).Completed += handle1 =>
             {
                 if(handle1.Status == AsyncOperationStatus.Succeeded)
                 {
                     tripleParticle[0] = Object.Instantiate(handle1.Result, playerHitPoint, Quaternion.identity);
+                    tripleParticle[0].GetComponent<id03Effect>().Setting(50);
                 }
             };
         }
         else if(comboNum % 3 == 0 && comboNum % 27 == 0)
         {
-            Debug.Log("27타 강화");
+            Debug.Log($"[WeaponID03] 27회 강화 공격, 공격 횟수 :{comboNum}");
             Addressables.LoadAssetAsync<GameObject>(prefabAddress2).Completed += handle2 =>
             {
                 if(handle2.Status == AsyncOperationStatus.Succeeded)
                 {
                     tripleParticle[1] = Object.Instantiate(handle2.Result, playerHitPoint, Quaternion.identity);
+                    tripleParticle[0].GetComponent<id03Effect>().Setting(75);
                 }
             };
         }

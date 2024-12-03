@@ -1099,8 +1099,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 208143704033475709, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
+      propertyPath: speed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 208143704033475709, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: currentHp
-      value: 100
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 208143704033475709, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: attackCooldown
@@ -1168,11 +1172,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6524352433619245409, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 6.11
+      value: 4.03
       objectReference: {fileID: 0}
     - target: {fileID: 6524352433619245409, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 4.55
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6524352433619245409, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
