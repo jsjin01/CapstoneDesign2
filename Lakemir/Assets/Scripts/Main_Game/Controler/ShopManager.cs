@@ -100,7 +100,7 @@ public class ShopManager : MonoBehaviour
         UpdateUI();
     }
 
-    private void UpgradeWeapon() //회복약 함수
+    private void UpgradeWeapon() //무기 업그레이드 함수
     {
         if (playerSouls >= weaponUpgradeCost)
         {
@@ -144,7 +144,7 @@ public class ShopManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("영혼이 부족하빈다!");
+            Debug.Log("영혼이 부족합니다!");
         }
         UpdateUI();
     }
