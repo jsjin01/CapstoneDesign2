@@ -103,7 +103,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void Start()
     {
-        rightWeapon = new WeaponID04(); //TEST용
+        rightWeapon = new WeaponID03(); //TEST용
         leftWeapon = new WeaponID06();  //TEST용
     }
 

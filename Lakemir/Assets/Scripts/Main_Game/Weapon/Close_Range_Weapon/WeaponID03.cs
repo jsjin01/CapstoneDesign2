@@ -57,7 +57,7 @@ public class WeaponID03 : CloseRangeWeapon
                 if(handle2.Status == AsyncOperationStatus.Succeeded)
                 {
                     tripleParticle[1] = Object.Instantiate(handle2.Result, playerHitPoint, Quaternion.identity);
-                    tripleParticle[0].GetComponent<id03Effect>().Setting(75);
+                    tripleParticle[1].GetComponent<id03Effect>().Setting(75);
                 }
             };
         }
