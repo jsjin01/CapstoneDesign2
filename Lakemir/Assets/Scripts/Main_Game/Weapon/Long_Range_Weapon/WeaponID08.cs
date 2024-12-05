@@ -1,41 +1,29 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponID08 : LongRangeWeapon
 {
-    float currentIncreaseAdd = 0.05f;
-    float damageSave;               //¹«±â °­È­·Î¸¸ Àû¿ëµÈ ´ë¹ÌÁö ÀúÀå
+    public bool addArrow = true;
     public WeaponID08()
     {
-        weaponName = "ºûÀÇ ÆÄµ¿ ¹ß»ç±â";
-        description = "·¹ÀÌÅ©¹Ì¸£ ¿Õ±¹ÀÇ °í´ë ±â¼úÀ» ±â¹İÀ¸·Î Á¦ÀÛµÈ °í±Ş ¿¡³ÊÁö ¹«±âÀÓ. ÀÌ ¹ß»ç±â´Â ¾ĞÃàµÈ ºûÀÇ ¿¡³ÊÁö¸¦ ÁıÁßÇÏ¿© °­·ÂÇÑ ºö ÇüÅÂ·Î ¹ß»çÇÑ´Ù." +
-            " ÀÌ ¹«±â¸¦ ÅëÇØ ºûÀÇ ÆÄµ¿À» Á¶ÀıÇÏ¸ç, ºü¸¥ ¼Óµµ·Î ¿¬¼ÓÀûÀÎ °ø°İÀ» ÇÒ ¼ö ÀÖÀ½ ";
-        ability = "ºûÀÇ À¯µµ: ºûÀÇ ÆÄµ¿ ¹ß»ç±â¿¡¼­ ¹ß»çµÈ ºöÀÌ ÀÚµ¿À¸·Î °¡Àå °¡±î¿î ÀûÀ» ÃßÀûÇÏ¿© ¸íÁß·üÀ» ´ëÆø Çâ»ó½ÃÅ°´Â ±â´É\n\n" +
-                  "ºûÀÇ ÆÄµ¿: ÀûÀ» ¸íÁß ½Ã ÁÖº¯¿¡ µ¥¹ÌÁö¸¦ ÁÖ´Â ¿À¶ó(15%)¸¦ »ı¼ºÇØ³¿";
+        weaponName = "ë¹›ì˜ íŒŒë™ ë°œì‚¬ê¸°";
+        description = "ë ˆì´í¬ë¯¸ë¥´ ì™•êµ­ì˜ ê³ ëŒ€ ê¸°ìˆ ì„ ê¸°ë°˜ìœ¼ë¡œ ì œì‘ëœ ê³ ê¸‰ ì—ë„ˆì§€ ë¬´ê¸°ì„. ì´ ë°œì‚¬ê¸°ëŠ” ì••ì¶•ëœ ë¹›ì˜ ì—ë„ˆì§€ë¥¼ ì§‘ì¤‘í•˜ì—¬ ê°•ë ¥í•œ ë¹” í˜•íƒœë¡œ ë°œì‚¬í•œë‹¤." +
+            " ì´ ë¬´ê¸°ë¥¼ í†µí•´ ë¹›ì˜ íŒŒë™ì„ ì¡°ì ˆí•˜ë©°, ë¹ ë¥¸ ì†ë„ë¡œ ì—°ì†ì ì¸ ê³µê²©ì„ í•  ìˆ˜ ìˆìŒ ";
+        ability = "ë¹›ì˜ ìœ ë„: ë¹›ì˜ íŒŒë™ ë°œì‚¬ê¸°ì—ì„œ ë°œì‚¬ëœ ë¹”ì´ ìë™ìœ¼ë¡œ ê°€ì¥ ê°€ê¹Œìš´ ì ì„ ì¶”ì í•˜ì—¬ ëª…ì¤‘ë¥ ì„ ëŒ€í­ í–¥ìƒì‹œí‚¤ëŠ” ê¸°ëŠ¥\n\n" +
+                  "ë¹›ì˜ íŒŒë™: ë°œì‚¬ ì‹œ ì—¬ëŸ¬ ê°œì˜ ì‘ì€ íˆ¬ì‚¬ì²´ê°€ ê°™ì´ ë‚˜ê°(ì›ë˜ ë°ë¯¸ì§€ì˜ 30% ë°ë¯¸ì§€)";
         w_type = WeaponEnum.WEAPON_TYPE.LONG_RANGE_WEAPON;
-        damageSave = 0.35f * (1 + 0.1f * weaponGrade);
-        damage = damageSave;
-        currentArrow = 5;           //ÇöÀç È­»ì ¼ö 
-        maxArrow = 5;               //ÃÖ´ë È­»ì ¼ö 
-        reloadingTime = 3;          //ÀçÀåÀü½Ã°£ 
-        isReloading = false;               //ÀçÀåÀü Áß
-        isGuided = false;                  //À¯µµ ¿©ºÎ
+        damage = 0.30f * (1 + 0.1f * weaponGrade);
+        currentArrow = 5;           //í˜„ì¬ í™”ì‚´ ìˆ˜ 
+        maxArrow = 5;               //ìµœëŒ€ í™”ì‚´ ìˆ˜ 
+        reloadingTime = 2;          //ì¬ì¥ì „ì‹œê°„ 
+        isReloading = false;               //ì¬ì¥ì „ ì¤‘
+        isGuided = true;                  //ìœ ë„ ì—¬ë¶€
         hitEffect = EFFECT.NONE;
     }
 
-    public override void selfEffects()
+    public override void selfEffects() 
     {
-        Debug.Log($"[WeaponID07] µ¥¹ÌÁö Àû¿ë :  {damageSave + (currentIncreaseAdd * (6 - currentArrow))}");
-        damage = damageSave + (currentIncreaseAdd * (6 - currentArrow));
-        int randomNumber = Random.Range(1, 101);
-        if(randomNumber <= 20)
-        {
-            hitEffect = EFFECT.STUN;
-        }
-        else
-        {
-            hitEffect = EFFECT.NONE;
-        }
+        
     }
 }

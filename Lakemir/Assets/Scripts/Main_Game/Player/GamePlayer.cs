@@ -101,14 +101,22 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     [SerializeField] GameObject upDownTrail; //낙하 공격 트레일
     [SerializeField] GameObject dashTrail;   //Dash 트레일
 
+    bool isStun = false;     //스턴
+    bool isDie = false;      //죽음 변수 
+
     private void Start()
     {
         rightWeapon = new WeaponID03(); //TEST용
-        leftWeapon = new WeaponID06();  //TEST용
+        leftWeapon = new WeaponID08();  //TEST용
     }
 
     void Update()
     {
+
+        if(isDie)
+        {
+            Time.timeScale = 0f;
+        }
 #if UNITY_EDITOR
         // 개발 환경에서만 키보드 입력을 통한 이동 가능
         Moving(Input.GetAxis("Horizontal"));
@@ -198,27 +206,30 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     }
     void Moving(float x)//움직임 관련 함수
     {
-        anit.SetBool("ismoving", true);
-        //방향
-        if(x > 0 && !isDashing)
+        if(!isStun)
         {
-            direction = DIRECTION.RIGHT;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if(x < 0 && !isDashing)
-        {
-            direction = DIRECTION.LEFT;
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
+            anit.SetBool("ismoving", true);
+            //방향
+            if(x > 0 && !isDashing)
+            {
+                direction = DIRECTION.RIGHT;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if(x < 0 && !isDashing)
+            {
+                direction = DIRECTION.LEFT;
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+            }
 
-        //이동거리
-        Vector3 moveDirection = new Vector3(x, 0, 0).normalized;
-        transform.position += moveDirection * speed * Time.deltaTime;
+            //이동거리
+            Vector3 moveDirection = new Vector3(x, 0, 0).normalized;
+            transform.position += moveDirection * speed * Time.deltaTime;
+        }
     }
 
     void Jump()// 점프 
     {
-        if(jumpCount < maxjump)
+        if(jumpCount < maxjump && !isStun)
         {
             anit.SetTrigger("isJumping");
             rb.velocity = new Vector3(rb.velocity.x, 0, 0);     //기존의  y속도 초기화
@@ -229,7 +240,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     void FallingAttack() // 낙하 공격
     {
-        if(jumpCount >= 1 && !isFallingAttacking && !canLadder)
+        if(jumpCount >= 1 && !isFallingAttacking && !canLadder && !isStun)
         {
             isFallingAttacking = true;
             rb.gravityScale = 4f;
@@ -239,30 +250,33 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void Attack(ATTACKKEY atkKey) //공격
     {
-        if(isCritical())//치명타 뜰 때 안 뜰 때 구분
+        if(!isStun)
         {
-            damage = attackPower * fatalHitDamage;
-        }
-        else
-        {
-            damage = attackPower;
-        }
-        isAttacking = true;
-
-        if(atkKey == ATTACKKEY.RIGHT)
-        {
-            if(rightWeapon != null)
+            if(isCritical())//치명타 뜰 때 안 뜰 때 구분
             {
-                rightWeapon.SetPosition(playerAtkPoint.position);
-                AttackMotion(rightWeapon);
+                damage = attackPower * fatalHitDamage;
             }
-        }
-        else if(atkKey == ATTACKKEY.LEFT)
-        {
-            if(leftWeapon != null)
+            else
             {
-                leftWeapon.SetPosition(playerAtkPoint.position);
-                AttackMotion(leftWeapon);
+                damage = attackPower;
+            }
+            isAttacking = true;
+
+            if(atkKey == ATTACKKEY.RIGHT)
+            {
+                if(rightWeapon != null)
+                {
+                    rightWeapon.SetPosition(playerAtkPoint.position);
+                    AttackMotion(rightWeapon);
+                }
+            }
+            else if(atkKey == ATTACKKEY.LEFT)
+            {
+                if(leftWeapon != null)
+                {
+                    leftWeapon.SetPosition(playerAtkPoint.position);
+                    AttackMotion(leftWeapon);
+                }
             }
         }
     }
@@ -317,7 +331,14 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                 {
                     weapon.selfEffects();
                     anit.SetTrigger("LongAttackKey");
-                    StartCoroutine(ArrowCreat(weapon));
+                    if(weapon is WeaponID08)
+                    {
+                        StartCoroutine(ArrowCreat(weapon,((WeaponID08)weapon).addArrow));
+                    }
+                    else
+                    {
+                        StartCoroutine(ArrowCreat(weapon));
+                    }
                     ((LongRangeWeapon)weapon).currentArrow--;
                 }
                 break;
@@ -343,7 +364,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
     }
 
-    IEnumerator ArrowCreat(Weapon weapon)//화살 생성
+    IEnumerator ArrowCreat(Weapon weapon , bool addArrow = false)//화살 생성
     {
         
         yield return new WaitForSeconds(0.8f);
@@ -360,32 +381,60 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         GameObject arrow = Instantiate(ArrowPrefabs[0],gameObject.transform.position - new Vector3(0, 2.39f, 0), rotation); //화살 오브젝트 생성
         arrow.GetComponent<Arrow>().Setting(damage,((LongRangeWeapon)weapon));                                              //화살 데미지 설정
         arrow.GetComponent<Arrow>().move((int)direction);                                                                   //화살 이동방향 설정
+
+        if(addArrow)                            //추가 화살
+        {
+            Quaternion leftRotation = Quaternion.Euler(0f, 0f, 0f);
+            Quaternion rightRotation = Quaternion.Euler(0f, 0f, 0f);
+
+            if(direction == DIRECTION.RIGHT)
+            {
+                leftRotation = Quaternion.Euler(0f, 0f, 0f);
+                rightRotation = Quaternion.Euler(0f, -0f, 0f);
+            }
+            else if(direction == DIRECTION.LEFT)
+            {
+                leftRotation = Quaternion.Euler(0f, 180f, 0);
+                rightRotation = Quaternion.Euler(0f, 180f, 0f);
+            }
+
+            GameObject leftArrow = Instantiate(ArrowPrefabs[1], gameObject.transform.position - new Vector3(0, 1.39f, 0), leftRotation); //화살 오브젝트 생성
+            leftArrow.GetComponent<Arrow>().Setting((int)(damage * 0.3f), ((LongRangeWeapon)weapon));                                    //화살 데미지 설정
+            leftArrow.GetComponent<Arrow>().move((int)direction);                                                                        //화살 이동방향 설정
+
+            GameObject rightArrow = Instantiate(ArrowPrefabs[1], gameObject.transform.position - new Vector3(0, 3.39f, 0), rightRotation); //화살 오브젝트 생성
+            rightArrow.GetComponent<Arrow>().Setting((int)(damage * 0.3f), ((LongRangeWeapon)weapon));                                    //화살 데미지 설정
+            rightArrow.GetComponent<Arrow>().move((int)direction);                                                                        //화살 이동방향 설정
+        }
     }
     public void InteractionKey() // 상호작용키
     {
-        if(isInteracable)
+        if(!isStun)
         {
-            if(interectObj == INTERECTION.WEAPON)
+            if(isInteracable)
             {
-                //UI 메니져로 무기창 띄우기 
-                Debug.Log("무기창과의 상호작용");
-            }
-            else if(interectObj == INTERECTION.NPC)
-            {
-                //NPC 창 띄우기 
-                Debug.Log("NPC과의 상호작용");
-            }
-            else if(interectObj == INTERECTION.CAPABILITYFRAGMENT)
-            {
-                //NPC 창 띄우기 
-                Debug.Log("능력치 파편과의 상호작용");
+                if(interectObj == INTERECTION.WEAPON)
+                {
+                    //UI 메니져로 무기창 띄우기 
+                    Debug.Log("무기창과의 상호작용");
+                }
+                else if(interectObj == INTERECTION.NPC)
+                {
+                    //NPC 창 띄우기 
+                    Debug.Log("NPC과의 상호작용");
+                }
+                else if(interectObj == INTERECTION.CAPABILITYFRAGMENT)
+                {
+                    //NPC 창 띄우기 
+                    Debug.Log("능력치 파편과의 상호작용");
+                }
             }
         }
     }
 
     public void DashKey()// 대쉬키
     {
-        if(!isDashing)
+        if(!isDashing && !isStun)
         {
             StartCoroutine(Dash(direction));
         }
@@ -393,7 +442,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void HealingPotion() //치유물약
     {
-        if(currentHealingPotion < maxHealingPotion)
+        if(currentHealingPotion < maxHealingPotion && !isStun)
         {
             currentHp += maxHp / 2;
             if(currentHp > maxHp)
@@ -435,6 +484,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             currentHp -= dmg;
             if(currentHp <= 0)
             {
+                StartCoroutine(DieTimeStop());
                 anit.SetTrigger("Die");
                 anit.SetBool("isDie", true);
             }
@@ -454,6 +504,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                 rb.velocity = Vector3.zero;
                 anit.SetTrigger("DamageFall");
                 takingDamage = false;
+                isStun = false;
             }
 
             if (jumpCount != 0 && !isFallingAttacking)
@@ -621,7 +672,14 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         anit.SetTrigger("takeDamage");
         Vector2 flyingVector = (gameObject.transform.position - obj.transform.position + new Vector3(0,2,0)).normalized;
         rb.velocity = flyingVector*10f;
+        isStun = true;
         yield return new WaitForSeconds(0.5f);
+    }
+
+    IEnumerator DieTimeStop()
+    {
+        yield return new WaitForSeconds(0.8f);
+        isDie = true;
     }
 }
 

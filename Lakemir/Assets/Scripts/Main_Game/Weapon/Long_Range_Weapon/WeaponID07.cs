@@ -1,32 +1,32 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponID07 : LongRangeWeapon
 {
     float currentIncreaseAdd = 0.05f;
-    float damageSave;               //¹«±â °­È­·Î¸¸ Àû¿ëµÈ ´ë¹ÌÁö ÀúÀå
+    float damageSave;               //ë¬´ê¸° ê°•í™”ë¡œë§Œ ì ìš©ëœ ëŒ€ë¯¸ì§€ ì €ì¥
     public WeaponID07()
     {
-        weaponName = "Àı¸ÁÀÇ ÅõÃ´º°";
-        description = "¼Õ¹Ù´Ú Å©±âÀÇ °ËÀº º° ¸ğ¾çÀ» ÇÏ°í ÀÖÀ¸¸ç, ÁÖº¯ÀÇ ºûÀ» Èí¼öÇÏ´Â ´É·ÂÀÌ ÀÖ¾î »ç¿ëÀÚÀÇ ¼Õ¿¡¼­ ´øÁ®Áú ¶§ ¾îµÒ ¼Ó¿¡¼­µµ °ÅÀÇ º¸ÀÌÁö ¾Ê´Â´Ù." +
-            " Æ¯È÷, ¼Ò¸®µµ °ÅÀÇ ³»Áö ¾Ê¾Æ Àû¿¡°Ô ¸ô·¡ Á¢±ÙÇØ ºü¸£°Ô °ø°İÇÒ ¼ö ÀÖÀ½";
-        ability = "°øÆ÷ À¯¹ß: ¸íÁß ½Ã¿¡ ÀÏÁ¤ È®·ü·Î(20%) ÂªÀº ½Ã°£(0.5ÃÊ)µ¿¾È ±âÀı½ÃÅ²´Ù.\n" +
-                  "¾îµÒÀÇ ¸·: ÀçÀåÀü Àü±îÁö »ç¿ëÇÒ ¶§¸¶´Ù Ãß°¡ ÇÇÇØ¸¦ ÁÜ(5% / 10% /15% /20% /25%µ¥¹ÌÁö)";
+        weaponName = "ì ˆë§ì˜ íˆ¬ì²™ë³„";
+        description = "ì†ë°”ë‹¥ í¬ê¸°ì˜ ê²€ì€ ë³„ ëª¨ì–‘ì„ í•˜ê³  ìˆìœ¼ë©°, ì£¼ë³€ì˜ ë¹›ì„ í¡ìˆ˜í•˜ëŠ” ëŠ¥ë ¥ì´ ìˆì–´ ì‚¬ìš©ìì˜ ì†ì—ì„œ ë˜ì ¸ì§ˆ ë•Œ ì–´ë‘  ì†ì—ì„œë„ ê±°ì˜ ë³´ì´ì§€ ì•ŠëŠ”ë‹¤." +
+            " íŠ¹íˆ, ì†Œë¦¬ë„ ê±°ì˜ ë‚´ì§€ ì•Šì•„ ì ì—ê²Œ ëª°ë˜ ì ‘ê·¼í•´ ë¹ ë¥´ê²Œ ê³µê²©í•  ìˆ˜ ìˆìŒ";
+        ability = "ê³µí¬ ìœ ë°œ: ëª…ì¤‘ ì‹œì— ì¼ì • í™•ë¥ ë¡œ(20%) ì§§ì€ ì‹œê°„(0.5ì´ˆ)ë™ì•ˆ ê¸°ì ˆì‹œí‚¨ë‹¤.\n" +
+                  "ì–´ë‘ ì˜ ë§‰: ì¬ì¥ì „ ì „ê¹Œì§€ ì‚¬ìš©í•  ë•Œë§ˆë‹¤ ì¶”ê°€ í”¼í•´ë¥¼ ì¤Œ(5% / 10% /15% /20% /25%ë°ë¯¸ì§€)";
         w_type = WeaponEnum.WEAPON_TYPE.LONG_RANGE_WEAPON;
         damageSave = 0.35f * (1 + 0.1f * weaponGrade);
         damage = damageSave;
-        currentArrow = 5;           //ÇöÀç È­»ì ¼ö 
-        maxArrow = 5;               //ÃÖ´ë È­»ì ¼ö 
-        reloadingTime = 3;          //ÀçÀåÀü½Ã°£ 
-        isReloading = false;               //ÀçÀåÀü Áß
-        isGuided = false;                  //À¯µµ ¿©ºÎ
+        currentArrow = 5;           //í˜„ì¬ í™”ì‚´ ìˆ˜ 
+        maxArrow = 5;               //ìµœëŒ€ í™”ì‚´ ìˆ˜ 
+        reloadingTime = 3;          //ì¬ì¥ì „ì‹œê°„ 
+        isReloading = false;               //ì¬ì¥ì „ ì¤‘
+        isGuided = false;                  //ìœ ë„ ì—¬ë¶€
         hitEffect = EFFECT.NONE;
     }
 
     public override void selfEffects()
     {
-        Debug.Log($"[WeaponID07] µ¥¹ÌÁö Àû¿ë :  {damageSave + (currentIncreaseAdd * (6 - currentArrow))}");
+        Debug.Log($"[WeaponID07] ë°ë¯¸ì§€ ì ìš© :  {damageSave + (currentIncreaseAdd * (6 - currentArrow))}");
         damage = damageSave + (currentIncreaseAdd * (6 - currentArrow));
         int randomNumber = Random.Range(1, 101);
         if (randomNumber <= 20)
