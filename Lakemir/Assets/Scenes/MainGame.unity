@@ -1154,9 +1154,9 @@ RectTransform:
   - {fileID: 1954277153}
   m_Father: {fileID: 2072369382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1970, y: -540}
   m_SizeDelta: {x: 500, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &134727432
@@ -2346,9 +2346,9 @@ RectTransform:
   - {fileID: 594441154}
   m_Father: {fileID: 2072369382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1170, y: -540}
   m_SizeDelta: {x: 500, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &344677178
@@ -4237,7 +4237,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &547614609
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4354,6 +4354,7 @@ MonoBehaviour:
     isEquipped: 1
     w_type: 0
     hitEffect: 0
+    playerHitPoint: {x: 0, y: 0, z: 0}
   weapon2:
     weaponName: 
     weaponGrade: 0
@@ -4363,6 +4364,7 @@ MonoBehaviour:
     isEquipped: 0
     w_type: 0
     hitEffect: 0
+    playerHitPoint: {x: 0, y: 0, z: 0}
   attackButton1: {fileID: 1149211512}
   attackButton2: {fileID: 1449784374}
 --- !u!1 &552175971
@@ -7437,7 +7439,7 @@ RectTransform:
   m_Father: {fileID: 1261369565}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9472,6 +9474,7 @@ MonoBehaviour:
     isEquipped: 0
     w_type: 0
     hitEffect: 0
+    playerHitPoint: {x: 0, y: 0, z: 0}
   newWeapon:
     weaponName: 
     weaponGrade: 0
@@ -9481,6 +9484,7 @@ MonoBehaviour:
     isEquipped: 0
     w_type: 0
     hitEffect: 0
+    playerHitPoint: {x: 0, y: 0, z: 0}
   currentWeaponText: {fileID: 1912702666}
   newWeaponText: {fileID: 2134164608}
   exchangePanel: {fileID: 1337315526}
@@ -9964,9 +9968,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1803249679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 90, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1303990332
@@ -10118,9 +10122,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1803249679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 90, y: -136.90001}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1315884652
@@ -12685,9 +12689,9 @@ RectTransform:
   - {fileID: 1152107028}
   m_Father: {fileID: 2072369382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 370, y: -540}
   m_SizeDelta: {x: 500, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1629758858
@@ -13191,7 +13195,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1718960595
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13996,9 +14000,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1803249679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 90, y: -75.950005}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1808835623

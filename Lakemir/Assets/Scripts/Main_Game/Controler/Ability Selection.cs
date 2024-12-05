@@ -12,6 +12,7 @@ public class AbilitySelection : MonoBehaviour
     public Button popupExitButton; // 팝업 닫기 버튼
 
     public GameObject popupPanel; // 팝업창 패널
+    public GameObject Panel; // 패널 
     public Text popupText; // 팝업창에 표시할 텍스트
 
     public string selectedAbility = ""; // 현재 선택된 능력치
@@ -91,9 +92,12 @@ public class AbilitySelection : MonoBehaviour
         tankerButton.GetComponent<Image>().color = Color.white;
     }
 
-    // 팝업창 닫기
+    // 팝업, 패널창 닫기
     public void ClosePopup()
     {
         popupPanel.SetActive(false);
+        Panel.SetActive(false);
+        confirmButton.gameObject.SetActive(false);
+
     }
 }
