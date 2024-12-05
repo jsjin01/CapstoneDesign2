@@ -12,6 +12,7 @@ TagManager:
   - CapabilityFragment
   - Monster
   - Shield
+  - Wall
   layers:
   - Default
   - TransparentFX
