@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9029058668031412359}
   - component: {fileID: 7462138114563605718}
   - component: {fileID: 3414299971789970023}
-  - component: {fileID: 2201586084505185490}
+  - component: {fileID: 6585208121286549470}
   m_Layer: 0
   m_Name: Long_Range_Monster_02
   m_TagString: Monster
@@ -194,7 +194,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.986332, y: 3.598949}
   m_EdgeRadius: 0
---- !u!114 &2201586084505185490
+--- !u!114 &6585208121286549470
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,24 +203,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 2676165692077280112}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6fe6d08a451fd34dba5928b47260b24, type: 3}
+  m_Script: {fileID: 11500000, guid: 33fbfd01953f9d746a7b35a9551f56c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 100
-  currentHp: 100
-  attackPower: 10
-  defensivePower: 0
-  speed: 4
+  maxHp: 40
+  currentHp: 40
+  attackPower: 8
+  defensivePower: 8
+  speed: 10
   monsterType: 1
   platform: {fileID: 0}
   patrolPoints:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  detectionRadius: 20
-  attackRange: 10
+  detectionRadius: 30
+  attackRange: 15
   monsterArrow: {fileID: 5723955367657023749, guid: d4ecfc169d522974598abc2c4459df92, type: 3}
+  currentState: 0
   attackCooldown: 2
-  attackLongRangeMonster: 0.8
+  attackLongRangeMonster: 1
   dieAnimTime: 1
   attackmotionObj: {fileID: 0}
   anit: {fileID: 9029058668031412359}
+  isSlow: 0
+  isWeakening: 0
+  isDotDeal: 0
+  isStun: 0

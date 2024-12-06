@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Close_Monster04 : Monster
+public class Close_Monster04 : NormalMonster
 {
     [Header("ºÐ¿­Ã¼ prefabs")]
     [SerializeField] GameObject miniMonster;

@@ -47,10 +47,11 @@ namespace MultiGamePlayerEnum //GamePlayer.cs
 
 namespace MonsterEnum//Monste.cs
 {
-    public enum MOSTER_TYPE //일반 몬스터 타입
+    public enum MOSTER_TYPE 
     {
         CLOSE_RANGE,
-        LONG_RANGE
+        LONG_RANGE,
+        Boss
     }
 }
 

@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 using MonsterEnum;
 using UnityEditor.SceneManagement;
 
-public class Monster : MonoBehaviour //추상 클래스 선언
+public class Monster : MonoBehaviour 
 {
     public int maxHp;                 //Max Hp일때
     public int currentHp;             //현재 HP
@@ -15,7 +15,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     [Header("#몬스터 움직임 관련")]
     [Header("몬스터 종류")]
-    [SerializeField] MOSTER_TYPE monsterType;
+    [SerializeField] protected MOSTER_TYPE monsterType;
 
     [Header("자신이 밟고 있는 발판")]
     [SerializeField] GameObject platform;
@@ -38,12 +38,12 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     [Header("기타 변수들")]
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
-    enum STATE { PATROL, CHASE, ATTACK, STUN ,DIE } //enum 문으로 설정
-    [SerializeField]STATE currentState = STATE.PATROL;   //현재 상태
+    protected enum STATE { PATROL, CHASE, ATTACK, STUN ,DIE } //enum 문으로 설정
+    [SerializeField] protected STATE currentState = STATE.PATROL;   //현재 상태
 
     //방향
-    enum DIRECTION { RIGHT, LEFT }  //enum문으로 설정
-    DIRECTION direction = DIRECTION.RIGHT;
+    protected enum DIRECTION { RIGHT, LEFT }  //enum문으로 설정
+    protected DIRECTION direction = DIRECTION.RIGHT;
 
     //시간 관련
     [SerializeField] float attackCooldown;          //공격 쿨타임
@@ -64,7 +64,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     [SerializeField] bool isSlow = false;
     [SerializeField] bool isWeakening = false;
     [SerializeField] bool isDotDeal = false;
-    [SerializeField] bool isStun = false;
+    [SerializeField] protected bool isStun = false;
 
     //마지막으로 맞은 시간
     float lastSlowTime;
@@ -90,36 +90,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     //변화 이전 스탯
     int preDp;        //약화 적용 전 방어력
     float preSp;      //슬로우 적용 전 이동속도
-
-
-    private void Update()
-    {
-        GetClosestPlayer();
-        EffectApply();
-        switch(currentState) //각각의 상황에 맞게 모션을 취함
-        {
-            case STATE.PATROL:
-                PatrolMotion();
-                break;
-            case STATE.CHASE:
-                ChaseMotion();
-                break;
-            case STATE.ATTACK:
-                AttackMotion(monsterType);
-                break;
-            case STATE.STUN:
-                if(!isStun)
-                {
-                    currentState = STATE.PATROL;
-                }
-                break;
-            case STATE.DIE:
-                Die();
-                break;
-        }
-    }
-
-    void Die()//죽음
+    protected void Die()//죽음
     {
         if(!isDie)
         {
@@ -140,7 +111,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     public void TakeDamage(int dmg, EFFECT eft = EFFECT.NONE)//데미지 받는 부분
     {
-        Debug.Log($"[Monster] 입은 데미지: {dmg} , 효과 적용 : {eft}" );
+        Debug.Log($"[Monster] 입은 데미지: {(int)(dmg / (1 + defensivePower * 0.01))} , 효과 적용 : {eft}" );
         EffectMonster(eft);
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
         if (currentHp <= 0)
@@ -153,7 +124,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void EffectMonster(EFFECT eft)//타격 시 몬스터한테 효과 적용
+    protected void EffectMonster(EFFECT eft)//타격 시 몬스터한테 효과 적용
     {
         switch(eft)
         {
@@ -217,7 +188,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void EffectApply()//Update로 적용되는 효과 + 다중으로 걸렸을 때도 해제 가능
+    protected void EffectApply()//Update로 적용되는 효과 + 다중으로 걸렸을 때도 해제 가능
     {
         if(isSlow && ((lastSlowTime + slowDurationTime) - Time.time  < 0))//슬로우 효과 해제 
         {
@@ -253,7 +224,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
 
     }
 
-    void PatrolMotion() //순찰 함수
+    protected void PatrolMotion() //순찰 함수
     {
         //가는 방향으로 보도록 설정
         if(patrolPoints[currentPatrolIndex].x - transform.position.x < 0)
@@ -281,12 +252,12 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void MoveToNextPatrolPoint() //다음 순찰포인트 계산
+    protected void MoveToNextPatrolPoint() //다음 순찰포인트 계산
     {
         currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
     }
 
-    void GetClosestPlayer() //가장 가까운 플레이어 계산
+    protected void GetClosestPlayer() //가장 가까운 플레이어 계산
     {
         GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
         Transform closestPlayer = null;
@@ -314,7 +285,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void ChaseMotion() //플레이어 발견 시 추격
+    protected void ChaseMotion() //플레이어 발견 시 추격
     {
 
         //가는 방향으로 보도록 설정
@@ -343,7 +314,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void AttackMotion(MOSTER_TYPE _monsterType)//타입에 따라 공격할 수 있도록 플레이어 공격
+    protected void AttackMotion(MOSTER_TYPE _monsterType)//타입에 따라 공격할 수 있도록 플레이어 공격
     {
         //가는 방향으로 보도록 설정
         if (targetPlayer.transform.position.x - transform.position.x < 0)
@@ -366,7 +337,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
                 break;
         }
     }
-    void CloseRangeAttack() //근접 몬스터
+    protected void CloseRangeAttack() //근접 몬스터
     {
         if (!isAttacking)
         {
@@ -388,7 +359,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void LongRangeAttack()//원거리 몬스터일 때
+    protected void LongRangeAttack()//원거리 몬스터일 때
     {
         if(!isAttacking)
         {
@@ -424,7 +395,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-   void RightOrLeft(DIRECTION dir)//이동 방향에 따라 다르게 보도록
+    protected void RightOrLeft(DIRECTION dir)//이동 방향에 따라 다르게 보도록
     {
         switch(dir) 
         {
@@ -437,7 +408,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
         }
     }
 
-    void CalculatePlatformPoints() //자신이 밟고 있는 발판의 크기를 계산
+    protected void CalculatePlatformPoints() //자신이 밟고 있는 발판의 크기를 계산
     {
         float halfWidth = platform.transform.localScale.x / 2;
         patrolPoints[0] = new Vector2(platform.transform.position.x + halfWidth, transform.position.y);

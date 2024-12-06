@@ -302,24 +302,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51fd187aafcbb2c4a93b50f0a618ba75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 100
-  currentHp: 100
-  attackPower: 10
-  defensivePower: 0
+  maxHp: 200
+  currentHp: 200
+  attackPower: 8
+  defensivePower: 10
   speed: 4
   monsterType: 0
   platform: {fileID: 0}
   patrolPoints:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  detectionRadius: 5
+  detectionRadius: 10
   attackRange: 2
   monsterArrow: {fileID: 0}
-  attackCooldown: 0
+  currentState: 0
+  attackCooldown: 1
   attackLongRangeMonster: 0
   dieAnimTime: 1
-  attackmotionObj: {fileID: 0}
-  anit: {fileID: 0}
+  attackmotionObj: {fileID: 5757043199182545267}
+  anit: {fileID: 5294959103759501069}
+  isSlow: 0
+  isWeakening: 0
+  isDotDeal: 0
+  isStun: 0
   miniMonster: {fileID: 3386509363529343638, guid: 23d7d1c408fc05e43867fad2911e75a3, type: 3}
   right: {x: 1, y: 0, z: 0}
   left: {x: -1, y: 0, z: 0}
