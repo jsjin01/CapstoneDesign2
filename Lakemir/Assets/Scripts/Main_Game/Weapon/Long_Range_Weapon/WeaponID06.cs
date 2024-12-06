@@ -33,4 +33,9 @@ public class WeaponID06 : LongRangeWeapon
             hitEffect = EFFECT.DOTDEAL;
         }
     }
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        damage = 0.4f * (1 + 0.1f * weaponGrade);
+    }
 }

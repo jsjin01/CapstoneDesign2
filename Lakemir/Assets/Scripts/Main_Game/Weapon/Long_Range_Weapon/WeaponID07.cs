@@ -38,4 +38,10 @@ public class WeaponID07 : LongRangeWeapon
             hitEffect = EFFECT.NONE;
         }
     }
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        damageSave = 0.35f * (1 + 0.1f * weaponGrade);
+        damage = damageSave;
+    }
 }

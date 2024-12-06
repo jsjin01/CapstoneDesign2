@@ -35,6 +35,12 @@ public class WeaponID05 : CloseRangeWeapon
         }
         Debug.Log("[WeaponID05]체력 회복");
         player.CurrentHpHealing(0.01f);
-
+    }
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        comboDamage[0] = 0.3f * (1 + 0.1f * weaponGrade);
+        comboDamage[1] = 0.4f * (1 + 0.1f * weaponGrade);
+        comboDamage[2] = 0.5f * (1 + 0.1f * weaponGrade);
     }
 }

@@ -16,7 +16,7 @@ public class WeaponID10 : Shield
         ability = "퍼져 나가는 빛: 패링을 성공할 시 현재 체력의 10%에 해당하는 체력을 회복시키는 오라를 발생시킨다.\n " +
             "반격의 빛: 패링을 성공할 시 더 큰 데미지(150%)를 준다.";
         w_type = WeaponEnum.WEAPON_TYPE.SHIELD;
-        reflect = 2.5f;
+        reflect = 2.5f * (1 + 0.1f * weaponGrade);
         hitEffect = EFFECT.NONE;
     }
 
@@ -29,5 +29,11 @@ public class WeaponID10 : Shield
                 shieldOra = Object.Instantiate(handle1.Result, playerHitPoint, Quaternion.identity);
             }
         };
+    }
+
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        reflect = 2.5f * (1 + 0.1f * weaponGrade);
     }
 }

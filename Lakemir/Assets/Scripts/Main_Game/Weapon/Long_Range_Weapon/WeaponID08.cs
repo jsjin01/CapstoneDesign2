@@ -26,4 +26,10 @@ public class WeaponID08 : LongRangeWeapon
     {
         
     }
+
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        damage = 0.30f * (1 + 0.1f * weaponGrade);
+    }
 }

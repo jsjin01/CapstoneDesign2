@@ -82,3 +82,26 @@ namespace GameItem //MerchantManager.cs
         Buff // 능력 향상 아이템
     }
 }
+namespace Interection
+{
+   public enum WEAPONID
+    {
+        WEAPONID01,
+        WEAPONID02,
+        WEAPONID03,
+        WEAPONID04,
+        WEAPONID05,
+        WEAPONID06,
+        WEAPONID07,
+        WEAPONID08,
+        WEAPONID09,
+        WEAPONID010,
+        WEAPONID011,
+    }
+
+    public enum NPC
+    {
+        GOD,
+        STORE
+    }
+}

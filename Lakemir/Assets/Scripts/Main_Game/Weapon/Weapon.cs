@@ -55,4 +55,9 @@ public class Weapon
     {
         playerHitPoint = pos;
     }
+
+    public virtual void SetGrade(int grade)
+    {
+        weaponGrade = grade;
+    }
 }

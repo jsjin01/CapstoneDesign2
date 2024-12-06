@@ -31,4 +31,11 @@ public class WeaponID01 : CloseRangeWeapon
             hitEffect = EFFECT.DOTDEAL; //아니면 도트딜 부여
         }
     }
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        comboDamage[0] = 0.4f * (1 + 0.1f * weaponGrade);
+        comboDamage[1] = 0.5f * (1 + 0.1f * weaponGrade);
+        comboDamage[2] = 0.6f * (1 + 0.1f * weaponGrade);
+    }
 }

@@ -60,6 +60,11 @@ public class WeaponID03 : CloseRangeWeapon
             };
         }
     }
-
-   
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        comboDamage[0] = 0.7f * (1 + 0.1f * weaponGrade);
+        comboDamage[1] = 0.8f * (1 + 0.1f * weaponGrade);
+        comboDamage[2] = 1f * (1 + 0.1f * weaponGrade);
+    }
 }

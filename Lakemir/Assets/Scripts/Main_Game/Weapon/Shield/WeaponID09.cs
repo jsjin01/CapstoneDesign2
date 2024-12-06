@@ -12,7 +12,7 @@ public class WeaponID09 : Shield
         ability = "어어둠의 보호막: 패링 성공 시 5%확률로 20만큼의 보호막이 생긴다.\n " +
             "어둠의 반격: 패링 성공 시 적에게 5초간 슬로우 효과를 부여한다.\n";
         w_type = WeaponEnum.WEAPON_TYPE.SHIELD;
-        reflect = 1;
+        reflect = 1 * (1 + 0.1f * weaponGrade);
         hitEffect = EFFECT.SLOW;
     }
 
@@ -24,5 +24,11 @@ public class WeaponID09 : Shield
             Debug.Log("[WeaponID09]20 만큼의 방어막이 생김");
             GamePlayer.Instance.ShieldCreat(20);
         }
+    }
+
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        reflect = 1 * (1 + 0.1f * weaponGrade);
     }
 }

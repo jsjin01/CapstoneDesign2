@@ -12,7 +12,7 @@ public class WeaponID11 : Shield
         ability = "불사의 보호막: 패링을 성공할 시 받은 데미지의 50%만큼 보호막을 만든다. \n " +
             "영원한 수호: 데미지 반사량 만큼 자신의 체력을 회복 시킨다.";
         w_type = WeaponEnum.WEAPON_TYPE.SHIELD;
-        reflect = 1;
+        reflect = 1 * (1 + 0.1f * weaponGrade);
         hitEffect = EFFECT.NONE;
     }
 
@@ -28,5 +28,10 @@ public class WeaponID11 : Shield
         {
             GamePlayer.Instance.currentHp = GamePlayer.Instance.maxHp;
         }
+    }
+    public override void SetGrade(int grade)
+    {
+        base.SetGrade(grade);
+        reflect = 1 * (1 + 0.1f * weaponGrade);
     }
 }

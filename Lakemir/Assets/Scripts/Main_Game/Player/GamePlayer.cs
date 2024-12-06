@@ -79,8 +79,9 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     bool ladderDown = false; //사다리를 타고 아래로 내려가는 여부
 
     //상호작용 키
-    bool isInteracable = false; //상호작용 가능 여부
-    INTERECTION interectObj;    //상호작용을 하는 물체
+    bool isInteracable = false;  //상호작용 가능 여부
+    INTERECTION interectType;    //상호작용을 하는 물체
+    GameObject interectObj;      //상호작용하는 물체
 
     //무기 관련 변수 
     [SerializeField] Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
@@ -104,6 +105,9 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     bool isStun = false;     //스턴
     bool isDie = false;      //죽음 변수 
+
+    //무기 등급
+    public int weaponGrade = 0;
 
     private void Start()
     {
@@ -415,17 +419,25 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             if(isInteracable)
             {
-                if(interectObj == INTERECTION.WEAPON)
+                if(interectType == INTERECTION.WEAPON)
                 {
                     //UI 메니져로 무기창 띄우기 
-                    Debug.Log("무기창과의 상호작용");
+                    Debug.Log("무기창과의 상호작용");//무기 오브젝트랑 상호작용
                 }
-                else if(interectObj == INTERECTION.NPC)
+                else if(interectType == INTERECTION.NPC)
                 {
                     //NPC 창 띄우기 
                     Debug.Log("NPC과의 상호작용");
+                    if(interectObj.GetComponent<Npc>().npcType == Interection.NPC.GOD)
+                    {
+                        //여신상
+                    }
+                    else if(interectObj.GetComponent<Npc>().npcType == Interection.NPC.STORE)
+                    {
+                        //떠돌이 상점
+                    }
                 }
-                else if(interectObj == INTERECTION.CAPABILITYFRAGMENT)
+                else if(interectType == INTERECTION.CAPABILITYFRAGMENT)
                 {
                     //NPC 창 띄우기 
                     Debug.Log("능력치 파편과의 상호작용");
@@ -578,17 +590,18 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         if(collision.gameObject.CompareTag("Weapon") || collision.gameObject.CompareTag("Npc") || collision.gameObject.CompareTag("CapabilityFragment"))// 상호작용 가능 여부 
         {
             isInteracable = true;
+            interectObj = collision.gameObject;
             if(collision.gameObject.CompareTag("Weapon"))
             {
-                interectObj = INTERECTION.WEAPON;
+                interectType = INTERECTION.WEAPON;
             }
             else if(collision.gameObject.CompareTag("Npc"))
             {
-                interectObj = INTERECTION.NPC;
+                interectType = INTERECTION.NPC;
             }
             else if(collision.gameObject.CompareTag("CapabilityFragment"))
             {
-                interectObj = INTERECTION.CAPABILITYFRAGMENT;
+                interectType = INTERECTION.CAPABILITYFRAGMENT;
             }
         }
     }
