@@ -7,16 +7,26 @@ public class WeaponID11 : Shield
     public WeaponID11()
     {
         weaponName = "어둠의 수호 방패";
-        description = "고대의 마법과 어둠의 힘이 깃들어 있는 신비로운 방패 이 방패는 전설적인 어둠의 수호자들이 사용하던 것으로 알려져 있으며, " +
-            "어둠 속에서 적의 공격을 흡수하고 반사하는 능력을 가지고 있음";
-        ability = "어둠의 보호막: 방어 중 일정 확률로 어둠의 보호막이 자동으로 생성되어 적의 다음 공격을 완전히 무효화, 보호막은 3초 지속된다\n " +
-            "어둠의 반격: 패링 성공 시 적의 공격을 100% 반사하며, 반격 후 5초 동안 적의 이동 속도를 30% 감소시키는 어둠의 기운이 발생";
+        description = "고고대 전설에서 나온 것으로, 수많은 전투를 이겨낸 영웅들의 유산. 이 방패는 전투 중 방어자를 보호할 뿐만 아니라," +
+            " 위기의 순간에 소유자를 회복시키는 능력을 지닌다.";
+        ability = "불사의 보호막: 패링을 성공할 시 받은 데미지의 50%만큼 보호막을 만든다. \n " +
+            "영원한 수호: 데미지 반사량 만큼 자신의 체력을 회복 시킨다.";
         w_type = WeaponEnum.WEAPON_TYPE.SHIELD;
         reflect = 1;
-        hitEffect = EFFECT.SLOW;
+        hitEffect = EFFECT.NONE;
     }
 
     public override void selfEffects()
     {
+    }
+
+    public void HpAndShield(int dmg) //특수 효과 적용
+    {
+        GamePlayer.Instance.ShieldCreat((int)(dmg * 0.5f));
+        GamePlayer.Instance.currentHp += dmg;
+        if(GamePlayer.Instance.currentHp > GamePlayer.Instance.maxHp)
+        {
+            GamePlayer.Instance.currentHp = GamePlayer.Instance.maxHp;
+        }
     }
 }

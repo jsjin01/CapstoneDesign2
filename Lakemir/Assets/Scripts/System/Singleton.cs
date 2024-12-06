@@ -1,14 +1,14 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class Singleton<T> : MonoBehaviour where T : Component
 {
     public static T _Instance;
-    //½Ì±ÛÅæ¿¡ ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ®´Â ÇÏ³ª¸¸ Á¸ÀçÇÏµµ·Ï ¼³Á¤
+    //ì‹±ê¸€í†¤ì— í•´ë‹¹í•˜ëŠ” ì˜¤ë¸Œì íŠ¸ëŠ” í•˜ë‚˜ë§Œ ì¡´ì¬í•˜ë„ë¡ ì„¤ì •
 
-    /// Á¦³×¸¯ Å¬·¡½º ½Ì±ÛÅæ »ç¿ë¹ı
-    /// ¼±¾ğ : public class UIManager : Singleton<UIManager>
-    /// È°¿ë : UIManager um = UIManager.Instance;
+    /// ì œë„¤ë¦­ í´ë˜ìŠ¤ ì‹±ê¸€í†¤ ì‚¬ìš©ë²•
+    /// ì„ ì–¸ : public class UIManager : Singleton<UIManager>
+    /// í™œìš© : UIManager um = UIManager.Instance;
 
     public static T Instance
     {

@@ -1,13 +1,13 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterArrow : MonoBehaviour
 {
-    [SerializeField] float speed;   //¼Óµµ
+    [SerializeField] float speed;   //ì†ë„
     Rigidbody2D rb;                 //rigidbody
-    [SerializeField] float dTime;   //Á¦°ÅµÇ´Âµ¥ °É¸®´Â ½Ã°£ 
-    int damage;                     //ÇÃ·¹ÀÌ¾î µ¥¹ÌÁö
+    [SerializeField] float dTime;   //ì œê±°ë˜ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„ 
+    int damage;                     //í”Œë ˆì´ì–´ ë°ë¯¸ì§€
 
 
     private void Update()
@@ -29,7 +29,7 @@ public class MonsterArrow : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Setting(int _damage) //µ¥¹ÌÁö ¼³Á¤
+    public void Setting(int _damage) //ë°ë¯¸ì§€ ì„¤ì •
     {
        damage = _damage;
     }

@@ -73,7 +73,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     float lastStunTime;
 
     //지속시간
-    const float slowTime = 3f;
+    const float slowTime = 5f;
     const float weakeningTime = 5f;
     const float dotDealTime = 5f;
     const float stunTime = 0.5f;
@@ -370,7 +370,7 @@ public class Monster : MonoBehaviour //추상 클래스 선언
     {
         if (!isAttacking)
         {
-            attackmotionObj.GetComponent<Close_Range_Attack_Montion>().Setting(attackPower);
+            attackmotionObj.GetComponent<Close_Range_Attack_Montion>().Setting(attackPower, anit);
             isAttacking = true;
             lastAttackTime = Time.time;
             anit.SetTrigger("Attack");

@@ -14,7 +14,7 @@ public class WeaponID04 : CloseRangeWeapon
     {
         weaponName = "은빛 단검";
         description = "가볍고 빠른 공격이 가능한 은으로 만들어진 단검. 연속 공격에 최적화 되어있어 있습니다.";
-        ability = "연속 찌르기: 콤보당 1% 데미지를 증가시킴\n\n" +
+        ability = "연속 찌르기: 콤보당 1% 데미지를 증가시킨다\n" +
             "신성한 절단: 1~4타까지 모두 같은 대상한테 타격 성공할 시 대상한테 데미지의 50%만큼의 추가 피해를 준다";
         w_type = WeaponEnum.WEAPON_TYPE.CLOSE_RANGE_WEAPON;
         comboNumber = 4;

@@ -13,6 +13,8 @@ TagManager:
   - Monster
   - Shield
   - Wall
+  - MonsterAttack
+  - MonsterArrow
   layers:
   - Default
   - TransparentFX

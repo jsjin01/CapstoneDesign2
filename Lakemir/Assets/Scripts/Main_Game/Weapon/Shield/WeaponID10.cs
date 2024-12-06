@@ -1,22 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class WeaponID10 : Shield
 {
+    public string prefabAddress = "Assets/Prefabs/Weapon Effect/WeaponID10/HealingOra.prefab";
+    GameObject shieldOra;
     public WeaponID10()
     {
-        weaponName = "어둠의 수호 방패";
-        description = "고대의 마법과 어둠의 힘이 깃들어 있는 신비로운 방패 이 방패는 전설적인 어둠의 수호자들이 사용하던 것으로 알려져 있으며, " +
-            "어둠 속에서 적의 공격을 흡수하고 반사하는 능력을 가지고 있음";
-        ability = "어둠의 보호막: 방어 중 일정 확률로 어둠의 보호막이 자동으로 생성되어 적의 다음 공격을 완전히 무효화, 보호막은 3초 지속된다\n " +
-            "어둠의 반격: 패링 성공 시 적의 공격을 100% 반사하며, 반격 후 5초 동안 적의 이동 속도를 30% 감소시키는 어둠의 기운이 발생";
+        weaponName = "빛나는 새벽의 방패";
+        description = "무거운 철제 철퇴로, 그 표면은 마치 눈물을 흘리는 듯한 패턴으로 장식되어 있다." +
+            "이 철퇴는 사용할 때마다 주변을 침울하게 만든다.";
+        ability = "퍼져 나가는 빛: 패링을 성공할 시 현재 체력의 10%에 해당하는 체력을 회복시키는 오라를 발생시킨다.\n " +
+            "반격의 빛: 패링을 성공할 시 더 큰 데미지(150%)를 준다.";
         w_type = WeaponEnum.WEAPON_TYPE.SHIELD;
-        reflect = 1;
-        hitEffect = EFFECT.SLOW;
+        reflect = 2.5f;
+        hitEffect = EFFECT.NONE;
     }
 
     public override void selfEffects()
     {
+        Addressables.LoadAssetAsync<GameObject>(prefabAddress).Completed += handle1 =>
+        {
+            if(handle1.Status == AsyncOperationStatus.Succeeded)
+            {
+                shieldOra = Object.Instantiate(handle1.Result, playerHitPoint, Quaternion.identity);
+            }
+        };
     }
 }

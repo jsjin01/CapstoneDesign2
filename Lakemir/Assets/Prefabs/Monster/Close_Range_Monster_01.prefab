@@ -219,9 +219,17 @@ MonoBehaviour:
   - {x: 0, y: 0}
   detectionRadius: 5
   attackRange: 2
+  monsterArrow: {fileID: 0}
+  currentState: 0
   attackCooldown: 2
+  attackLongRangeMonster: 0
+  dieAnimTime: 1
   attackmotionObj: {fileID: 8274885167506132843}
   anit: {fileID: 3255959238735280709}
+  isSlow: 0
+  isWeakening: 0
+  isDotDeal: 0
+  isStun: 0
 --- !u!1 &8274885167506132843
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +243,7 @@ GameObject:
   - component: {fileID: 7414654058911422511}
   m_Layer: 0
   m_Name: Attack
-  m_TagString: Untagged
+  m_TagString: MonsterAttack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

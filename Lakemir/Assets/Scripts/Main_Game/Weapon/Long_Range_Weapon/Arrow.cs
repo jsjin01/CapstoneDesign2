@@ -84,7 +84,7 @@ public class Arrow : MonoBehaviour
             // target이 null이면 아무 작업도 수행하지 않고 메서드를 종료합니다.
             return;
         }
-        Vector2 targetDirection = ((Vector2)target.position - rb.position).normalized;
+        Vector2 targetDirection = ((Vector2)target.position -new Vector2(0, 5f) - rb.position).normalized;
 
         // 새로운 방향 계산
         Vector2 newDirection = Vector2.Lerp(rb.velocity.normalized, targetDirection, speed * Time.deltaTime);

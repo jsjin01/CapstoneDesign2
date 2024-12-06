@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,18 +6,18 @@ public class CamaraControl : Singleton<CamaraControl>
 {
     [SerializeField]Transform player;
 
-    [SerializeField] float lerpSpeed; //µû¶ó¿À´Â ¼Óµµ
+    [SerializeField] float lerpSpeed; //ë”°ë¼ì˜¤ëŠ” ì†ë„
 
-    IEnumerator camShake;  //Ä«¸Ş¶ó Èçµé¸² ¼³Á¤
-    Vector2 oripos;        //Ä«¸Ş¶ó Èçµé¸®±â ÀüÀÇ À§Ä¡
-    bool isShack = false; //Èçµé¸®´Â»óÅÂÀÎÁö ¾Æ´ÑÁö °è»ê
+    IEnumerator camShake;  //ì¹´ë©”ë¼ í”ë“¤ë¦¼ ì„¤ì •
+    Vector2 oripos;        //ì¹´ë©”ë¼ í”ë“¤ë¦¬ê¸° ì „ì˜ ìœ„ì¹˜
+    bool isShack = false; //í”ë“¤ë¦¬ëŠ”ìƒíƒœì¸ì§€ ì•„ë‹Œì§€ ê³„ì‚°
 
     private void LateUpdate()
     {
         FollowPlayer();
     }
 
-    void FollowPlayer() //ÇÃ·¹ÀÌ¾î À§Ä¡ Ã£±â
+    void FollowPlayer() //í”Œë ˆì´ì–´ ìœ„ì¹˜ ì°¾ê¸°
     {
         if(isShack)
         {

@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class Close_Range_Attack_Montion : MonoBehaviour
 {
+    Animator anit;
     public int damage;
     bool takeDamage = false;
 
-    public void Setting(int dmg) //������ ����
+    public void Setting(int dmg, Animator _anit) //데미지 세팅
     {
         damage = dmg;
+        anit = _anit;
     }
 
 private void OnTriggerEnter2D(Collider2D collision)
 {
     if (collision.gameObject.CompareTag("Shield"))
     {
-        gameObject.SetActive(false); // 비활성화
+            anit.SetTrigger("next");
     }
     else if (collision.gameObject.CompareTag("Player") && !takeDamage)
     {

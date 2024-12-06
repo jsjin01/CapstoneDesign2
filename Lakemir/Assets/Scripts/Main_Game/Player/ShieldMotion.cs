@@ -18,7 +18,16 @@ public class ShieldMotion : MonoBehaviour
         if(collision.CompareTag("MonsterAttack"))
         {
             int dmg = collision.gameObject.GetComponent<Close_Range_Attack_Montion>().damage;
+            shield.selfEffects();
+            if(shield is WeaponID11)
+            {
+                ((WeaponID11)shield).HpAndShield(dmg);
+            }
             collision.GetComponentInParent<Monster>().TakeDamage((int)(dmg * reflect),effect);
+        }
+        else if(collision.CompareTag("MonsterArrow")) //투사체는 삭제
+        {
+            Destroy(collision.gameObject);
         }
     }
 }

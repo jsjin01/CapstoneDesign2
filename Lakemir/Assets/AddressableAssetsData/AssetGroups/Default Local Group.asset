@@ -27,6 +27,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54f660dcb97132844be1cef39d84b7b2
+    m_Address: Assets/Prefabs/Weapon Effect/WeaponID10/HealingOra.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e0eeaa06e43457b47997a671abc0ba15, type: 2}
   m_SchemaSet:

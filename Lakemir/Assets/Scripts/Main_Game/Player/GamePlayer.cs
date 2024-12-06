@@ -85,6 +85,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     //무기 관련 변수 
     [SerializeField] Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
     [SerializeField] Weapon leftWeapon = null;  //왼쪽(2번)에 착용한 무기 
+    bool isShield = false;
 
     //전투 비전투 관련 변수
     float lastCombattingTime = 0; //마지막으로 전투했던 상태
@@ -106,7 +107,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void Start()
     {
-        rightWeapon = new WeaponID03(); //TEST용
+        rightWeapon = new WeaponID10(); //TEST용
         leftWeapon = new WeaponID08();  //TEST용
     }
 
@@ -346,6 +347,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                 shieldRange.GetComponent<ShieldMotion>().Setting((Shield)weapon);
                 lastAttackTime = Time.time; //공격딜레이를 위해서 초를 잼
                 anit.SetTrigger("ShieldAttackKey");
+                StartCoroutine(ShieldTime());
                 break;
         }
     }
@@ -459,17 +461,34 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
-        lastCombattingTime = Time.time;
-        takingDamage = true;
-        if(currentShield > 0)
+        if(!isShield)
         {
-            currentShield -= dmg;
-            if(currentShield < 0)
+            lastCombattingTime = Time.time;
+            takingDamage = true;
+            if(currentShield > 0)
             {
-                currentHp += currentShield;  //음수가 된 실드 만큼 데미지를 추가로 입음
-                currentShield = 0;
-                if (currentHp <= 0)
+                currentShield -= dmg;
+                if(currentShield < 0)
                 {
+                    currentHp += currentShield;  //음수가 된 실드 만큼 데미지를 추가로 입음
+                    currentShield = 0;
+                    if(currentHp <= 0)
+                    {
+                        anit.SetTrigger("Die");
+                        anit.SetBool("isDie", true);
+                    }
+                    else
+                    {
+                        StartCoroutine(TakeDamageAnim(obj));
+                    }
+                }
+            }
+            else if(currentShield <= 0)
+            {
+                currentHp -= dmg;
+                if(currentHp <= 0)
+                {
+                    StartCoroutine(DieTimeStop());
                     anit.SetTrigger("Die");
                     anit.SetBool("isDie", true);
                 }
@@ -477,20 +496,6 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                 {
                     StartCoroutine(TakeDamageAnim(obj));
                 }
-            }
-        }
-        else if (currentShield <= 0)
-        {
-            currentHp -= dmg;
-            if(currentHp <= 0)
-            {
-                StartCoroutine(DieTimeStop());
-                anit.SetTrigger("Die");
-                anit.SetBool("isDie", true);
-            }
-            else
-            {
-                StartCoroutine(TakeDamageAnim(obj));
             }
         }
     }
@@ -666,6 +671,11 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
     }
 
+    public void ShieldCreat(int dp) //방어막을 생기도록 함
+    {
+        currentShield += dp;
+    }
+
     IEnumerator TakeDamageAnim(GameObject obj) //데미지 입었을 때 날라감
     {
         takingDamage = true;
@@ -680,6 +690,13 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         yield return new WaitForSeconds(0.8f);
         isDie = true;
+    }
+
+    IEnumerator ShieldTime()//쉴드 하는 동안 데미지 안 입도록하는 코루틴
+    {
+        isShield = true;
+        yield return new WaitForSeconds(0.2f);
+        isShield = false;
     }
 }
 

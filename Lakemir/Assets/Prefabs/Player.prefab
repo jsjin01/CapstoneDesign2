@@ -225,7 +225,7 @@ Transform:
   m_GameObject: {fileID: 4358314807795323399}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.44, z: 1}
+  m_LocalPosition: {x: 0, y: -1.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -405,6 +405,7 @@ MonoBehaviour:
   closeRangeWeaponRange: {fileID: 3838559314106975840}
   ArrowPrefabs:
   - {fileID: 3303570833072228735, guid: 750c34bb0e5a4eb429aa84846072446b, type: 3}
+  - {fileID: 3303570833072228735, guid: 65a0e609830f9ef40a790f896d19fe9f, type: 3}
   shieldRange: {fileID: 7903618086869782522}
   playerAtkPoint: {fileID: 3528758858697044295}
   rightWeapon:
@@ -531,7 +532,7 @@ Transform:
   m_GameObject: {fileID: 5268357327846482693}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.5, z: 1}
+  m_LocalPosition: {x: 0, y: -1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -691,9 +692,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8105075250752419052}
   - component: {fileID: 7604038307404758104}
+  - component: {fileID: 2760056574180534973}
   m_Layer: 0
   m_Name: Shield
-  m_TagString: Untagged
+  m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -742,10 +744,10 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.35461724, y: 0.8523825}
+  m_Offset: {x: 0.35461724, y: 0.5700496}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -756,5 +758,17 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.29076552, y: 0.804798}
+  m_Size: {x: 0.29076552, y: 1.9139627}
   m_EdgeRadius: 0
+--- !u!114 &2760056574180534973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7903618086869782522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1292f0ad066ed3d4bb59f8b49e565b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

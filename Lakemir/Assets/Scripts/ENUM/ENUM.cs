@@ -67,10 +67,10 @@ namespace WeaponEnum//Weapon.cs && GamePlayer.cs && AttackMotion
 public enum EFFECT//디버프 효과
 {
     NONE,       //아무것도 없을 때
-    SLOW,       //30% 슬로우 2초
-    WEAKENING,  //방어력 20% 감소
-    DOTDEAL,    //현재 체력에 1% 해당하는 도트딜
-    STUN,       //기절
+    SLOW,       //30% 슬로우 => 5초 지속
+    WEAKENING,  //방어력 20% 감소 =>5초 지속
+    DOTDEAL,    //현재 체력에 1% 해당하는 도트딜 => 5초 지속
+    STUN,       //기절 => 0.5초 지속
 }
 
 namespace GameItem //MerchantManager.cs

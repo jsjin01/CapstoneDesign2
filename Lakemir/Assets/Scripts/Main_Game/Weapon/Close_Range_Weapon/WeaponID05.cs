@@ -11,7 +11,7 @@ public class WeaponID05 : CloseRangeWeapon
     {
         weaponName = "절망의 철퇴";
         description = "무거운 철제 철퇴로, 그 표면은 마치 눈물을 흘리는 듯한 패턴으로 장식되어 있음 이 철퇴는 사용할 때마다 주변을 침울하게 만듦";
-        ability = "어둠의 감염: 적을 타격할 때마다 0.5초간 30%의 슬로우를 부여한다.\n\n" +
+        ability = "어둠의 감염: 적을 타격할 때마다 5초간 30%의 슬로우를 부여한다.\n" +
             "영혼 약탈: 적을 처치할 때마다 소량(현재 체력의 1%)의 체력을 회복한다. ";
         w_type = WeaponEnum.WEAPON_TYPE.CLOSE_RANGE_WEAPON;
         comboNumber = 3;
