@@ -5,13 +5,15 @@ public class OptionManager : MonoBehaviour
 {
     public GameObject optionPanel; // 옵션 패널
     public GameObject confirmationPanel; // 게임 종료 확인 패널
-    public GameObject skillPanel; // 스킬창 패널
+    public GameObject skillWindow; // 스킬창 패널
     public GameObject optionSoundPanel; // 옵션창 패널
+    public GameObject optionWindow; // 옵션 윈도우
 
     public Button returnToGameButton; // 게임 돌아가기 버튼
     public Button openSkillButton; // 스킬창 버튼
     public Button exitGameButton; // 게임 종료 버튼
     public Button optionButton; // 옵션창 버튼
+    public Button mainOptionButton; // 메인창에서 옵션 버튼
     public Button optionCloseButton; // 옵션창 닫기 버튼
 
     public Button confirmExitButton; // YES 버튼
@@ -39,6 +41,7 @@ public class OptionManager : MonoBehaviour
         cancelExitButton.onClick.AddListener(CloseConfirmationPanel);
         optionButton.onClick.AddListener(OpenOptionPanel);
         optionCloseButton.onClick.AddListener(CloseOptionPanel);
+        mainOptionButton.onClick.AddListener(OpenOptionWindow);
 
 
         // 슬라이더 초기값을 설정
@@ -52,7 +55,8 @@ public class OptionManager : MonoBehaviour
         // 옵션 창 처음에는 비활성화
         optionSoundPanel.SetActive(false);
         confirmationPanel.SetActive(false);
-        skillPanel.SetActive(false);
+        skillWindow.SetActive(false);
+
 
         // 초기 정보 업데이트
         UpdateEquipmentInfo();
@@ -65,20 +69,20 @@ public class OptionManager : MonoBehaviour
     public void ReturnToGame()
     {
         Debug.Log("인게임 화면으로 돌아갑니다.");
-        optionPanel.SetActive(false); // 옵션창 닫기
+        optionWindow.SetActive(false); // 옵션창 닫기
     }
 
     // 스킬창 열기
     public void OpenSkillPanel()
     {
         Debug.Log("스킬창을 엽니다");
-        skillPanel.SetActive(true); // 스킬창 열기
+        skillWindow.SetActive(true); // 스킬창 열기
     }
 
     // 스킬창 닫기
     public void CloseSkillPanel()
     {
-        skillPanel.SetActive(false);
+        skillWindow.SetActive(false);
     }
 
     // 게임 종료하기 확인창
@@ -135,6 +139,12 @@ public class OptionManager : MonoBehaviour
         playerStatsText.text = "체력: 100/100\n공격력: 50\n방어력: 30\n치명타 확률: 10%\n골드: 5000";
     }
 
+    // 메인 옵션 창 열기 함수
+    public void OpenOptionWindow() // 메인창 패널 활성화
+    {
+        optionWindow.SetActive(true);
+    }
+    
     // 옵션 창 열기 함수
     public void OpenOptionPanel()
     {

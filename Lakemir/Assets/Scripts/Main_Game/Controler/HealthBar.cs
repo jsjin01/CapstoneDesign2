@@ -10,9 +10,10 @@ public class HealthBar : MonoBehaviour
     private int maxHealth = 100; // 최대 체력
     private int currentHealth; // 현재 체력
 
-    void Start()
+     public void Initialize(int maxHp, int currentHp)
     {
-        currentHealth = maxHealth; // 시작 시 최대 체력으로 설정
+        maxHealth = maxHp;
+        currentHealth = currentHp; // 시작 시 최대 체력으로 설정
         UpdateHealthUI(); // 초기 UI 업데이트
     }
 
@@ -36,7 +37,7 @@ public class HealthBar : MonoBehaviour
     void UpdateHealthUI()
     {
         healthSlider.value = (float)currentHealth / maxHealth; // 슬라이더 값 업데이트
-        healthText.text = currentHealth + " / " + maxHealth; // 텍스트 업데이트
+        healthText.text = $"{currentHealth} / {maxHealth}"; // 텍스트 업데이트
 
         // 체력이 절반 이하일 때 색상을 검정색으로 변경, 그 외에는 빨간색
         if (currentHealth < maxHealth / 2)

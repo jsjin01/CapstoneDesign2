@@ -67,6 +67,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     //치유물약
     int currentHealingPotion = 0; //지금까지 사용한 힐링포션 횟수
     int maxHealingPotion = 1; //힐링 포션 최대 사용 횟수
+    public HealthBar healthBar; //HealthBar 스크립트
 
     //PassableGround 관련 변수
     RaycastHit2D playerRay;  //레이
@@ -92,6 +93,9 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     bool isCombating = false;     //전투 상태인지 아닌지 
     bool takingDamage = false;    //데미지를 입은 후 바닥에 안 닿았을 때
 
+    //재화 관련 변수
+    public CurrencyManager currencyManager; // 재화매니저 참조
+
     [Header("연결 변수")]
     public Joystick joystick;              //Joystick을 추가할 변수
     [SerializeField] Rigidbody2D rb;       //rigidbody을 받아올 변수
@@ -109,6 +113,13 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         rightWeapon = new WeaponID10(); //TEST용
         leftWeapon = new WeaponID08();  //TEST용
+        
+        // 게임 시작 시 HealthBar 초기화
+        if (healthBar != null)
+        {
+            healthBar.Initialize(maxHp, currentHp);
+        }
+
     }
 
     void Update()
@@ -439,6 +450,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         if(!isDashing && !isStun)
         {
             StartCoroutine(Dash(direction));
+            Debug.Log("대쉬키를 사용했습니다. ");
         }
     }
 
@@ -446,7 +458,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         if(currentHealingPotion < maxHealingPotion && !isStun)
         {
-            currentHp += maxHp / 2;
+            int healAmount = maxHp / 2;
+            currentHp += healAmount;
             if(currentHp > maxHp)
             {
                 currentHp = maxHp;
@@ -456,8 +469,26 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
             Debug.Log("회복약을 사용했습니다. ");
 
+            if (healthBar != null)
+            {
+                healthBar.Heal(healAmount);
+            }
+            else
+            {
+                Debug.LogError("HealthBar가 연결되지 않았습니다!");
+            }
+
         }
     }
+
+    // 몬스터를 처치했을 때 재화 증가하는 부분
+    public void KillMonster()
+    {
+        currencyManager.AddMonsterKill(); // 몬스터 처치 수 증가
+        currencyManager.AddGold(100);
+        currencyManager.AddSoul(1);
+    }
+
 
     public void TakeDamage(int dmg, GameObject obj)// 데미지 입는 부분
     {
@@ -481,6 +512,11 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                     {
                         StartCoroutine(TakeDamageAnim(obj));
                     }
+                    if (healthBar != null)
+                    {
+                        healthBar.TakeDamage(damage);
+                    }
+
                 }
             }
             else if(currentShield <= 0)
