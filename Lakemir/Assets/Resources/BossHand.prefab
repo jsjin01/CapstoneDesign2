@@ -198,7 +198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9213617174889866010}
   m_Layer: 0
-  m_Name: MultiBossHand
+  m_Name: BossHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

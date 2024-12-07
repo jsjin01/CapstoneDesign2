@@ -52,8 +52,17 @@ public class Arrow : MonoBehaviour
                 }
                 else
                 {
-                    collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage(damage, effect);
-                    isDestroy();
+                    SplitMultiMonster splitmultiMonster = collision.gameObject.GetComponent<SplitMultiMonster>();
+                    if(splitmultiMonster != null)
+                    {
+                        collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage(damage, effect);
+                        isDestroy();
+                    }
+                    else{
+                        collision.gameObject.GetComponent<MultiBossMonster>().TakeDamage(damage, effect);
+                        isDestroy();
+                    }
+                    
                 }
                 
             }

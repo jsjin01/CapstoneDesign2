@@ -9,9 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6803799296729691088}
-  - component: {fileID: 6062788149680731293}
   - component: {fileID: 4313243424286847506}
   - component: {fileID: 8703219120053388853}
+  - component: {fileID: 848974786572769708}
+  - component: {fileID: 2476949694721686671}
+  - component: {fileID: 1510422929719726140}
   m_Layer: 0
   m_Name: MultiBossMonster
   m_TagString: Monster
@@ -35,42 +37,6 @@ Transform:
   - {fileID: 4392370754590074472}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6062788149680731293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3791354511757709418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a1e3e9273d889148808e66293b939b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 500
-  currentHp: 500
-  attackPower: 50
-  defensivePower: 100
-  speed: 5
-  monsterType: 2
-  platform: {fileID: 0}
-  patrolPoints:
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  detectionRadius: 15
-  attackRange: 5
-  monsterArrow: {fileID: 0}
-  currentState: 0
-  attackCooldown: 2
-  attackLongRangeMonster: 0
-  dieAnimTime: 1
-  attackmotionObj: {fileID: 5361152198738345761}
-  anit: {fileID: 7116455914711553125}
-  isSlow: 0
-  isWeakening: 0
-  isDotDeal: 0
-  isStun: 0
-  bossHand: {fileID: 8044917148108800895, guid: 3bc0c663344520642a8802721ce430cd, type: 3}
 --- !u!50 &4313243424286847506
 Rigidbody2D:
   serializedVersion: 4
@@ -143,6 +109,82 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4079733, y: 0.58660614}
   m_EdgeRadius: 0
+--- !u!114 &848974786572769708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3791354511757709418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &2476949694721686671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3791354511757709418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 848974786572769708}
+  - {fileID: 1510422929719726140}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &1510422929719726140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3791354511757709418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff8af9d6852424a21bd2f3968b221733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 500
+  currentHp: 500
+  attackPower: 50
+  defensivePower: 100
+  speed: 5
+  bossHand: {fileID: 8044917148108800895, guid: 4ab91cce3a5934e33b483d4ab67e5bec, type: 3}
+  monsterType: 2
+  platform: {fileID: 0}
+  patrolPoints:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  detectionRadius: 15
+  attackRange: 5
+  monsterArrow: {fileID: 0}
+  currentState: 0
+  attackCooldown: 2
+  attackLongRangeMonster: 0
+  dieAnimTime: 1
+  attackmotionObj: {fileID: 5361152198738345761}
+  anit: {fileID: 7116455914711553125}
+  isSlow: 0
+  isWeakening: 0
+  isDotDeal: 0
+  isStun: 0
 --- !u!1 &5361152198738345761
 GameObject:
   m_ObjectHideFlags: 0

@@ -86,31 +86,64 @@ public class AttackMotion : MonoBehaviour
                 }
                 else
                 {
-                    if(wp is WeaponID02) //WeaponID02일 때 호출
+                    SplitMultiMonster splitmultiMonster = collision.gameObject.GetComponent<SplitMultiMonster>();
+                    if(splitmultiMonster != null)
                     {
-                        if(collision.gameObject.GetComponent<SplitMultiMonster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
+                        if(wp is WeaponID02) //WeaponID02일 때 호출
                         {
-                            ((WeaponID02)wp).IncreaseDmg();//데미지 증가
+                            if(collision.gameObject.GetComponent<SplitMultiMonster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
+                            {
+                                ((WeaponID02)wp).IncreaseDmg();//데미지 증가
+                            }
                         }
-                    }
-                    else if(wp is WeaponID04)
-                    {
-                        ((WeaponID04)wp).ComboSystem();
-                        if(((WeaponID04)wp).SameUnit(collision))
+                        else if(wp is WeaponID04)
                         {
-                            collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage((int)(damage*1.5f), effect);
-                        }
+                            ((WeaponID04)wp).ComboSystem();
+                            if(((WeaponID04)wp).SameUnit(collision))
+                            {
+                                collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage((int)(damage*1.5f), effect);
+                            }
 
-                    }
-                    else if(wp is WeaponID05)
-                    {
-                        if(collision.gameObject.GetComponent<SplitMultiMonster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
-                        {
-                            ((WeaponID05)wp).PassiveHeal();//데미지 증가
                         }
+                        else if(wp is WeaponID05)
+                        {
+                            if(collision.gameObject.GetComponent<SplitMultiMonster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
+                            {
+                                ((WeaponID05)wp).PassiveHeal();//데미지 증가
+                            }
+                        }
+                        collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage(damage, effect);
+                        Debug.Log($"멀티슬라임에서 공격함");
                     }
-                    collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage(damage, effect);
-                    Debug.Log($"멀티슬라임에서 공격함");
+                    else
+                    {
+                        if(wp is WeaponID02) //WeaponID02일 때 호출
+                        {
+                            if(collision.gameObject.GetComponent<MultiBossMonster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
+                            {
+                                ((WeaponID02)wp).IncreaseDmg();//데미지 증가
+                            }
+                        }
+                        else if(wp is WeaponID04)
+                        {
+                            ((WeaponID04)wp).ComboSystem();
+                            if(((WeaponID04)wp).SameUnit(collision))
+                            {
+                                collision.gameObject.GetComponent<MultiBossMonster>().TakeDamage((int)(damage*1.5f), effect);
+                            }
+
+                        }
+                        else if(wp is WeaponID05)
+                        {
+                            if(collision.gameObject.GetComponent<MultiBossMonster>().currentHp - (int)(damage / (1 + collision.gameObject.GetComponent<Monster>().defensivePower * 0.01)) < 0) //몬스터를 처치한다면
+                            {
+                                ((WeaponID05)wp).PassiveHeal();//데미지 증가
+                            }
+                        }
+                        collision.gameObject.GetComponent<MultiBossMonster>().TakeDamage(damage, effect);
+                        Debug.Log($"보스 공격함");
+                    }
+                    
                 }
             
             }
