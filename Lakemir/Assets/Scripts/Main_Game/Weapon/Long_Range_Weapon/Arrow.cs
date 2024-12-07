@@ -36,8 +36,19 @@ public class Arrow : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Monster"))
         {
-            collision.gameObject.GetComponent<Monster>().TakeDamage(damage, effect);
-            isDestroy();
+             Monster monster = collision.gameObject.GetComponent<Monster>();
+            if(monster != null)
+            {
+                collision.gameObject.GetComponent<Monster>().TakeDamage(damage, effect);
+                isDestroy();
+            }
+            else
+            {
+                collision.gameObject.GetComponent<MultiMonster>().TakeDamage(damage, effect);
+                isDestroy();
+            }
+
+
         }
     }
 
