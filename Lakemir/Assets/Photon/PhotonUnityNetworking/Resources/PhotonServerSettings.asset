@@ -59,6 +59,7 @@ MonoBehaviour:
   - RPC_CloseRangeAttack
   - RPC_DestroyMonster
   - RPC_LongRangeAttack
+  - SyncArrow
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

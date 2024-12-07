@@ -14,7 +14,9 @@ GameObject:
   - component: {fileID: 1206514951825375223}
   - component: {fileID: 8488119277693067262}
   - component: {fileID: 3846085132843895633}
-  - component: {fileID: 4308829166935539933}
+  - component: {fileID: 747729436337316330}
+  - component: {fileID: -530116910701133909}
+  - component: {fileID: 8921148223121305391}
   m_Layer: 0
   m_Name: MultiLong_Range_Monster_01
   m_TagString: Monster
@@ -194,7 +196,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.986332, y: 3.598949}
   m_EdgeRadius: 0
---- !u!114 &4308829166935539933
+--- !u!114 &747729436337316330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,7 +205,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4829303574144323642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33fbfd01953f9d746a7b35a9551f56c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 9fd9673c4c10a4948a100b3c3640eda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 80
@@ -218,14 +220,54 @@ MonoBehaviour:
   - {x: 0, y: 0}
   detectionRadius: 30
   attackRange: 15
-  monsterArrow: {fileID: 9067129699369645779, guid: cfed960a04321fb49bde048d604a9ff3, type: 3}
+  monsterArrow: {fileID: 0}
   currentState: 0
   attackCooldown: 2
   attackLongRangeMonster: 1
   dieAnimTime: 1
-  attackmotionObj: {fileID: 0}
+  attackmotionObj: {fileID: 9067129699369645779, guid: cfed960a04321fb49bde048d604a9ff3, type: 3}
   anit: {fileID: 1206514951825375223}
   isSlow: 0
   isWeakening: 0
   isDotDeal: 0
   isStun: 0
+--- !u!114 &-530116910701133909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829303574144323642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &8921148223121305391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829303574144323642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 747729436337316330}
+  - {fileID: -530116910701133909}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

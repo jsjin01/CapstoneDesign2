@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class MultiMonster : MonoBehaviourPun, IPunObservable
+public class MultiMonster2 : MonoBehaviourPun, IPunObservable
 {
     public int maxHp;                 //Max Hp일때
     public int currentHp;             //현재 HP
@@ -507,7 +507,7 @@ protected void LongRangeAttack()
             }
 
             // 네트워크로 투사체 생성
-            GameObject arrow = PhotonNetwork.Instantiate("MonsterArrow1", transform.position - new Vector3(0, 1.5f, 0), rotation);
+            GameObject arrow = PhotonNetwork.Instantiate("MonsterArrow2", transform.position - new Vector3(0, 1.5f, 0), rotation);
 
             // 투사체 초기 설정 동기화
             arrow.GetComponent<PhotonView>().RPC("SyncArrow", RpcTarget.All, attackPower, (int)dir);
