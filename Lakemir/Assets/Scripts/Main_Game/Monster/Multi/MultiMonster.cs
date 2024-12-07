@@ -77,7 +77,7 @@ public class MultiMonster : MonoBehaviourPun, IPunObservable
     [SerializeField]float dieAnimTime  = 1f;  //죽고 나서 애니메이션이 지속되는 시간
     bool isDie = false;                       //죽었는지 판단하는 변수
 
-    [SerializeField] GameObject attackmotionObj; //근접 공격 범위 설정
+    [SerializeField] public GameObject attackmotionObj; //근접 공격 범위 설정
 
     [SerializeField] protected Animator anit;   //애니메이션 설정 
 
@@ -113,6 +113,35 @@ public class MultiMonster : MonoBehaviourPun, IPunObservable
     //변화 이전 스탯
     int preDp;        //약화 적용 전 방어력
     float preSp;      //슬로우 적용 전 이동속도
+    
+    private void Update()
+    {
+        if (!photonView.IsMine) return; // 마스터 클라이언트만 로직 처리
+        GetClosestPlayer();
+        EffectApply();
+        switch(currentState) //각각의 상황에 맞게 모션을 취함
+        {
+            case STATE.PATROL:
+                PatrolMotion();
+                break;
+            case STATE.CHASE:
+                ChaseMotion();
+                break;
+            case STATE.ATTACK:
+                AttackMotion(monsterType);
+                break;
+            case STATE.STUN:
+                if(!isStun)
+                {
+                    currentState = STATE.PATROL;
+                }
+                break;
+            case STATE.DIE:
+                Die();
+                break;
+        }
+    }
+    
     protected void Die()//죽음
     {
         if(!isDie)
@@ -129,12 +158,15 @@ public class MultiMonster : MonoBehaviourPun, IPunObservable
 
     protected virtual void ToDestoy() //삭제하는 함수 
     {
-        Destroy(gameObject);//게임 오브젝트를 삭제함
+        if (PhotonNetwork.IsMasterClient) // 마스터 클라이언트에서만 실행
+        {
+            photonView.RPC("RPC_DestroyMonster", RpcTarget.AllBuffered);
+        }
     }
 
     public void TakeDamage(int dmg, EFFECT eft = EFFECT.NONE)//데미지 받는 부분
     {
-        if (!photonView.IsMine) return; // 마스터 클라이언트에서만 처리
+        //if (!photonView.IsMine) return; // 마스터 클라이언트에서만 처리
         Debug.Log($"[Monster] 입은 데미지: {(int)(dmg / (1 + defensivePower * 0.01))} , 효과 적용 : {eft}" );
         EffectMonster(eft);
         currentHp -= (int)(dmg / (1 + defensivePower * 0.01));
@@ -364,10 +396,9 @@ public class MultiMonster : MonoBehaviourPun, IPunObservable
     {
         if (!isAttacking)
         {
-            attackmotionObj.GetComponent<Close_Range_Attack_Montion>().Setting(attackPower, anit);
+            photonView.RPC("RPC_CloseRangeAttack", RpcTarget.All); // 모든 클라이언트에서 공격 실행
             isAttacking = true;
             lastAttackTime = Time.time;
-            anit.SetTrigger("Attack");
         }
         else if (isAttacking && Time.time - lastAttackTime > 1f)//애니메이션이 끝나고
         {
@@ -386,10 +417,10 @@ public class MultiMonster : MonoBehaviourPun, IPunObservable
     {
         if(!isAttacking)
         {
+                  photonView.RPC("RPC_LongRangeAttack", RpcTarget.All);
             isAttacking = true;
             lastAttackTime = Time.time;
-            anit.SetTrigger("Attack");
-            StartCoroutine(Shoot(direction));
+
         }
         else if(isAttacking && Time.time - lastAttackTime > 1f)//애니메이션이 끝나고
         {
@@ -503,4 +534,27 @@ public class MultiMonster : MonoBehaviourPun, IPunObservable
                 break;
         }
     }
+
+
+
+    [PunRPC]
+    void RPC_LongRangeAttack()
+    {
+        anit.SetTrigger("Attack");
+        StartCoroutine(Shoot(direction));
+    }
+    [PunRPC]
+    void RPC_DestroyMonster()
+    {
+        Destroy(gameObject); // 각 클라이언트에서 개별적으로 삭제
+    }
+        [PunRPC]
+    void RPC_CloseRangeAttack()
+    {
+  
+        attackmotionObj.GetComponent<Close_Range_Attack_Montion>().Setting(attackPower, anit);
+        anit.SetTrigger("Attack");
+        
+    }
+
 }

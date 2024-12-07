@@ -40,4 +40,7 @@ public class MultiNormalMonster : MultiMonster,IPunObservable
         // 부모 클래스의 동기화 로직 호출
         base.OnPhotonSerializeView(stream, info);
     }
+
+
+
 }

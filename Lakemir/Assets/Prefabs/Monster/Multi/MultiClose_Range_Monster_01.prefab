@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 1498091150931617710}
   - component: {fileID: 4214152760865594627}
   - component: {fileID: 884246316639683867}
-  - component: {fileID: 3819520451638425872}
   - component: {fileID: 2689200830554260780}
+  - component: {fileID: 3418534073078650344}
   m_Layer: 0
   m_Name: MultiClose_Range_Monster_01
   m_TagString: Monster
@@ -216,12 +216,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 0
   ObservedComponents:
-  - {fileID: 3819520451638425872}
+  - {fileID: 3418534073078650344}
   - {fileID: 2689200830554260780}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &3819520451638425872
+--- !u!114 &2689200830554260780
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,7 +230,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 6700907632518920199}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a13a4433c48a4f73a66abaf6dfa3ebb, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &3418534073078650344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6700907632518920199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fd9673c4c10a4948a100b3c3640eda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
@@ -256,22 +272,6 @@ MonoBehaviour:
   isWeakening: 0
   isDotDeal: 0
   isStun: 0
---- !u!114 &2689200830554260780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6700907632518920199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!1 &8274885167506132843
 GameObject:
   m_ObjectHideFlags: 0
