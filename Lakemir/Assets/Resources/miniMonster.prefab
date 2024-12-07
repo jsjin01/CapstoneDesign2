@@ -15,8 +15,11 @@ GameObject:
   - component: {fileID: 1083723157116427620}
   - component: {fileID: 6249489577902468499}
   - component: {fileID: 5160207446381240655}
+  - component: {fileID: 3635502664776414331}
+  - component: {fileID: 1070901795188439982}
+  - component: {fileID: 4751553492049378007}
   m_Layer: 0
-  m_Name: MultiClose_Range_Monster_05
+  m_Name: miniMonster
   m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,6 +233,81 @@ MonoBehaviour:
   isWeakening: 0
   isDotDeal: 0
   isStun: 0
+--- !u!114 &3635502664776414331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3386509363529343638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fd9673c4c10a4948a100b3c3640eda3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 50
+  currentHp: 50
+  attackPower: 5
+  defensivePower: 0
+  speed: 6
+  monsterType: 0
+  platform: {fileID: 0}
+  patrolPoints:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  detectionRadius: 15
+  attackRange: 1.5
+  monsterArrow: {fileID: 0}
+  currentState: 0
+  attackCooldown: 1
+  attackLongRangeMonster: 0
+  dieAnimTime: 1
+  attackmotionObj: {fileID: 6135366227092652369}
+  anit: {fileID: 5450893473058998733}
+  isSlow: 0
+  isWeakening: 0
+  isDotDeal: 0
+  isStun: 0
+--- !u!114 &1070901795188439982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3386509363529343638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &4751553492049378007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3386509363529343638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 3635502664776414331}
+  - {fileID: 1070901795188439982}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &6135366227092652369
 GameObject:
   m_ObjectHideFlags: 0

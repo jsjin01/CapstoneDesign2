@@ -109,7 +109,9 @@ GameObject:
   - component: {fileID: 5294959103759501069}
   - component: {fileID: 8789772231475353834}
   - component: {fileID: 3102302734149634981}
-  - component: {fileID: 7988154545982925848}
+  - component: {fileID: 5148181828047662985}
+  - component: {fileID: 834390444003488974}
+  - component: {fileID: 1188624519507790663}
   m_Layer: 0
   m_Name: MultiClose_Range_Monster_04
   m_TagString: Monster
@@ -290,7 +292,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.5071511, y: 1.6981754}
   m_EdgeRadius: 0
---- !u!114 &7988154545982925848
+--- !u!114 &5148181828047662985
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -299,7 +301,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 8825282612166835879}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51fd187aafcbb2c4a93b50f0a618ba75, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &834390444003488974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8825282612166835879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa50fb22a0e0c49fdbf9ecfe5c6c784a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 200
@@ -307,6 +325,8 @@ MonoBehaviour:
   attackPower: 8
   defensivePower: 10
   speed: 4
+  right: {x: 1, y: 0, z: 0}
+  left: {x: -1, y: 0, z: 0}
   monsterType: 0
   platform: {fileID: 0}
   patrolPoints:
@@ -325,6 +345,27 @@ MonoBehaviour:
   isWeakening: 0
   isDotDeal: 0
   isStun: 0
-  miniMonster: {fileID: 3386509363529343638, guid: 23d7d1c408fc05e43867fad2911e75a3, type: 3}
-  right: {x: 1, y: 0, z: 0}
-  left: {x: -1, y: 0, z: 0}
+--- !u!114 &1188624519507790663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8825282612166835879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 5148181828047662985}
+  - {fileID: 834390444003488974}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
