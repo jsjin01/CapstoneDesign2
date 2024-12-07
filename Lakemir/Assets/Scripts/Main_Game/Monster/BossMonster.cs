@@ -17,6 +17,7 @@ public class BossMonster : Monster
         switch(currentState) //각각의 상황에 맞게 모션을 취함
         {
             case STATE.PATROL:
+                patrolDistance = 10;
                 PatrolMotion();
                 break;
             case STATE.CHASE:

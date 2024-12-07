@@ -59,6 +59,7 @@ public class Monster : MonoBehaviour
 
     [SerializeField] protected Animator anit;   //애니메이션 설정 
 
+    protected float patrolDistance = 1;         //끝에 남은 거리
     //효과 관련 함수 
     //지속되고 있는지 여부
     [SerializeField] bool isSlow = false;
@@ -241,7 +242,7 @@ public class Monster : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, new Vector2(patrolPoints[currentPatrolIndex].x, transform.position.y), speed * Time.deltaTime);
 
         //순찰 지점에 도착하면 다음 지점으로 이동(거리가 1 이하가 되면)
-        if(Vector2.Distance((Vector2)transform.position, patrolPoints[currentPatrolIndex]) < 1)
+        if(Vector2.Distance((Vector2)transform.position, patrolPoints[currentPatrolIndex]) < patrolDistance)
         {
             MoveToNextPatrolPoint();
         }
