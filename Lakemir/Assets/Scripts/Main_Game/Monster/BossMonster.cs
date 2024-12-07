@@ -55,7 +55,7 @@ public class BossMonster : Monster
             foreach(GameObject playerObject in playerObjects)
             {
                 Instantiate(bossHand, playerObject.transform.position - new Vector3(0, 3.7f, 0), rotation);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(2f);
                 if(skillNum < 0)
                 {
                     break;

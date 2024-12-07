@@ -115,8 +115,8 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void Start()
     {
-        rightWeapon = new WeaponID04(); //TEST용
-        leftWeapon = new WeaponID10();  //TEST용
+        rightWeapon = new WeaponID03(); //TEST용
+        leftWeapon = new WeaponID08();  //TEST용
         
         // 게임 시작 시 HealthBar 초기화
         if (healthBar != null)

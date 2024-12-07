@@ -6,7 +6,7 @@ public class BossHand : MonoBehaviour
 {
     private void OnEnable()
     {
-        Invoke("ToDestroy", 1.2f);
+        Invoke("ToDestroy", 1.6f);
     }
     
     void ToDestroy()
