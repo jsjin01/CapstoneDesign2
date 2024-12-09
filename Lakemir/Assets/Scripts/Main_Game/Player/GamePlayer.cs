@@ -83,6 +83,9 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     bool isInteracable = false;  //상호작용 가능 여부
     INTERECTION interectType;    //상호작용을 하는 물체
     GameObject interectObj;      //상호작용하는 물체
+    public GameObject ConversationWindow; //떠돌이상인 창
+    public GameObject StoreWindow; //여신상 창
+    public GameObject ExpWindow; //능력치 창
 
     //무기 관련 변수 
     [SerializeField] Weapon rightWeapon = null; //오른쪽(1번)에 착용한 무기
@@ -441,15 +444,18 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
                     Debug.Log("NPC과의 상호작용");
                     if(interectObj.GetComponent<Npc>().npcType == Interection.NPC.GOD)
                     {
+                        StoreWindow.SetActive(true);
                         //여신상
                     }
                     else if(interectObj.GetComponent<Npc>().npcType == Interection.NPC.STORE)
                     {
+                        ConversationWindow.SetActive(true);
                         //떠돌이 상점
                     }
                 }
                 else if(interectType == INTERECTION.CAPABILITYFRAGMENT)
                 {
+                    ExpWindow.SetActive(true);
                     //NPC 창 띄우기 
                     Debug.Log("능력치 파편과의 상호작용");
                 }
