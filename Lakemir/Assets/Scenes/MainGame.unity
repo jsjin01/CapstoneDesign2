@@ -13972,7 +13972,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 807352299051265893}
         m_TargetAssemblyTypeName: GamePlayer, Assembly-CSharp
         m_MethodName: InteractionKey
         m_Mode: 1
