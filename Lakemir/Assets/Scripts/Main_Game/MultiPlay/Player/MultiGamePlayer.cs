@@ -252,7 +252,7 @@ public class MultiGamePlayer : Singleton<MultiGamePlayer> ,IPunObservable
                 // 애니메이션 상태 보간
         bool isMoving = anit.GetBool("ismoving");
         animLerp = Mathf.Lerp(animLerp, isMoving ? 1f : 0f, Time.deltaTime * animLerpSpeed);
-        anit.SetFloat("MoveSpeed", animLerp); // Animator의 파라미터로 보간 값 전달
+        //anit.SetFloat("MoveSpeed", animLerp); // Animator의 파라미터로 보간 값 전달
         }
         
     }

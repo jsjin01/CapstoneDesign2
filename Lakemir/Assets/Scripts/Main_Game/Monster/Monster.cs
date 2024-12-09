@@ -25,8 +25,8 @@ public class Monster : MonoBehaviour
     //Transfrom 설정시 그 포인트 사이를 계속 이동함
 
     //가장 가까운 Player의 벡터 & 거리
-    GameObject targetPlayer;
-    float targetPlayerDistance;
+    protected GameObject targetPlayer;
+    protected float targetPlayerDistance;
 
     [Header("플레이어 탐지 관련 변수")]
     [SerializeField] float detectionRadius; //플레이어 감지 거리
@@ -38,7 +38,7 @@ public class Monster : MonoBehaviour
     [Header("기타 변수들")]
     //행동들
     int currentPatrolIndex = 0; //순찰 위치 인덱스
-    protected enum STATE { PATROL, CHASE, ATTACK, STUN ,DIE } //enum 문으로 설정
+    protected enum STATE { PATROL, CHASE, ATTACK, STUN ,DIE, SKILL,IDLE } //enum 문으로 설정
     [SerializeField] protected STATE currentState = STATE.PATROL;   //현재 상태
 
     //방향
@@ -59,6 +59,7 @@ public class Monster : MonoBehaviour
 
     [SerializeField] protected Animator anit;   //애니메이션 설정 
 
+    protected float patrolDistance = 1;         //끝에 남은 거리
     //효과 관련 함수 
     //지속되고 있는지 여부
     [SerializeField] bool isSlow = false;
@@ -241,7 +242,7 @@ public class Monster : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, new Vector2(patrolPoints[currentPatrolIndex].x, transform.position.y), speed * Time.deltaTime);
 
         //순찰 지점에 도착하면 다음 지점으로 이동(거리가 1 이하가 되면)
-        if(Vector2.Distance((Vector2)transform.position, patrolPoints[currentPatrolIndex]) < 1)
+        if(Vector2.Distance((Vector2)transform.position, patrolPoints[currentPatrolIndex]) < patrolDistance)
         {
             MoveToNextPatrolPoint();
         }
@@ -262,11 +263,9 @@ public class Monster : MonoBehaviour
         GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
         Transform closestPlayer = null;
         float closestDistance = Mathf.Infinity;
-
         foreach(GameObject playerObject in playerObjects)
         {
             Physics2D.IgnoreCollision(playerObject.GetComponent<Collider2D>(), gameObject.GetComponent<Collider2D>()); //플레이어와 충돌을 안하도록
-
             Transform playerTransform = playerObject.transform;
             float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 

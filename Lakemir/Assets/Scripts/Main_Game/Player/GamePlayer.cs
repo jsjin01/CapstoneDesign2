@@ -118,7 +118,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
 
     private void Start()
     {
-        rightWeapon = new WeaponID10(); //TEST용
+        rightWeapon = new WeaponID03(); //TEST용
         leftWeapon = new WeaponID08();  //TEST용
         
         // 게임 시작 시 HealthBar 초기화
@@ -152,11 +152,11 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
 
         //공격키
-        if(Input.GetKeyDown(KeyCode.LeftAlt) && !isAttacking)
+        if(Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
         {
             Attack(ATTACKKEY.RIGHT);
         }
-        else if(Input.GetKeyDown(KeyCode.LeftControl) && !isAttacking)
+        else if(Input.GetKeyDown(KeyCode.Mouse1) && !isAttacking)
         {
             Attack(ATTACKKEY.LEFT);
         }

@@ -54,6 +54,13 @@ MonoBehaviour:
   - SyncLongAttackState
   - SyncShieldAttackState
   - SyncArrowCreation
+  - RPC_UpdateDirection
+  - RPC_UpdateHp
+  - RPC_CloseRangeAttack
+  - RPC_DestroyMonster
+  - RPC_LongRangeAttack
+  - SyncArrow
+  - SpawnBossHand
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

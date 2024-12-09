@@ -17,6 +17,8 @@ public class Arrow : MonoBehaviour
     Transform target;               //몬스터 타겟팅
     float targetMonsterDistance;    //거리
 
+    float lastGuidedTime;               //가이드 시작
+
     private void Update()
     {
         Invoke("isDestroy", dTime);
@@ -34,8 +36,38 @@ public class Arrow : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Monster"))
         {
-            collision.gameObject.GetComponent<Monster>().TakeDamage(damage, effect);
-            isDestroy();
+            Monster monster = collision.gameObject.GetComponent<Monster>();
+            if(monster != null)
+            {
+                collision.gameObject.GetComponent<Monster>().TakeDamage(damage, effect);
+                isDestroy();
+            }
+            else
+            {
+                MultiMonster multiMonster = collision.gameObject.GetComponent<MultiMonster>();
+                if(multiMonster != null)
+                {
+                    collision.gameObject.GetComponent<MultiMonster>().TakeDamage(damage, effect);
+                    isDestroy();
+                }
+                else
+                {
+                    SplitMultiMonster splitmultiMonster = collision.gameObject.GetComponent<SplitMultiMonster>();
+                    if(splitmultiMonster != null)
+                    {
+                        collision.gameObject.GetComponent<SplitMultiMonster>().TakeDamage(damage, effect);
+                        isDestroy();
+                    }
+                    else{
+                        collision.gameObject.GetComponent<MultiBossMonster>().TakeDamage(damage, effect);
+                        isDestroy();
+                    }
+                    
+                }
+                
+            }
+
+
         }
     }
 
@@ -84,26 +116,31 @@ public class Arrow : MonoBehaviour
             // target이 null이면 아무 작업도 수행하지 않고 메서드를 종료합니다.
             return;
         }
-        Vector2 targetDirection = ((Vector2)target.position -new Vector2(0, 3f) - rb.position).normalized;
 
-        // 새로운 방향 계산
-        Vector2 newDirection = Vector2.Lerp(rb.velocity.normalized, targetDirection, speed * Time.deltaTime);
-
-        // 만약 새로운 방향이 목표 방향에 충분히 가깝지 않으면
-        if(Vector2.Dot(newDirection, targetDirection) < 0.99f)
+        if (Time.time - lastGuidedTime > 2f)
         {
-            // 새로운 방향을 이용해 속도를 조정
-            rb.velocity = newDirection * speed;
-        }
+            lastGuidedTime = Time.time; 
+            Vector2 targetDirection = ((Vector2)target.position - new Vector2(0, 3f) - rb.position).normalized;
 
-        float angle = Mathf.Atan2(newDirection.y, newDirection.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+            // 새로운 방향 계산
+            Vector2 newDirection = Vector2.Lerp(rb.velocity.normalized, targetDirection, speed * Time.deltaTime);
+
+            // 만약 새로운 방향이 목표 방향에 충분히 가깝지 않으면
+            if(Vector2.Dot(newDirection, targetDirection) < 0.99f)
+            {
+                // 새로운 방향을 이용해 속도를 조정
+                rb.velocity = newDirection * speed;
+            }
+
+            float angle = Mathf.Atan2(newDirection.y, newDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        }
     }
 
     void GetClosestMonster() //가장 가까운 몬스터 계산
     {
         GameObject[] monster = GameObject.FindGameObjectsWithTag("Monster");
-        Transform closestPlayer = null;
+        Transform closestMonster = null;
         float closestDistance = Mathf.Infinity;
 
         foreach(GameObject monsterObj in monster)
@@ -114,13 +151,13 @@ public class Arrow : MonoBehaviour
             if(distanceToPlayer < closestDistance && distanceToPlayer <= 5) //위아래로 너무 차이가 나지 않도록
             {
                 closestDistance = distanceToPlayer;
-                closestPlayer = playerTransform;
+                closestMonster = playerTransform;
             }
         }
 
-        if(closestPlayer != null)
+        if(closestMonster != null)
         {
-            target = closestPlayer.gameObject.transform;
+            target = closestMonster.gameObject.transform;
             targetMonsterDistance = closestDistance;
         }
     }

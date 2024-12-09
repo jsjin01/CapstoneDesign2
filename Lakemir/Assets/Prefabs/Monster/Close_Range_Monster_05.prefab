@@ -14,7 +14,9 @@ GameObject:
   - component: {fileID: 5450893473058998733}
   - component: {fileID: 1083723157116427620}
   - component: {fileID: 6249489577902468499}
-  - component: {fileID: 5160207446381240655}
+  - component: {fileID: 6867357665800291456}
+  - component: {fileID: 458205341603963228}
+  - component: {fileID: 8455607630474670136}
   m_Layer: 0
   m_Name: Close_Range_Monster_05
   m_TagString: Monster
@@ -195,7 +197,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.2428994, y: 0.83618546}
   m_EdgeRadius: 0
---- !u!114 &5160207446381240655
+--- !u!114 &6867357665800291456
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,7 +206,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3386509363529343638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33fbfd01953f9d746a7b35a9551f56c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 9fd9673c4c10a4948a100b3c3640eda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 50
@@ -217,7 +219,7 @@ MonoBehaviour:
   patrolPoints:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  detectionRadius: 15
+  detectionRadius: 5
   attackRange: 1.5
   monsterArrow: {fileID: 0}
   currentState: 0
@@ -230,6 +232,46 @@ MonoBehaviour:
   isWeakening: 0
   isDotDeal: 0
   isStun: 0
+--- !u!114 &458205341603963228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3386509363529343638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &8455607630474670136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3386509363529343638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 6867357665800291456}
+  - {fileID: 458205341603963228}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &6135366227092652369
 GameObject:
   m_ObjectHideFlags: 0
