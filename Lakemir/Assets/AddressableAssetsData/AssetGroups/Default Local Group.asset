@@ -32,6 +32,31 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d65285622cd93441a4e0fb1fc47ce8f
+    m_Address: Assets/Prefabs/Skill/SkillID01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 230180ee72a59034a90a94de4fcf1c95
+    m_Address: Assets/Prefabs/Skill/SKillID02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c220fbc4250db7040aff05ade1bf00b7
+    m_Address: Assets/Prefabs/Skill/SKillID03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6daeba627b129fa46b3f7f38774f0a18
+    m_Address: Assets/Prefabs/Skill/SKillID04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8f3ca132f3c3e848acca6c2998b69ce
+    m_Address: Assets/Prefabs/Skill/SKillID05.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e0eeaa06e43457b47997a671abc0ba15, type: 2}
   m_SchemaSet:

@@ -1368,6 +1368,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 849539758037485162, guid: 07fe1976b73eab44ea5f31643d21c04e, type: 3}
+      propertyPath: damage
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8825282612166835879, guid: 07fe1976b73eab44ea5f31643d21c04e, type: 3}
       propertyPath: m_Name
       value: Close_Range_Monster_04
@@ -2028,6 +2032,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Close_Range_Monster_01 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7414654058911422511, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
+      propertyPath: damage
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2221,6 +2229,10 @@ PrefabInstance:
     - target: {fileID: 6700907632518920199, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
       propertyPath: m_Name
       value: Close_Range_Monster_01 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7414654058911422511, guid: 5a721bc0a131c7a48ac5ee40f9b966a7, type: 3}
+      propertyPath: damage
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2675,32 +2687,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
-      propertyPath: maxHp
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
       propertyPath: joystick
       value: 
       objectReference: {fileID: 4827166285537034103}
-    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
-      propertyPath: currentHp
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
-      propertyPath: attackPower
-      value: 500
-      objectReference: {fileID: 0}
     - target: {fileID: 5034127710043320415, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7957853180431097363, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 265.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7957853180431097363, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 20.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7957853180431097363, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
       propertyPath: m_LocalPosition.z

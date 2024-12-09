@@ -92,6 +92,11 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     [SerializeField] Weapon leftWeapon = null;  //왼쪽(2번)에 착용한 무기 
     bool isShield = false;
 
+    //스킬 변수 
+    Skill skill1;
+    Skill skill2;
+    Skill skill3;
+
     //전투 비전투 관련 변수
     float lastCombattingTime = 0; //마지막으로 전투했던 상태
     bool isCombating = false;     //전투 상태인지 아닌지 
@@ -120,7 +125,11 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
     {
         rightWeapon = new WeaponID03(); //TEST용
         leftWeapon = new WeaponID08();  //TEST용
-        
+
+        skill1 = new SkillID01();
+        skill2 = new SkillID04();
+        skill3 = new SkillID05();
+
         // 게임 시작 시 HealthBar 초기화
         if (healthBar != null)
         {
@@ -152,7 +161,7 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         }
 
         //공격키
-        if(Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
+        if(Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)  //스킬 사용시 버튼 
         {
             Attack(ATTACKKEY.RIGHT);
         }
@@ -160,6 +169,20 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
         {
             Attack(ATTACKKEY.LEFT);
         }
+
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SkillButton(1);
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SkillButton(2); 
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SkillButton(3);
+        }
+
 
         //Dash 사용
         if(Input.GetKeyDown(KeyCode.LeftShift))
@@ -425,6 +448,25 @@ public class GamePlayer : Singleton<GamePlayer> ,IPunObservable
             GameObject rightArrow = Instantiate(ArrowPrefabs[1], gameObject.transform.position - new Vector3(0, 3.39f, 0), rightRotation); //화살 오브젝트 생성
             rightArrow.GetComponent<Arrow>().Setting((int)(damage * 0.3f), ((LongRangeWeapon)weapon));                                    //화살 데미지 설정
             rightArrow.GetComponent<Arrow>().move((int)direction);                                                                        //화살 이동방향 설정
+        }
+    }
+
+    public void SkillButton(int num)    //번호에 따라 스킬 사용
+    {
+        switch(num)
+        {
+            case 1:
+                skill1.SetPlayerPosition(transform.position);
+                skill1.SkillEffect();
+                break;
+            case 2:
+                skill2.SetPlayerPosition(transform.position);
+                skill2.SkillEffect();
+                break;
+            case 3:
+                skill3.SetPlayerPosition(transform.position);
+                skill3.SkillEffect();
+                break;
         }
     }
     public void InteractionKey() // 상호작용키

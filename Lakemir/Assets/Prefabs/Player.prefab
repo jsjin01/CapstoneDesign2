@@ -393,11 +393,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0f836b8a1d0a0543b2b45c6f6b70b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 100
-  currentHp: 100
+  maxHp: 1000
+  currentHp: 1000
   maxShield: 0
   currentShield: 0
-  attackPower: 100
+  attackPower: 500
   speed: 5
   fatalHitProbability: 0
   fatalHitDamage: 0
@@ -408,6 +408,10 @@ MonoBehaviour:
   - {fileID: 3303570833072228735, guid: 65a0e609830f9ef40a790f896d19fe9f, type: 3}
   shieldRange: {fileID: 7903618086869782522}
   playerAtkPoint: {fileID: 3528758858697044295}
+  healthBar: {fileID: 0}
+  ConversationWindow: {fileID: 0}
+  StoreWindow: {fileID: 0}
+  ExpWindow: {fileID: 0}
   rightWeapon:
     weaponName: 
     weaponGrade: 0
@@ -428,12 +432,14 @@ MonoBehaviour:
     w_type: 0
     hitEffect: 0
     playerHitPoint: {x: 0, y: 0, z: 0}
+  currencyManager: {fileID: 0}
   joystick: {fileID: 0}
   rb: {fileID: 8561337022996618277}
   col: {fileID: 4004595915402106229}
   anit: {fileID: 4506751215007140724}
   upDownTrail: {fileID: 4358314807795323399}
   dashTrail: {fileID: 5268357327846482693}
+  weaponGrade: 0
 --- !u!50 &8561337022996618277
 Rigidbody2D:
   serializedVersion: 4
