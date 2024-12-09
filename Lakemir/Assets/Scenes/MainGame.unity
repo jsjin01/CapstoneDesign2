@@ -1804,6 +1804,26 @@ PrefabInstance:
       propertyPath: joystick
       value: 
       objectReference: {fileID: 1689376060}
+    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
+      propertyPath: ExpWindow
+      value: 
+      objectReference: {fileID: 1718960594}
+    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
+      propertyPath: healthBar
+      value: 
+      objectReference: {fileID: 438390412}
+    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
+      propertyPath: StoreWindow
+      value: 
+      objectReference: {fileID: 1023876447}
+    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
+      propertyPath: currencyManager
+      value: 
+      objectReference: {fileID: 851651889}
+    - target: {fileID: 4157528483850603137, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
+      propertyPath: ConversationWindow
+      value: 
+      objectReference: {fileID: 1343204801}
     - target: {fileID: 5034127710043320415, guid: 5f484aa1dbca67149a4a44a32bc7d7e6, type: 3}
       propertyPath: m_Name
       value: Player
